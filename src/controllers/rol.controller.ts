@@ -1,0 +1,53 @@
+import type { Request, Response } from "express";
+import { RolServices } from "../services";
+
+export class RolController {
+    constructor() {}
+
+    all = async (req: Request, res: Response) => {
+        const { status, message, data } = await RolServices.getAll();
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
+
+    one = async (req: Request, res: Response) => {
+        const { id } = req.params
+        const { status, message, data } = await RolServices.getOne(Number(id));
+
+        return res.status(status).json({
+            message,
+            data
+        });
+    };
+
+    create = async (req: Request, res: Response) => {
+        const { status, message, data } = await RolServices.create(req.body);
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
+
+    update = async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const { status, message, data } = await RolServices.update(Number(id), req.body);
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
+
+    delete = async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const { status, message } = await RolServices.delete(Number(id));
+
+        return res.status(status).json({
+            message,
+        });
+    };
+}

@@ -18,7 +18,7 @@ router.get("/:id",
 
 router.get("/category/:category_id", 
     productController.all
-); // http://localhost:3000/api/product/category/:categoryId
+); // http://localhost:3000/api/product/category/:category_id
 
 //METHOD POST
 router.post("/",
@@ -26,7 +26,8 @@ router.post("/",
     productValidators.validateCatgegoryIdExists,
     validateFields,
     productController.create
-); // http://localhost:3000/api/product
+); // http://localhost:3000/api/product  // aqui se puede hacer el ajuste de metodos para validar por medio de otro validator
+
 
 //METHOD PATCH
 router.patch("/:id",

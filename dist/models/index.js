@@ -18,3 +18,4 @@ __exportStar(require("./category.model"), exports);
 __exportStar(require("./depot.model"), exports);
 __exportStar(require("./movement.model"), exports);
 __exportStar(require("./product.model"), exports);
+__exportStar(require("./rol.model"), exports);

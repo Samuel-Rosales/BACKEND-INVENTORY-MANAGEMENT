@@ -26,6 +26,14 @@ class ProductController {
                 data,
             });
         };
+        this.update = async (req, res) => {
+            const { id } = req.params;
+            const { status, message, data } = await services_1.ProductServices.update(Number(id), req.body);
+            return res.status(status).json({
+                message,
+                data,
+            });
+        };
         this.delete = async (req, res) => {
             const { id } = req.params;
             const { status, message } = await services_1.ProductServices.delete(Number(id));

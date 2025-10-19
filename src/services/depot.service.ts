@@ -26,14 +26,6 @@ class DepotService {
         try {
             const depot = await DepotDB.findByPk(depot_id);
 
-            /*if (!depot) {
-                return {
-                    status: 404,
-                    message: "Depot not found",
-                    data: null,
-                };
-            }*/
-
             return {
                 status: 200,
                 message: "Depot obtained correctly",
@@ -102,11 +94,11 @@ class DepotService {
             const deletedCount = await DepotDB.destroy({ where: { depot_id } });
 
             if (deletedCount === 0) {
-            return {
-                status: 404,
-                message: "Depot not found",
-                data: null,
-            };
+                return {
+                    status: 404,
+                    message: "Depot not found",
+                    data: null,
+                };
             }
 
             return {

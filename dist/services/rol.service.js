@@ -11,53 +11,45 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductServices = void 0;
+exports.RolServices = void 0;
 const config_1 = require("../config");
-class ProductService {
+class RolService {
     async getAll() {
         try {
-            const products = await config_1.ProductDB.findAll({
-                include: [{
-                        model: config_1.CategoryDB, as: "category"
-                    }]
-            });
+            const rols = await config_1.RolDB.findAll();
             return {
                 status: 200,
-                message: "Products obtained correctly",
-                data: products,
+                message: "Rols obtained correctly",
+                data: rols,
             };
         }
         catch (error) {
-            console.error("Error fetching products: ", error);
+            console.error("Error fetching rols: ", error);
             return {
                 status: 500,
                 message: "Internal server error",
-                data: null,
+                date: null,
             };
         }
     }
-    async getOne(product_id) {
+    async getOne(rol_id) {
         try {
-            const product = await config_1.ProductDB.findByPk(product_id, {
-                include: [{
-                        model: config_1.CategoryDB, as: "category"
-                    }]
-            });
-            if (!product) {
+            const rol = await config_1.RolDB.findByPk(rol_id);
+            if (!rol) {
                 return {
                     status: 404,
-                    message: "Product not found",
+                    message: "Rol not found",
                     data: null,
                 };
             }
             return {
                 status: 200,
-                message: "Product obtained correctly",
-                data: product,
+                message: "Rol obtained correctly",
+                data: rol,
             };
         }
         catch (error) {
-            console.error("Error fetching product: ", error);
+            console.error("Error fetching rol: ", error);
             return {
                 status: 500,
                 message: "Internal server error",
@@ -65,18 +57,18 @@ class ProductService {
             };
         }
     }
-    async create(product) {
+    async create(rol) {
         try {
-            const { createdAt, updatedAt } = product, productData = __rest(product, ["createdAt", "updatedAt"]);
-            const newProduct = await config_1.ProductDB.create(productData);
+            const { createdAt, updatedAt } = rol, rolData = __rest(rol, ["createdAt", "updatedAt"]);
+            const newRol = await config_1.RolDB.create(rolData);
             return {
                 status: 201,
-                message: "Product created successfully",
-                data: newProduct,
+                message: "Rol created successfully",
+                data: newRol,
             };
         }
         catch (error) {
-            console.error("Error creating product: ", error);
+            console.error("Error creating rol", error);
             return {
                 status: 500,
                 message: "Internal server error",
@@ -84,19 +76,19 @@ class ProductService {
             };
         }
     }
-    async update(movement_id, movement) {
+    async update(rol_id, rol) {
         try {
-            const { createdAt, updatedAt } = movement, movementData = __rest(movement, ["createdAt", "updatedAt"]);
-            await config_1.ProductDB.update(movementData, { where: { movement_id } });
-            const updatedMovement = await config_1.ProductDB.findByPk(movement_id);
+            const { createdAt, updatedAt, rol_id } = rol, rolData = __rest(rol, ["createdAt", "updatedAt", "rol_id"]);
+            await config_1.RolDB.update(rolData, { where: { rol_id } });
+            const updatedRol = await config_1.RolDB.findByPk(rol_id);
             return {
                 status: 200,
-                message: "Product update correctly",
-                data: updatedMovement,
+                message: "Rol updated correctly",
+                data: updatedRol,
             };
         }
         catch (error) {
-            console.error("Error updating product: ", error);
+            console.error("Error updating rol: ", error);
             return {
                 status: 500,
                 message: "Internal server error",
@@ -104,25 +96,24 @@ class ProductService {
             };
         }
     }
-    async delete(product_id) {
+    async delete(rol_id) {
         try {
-            /*const product = await ProductDB.findByPk(product_id);
-
-            if(!product) {
+            const deletedCount = await config_1.RolDB.destroy({ where: { rol_id } });
+            if (deletedCount === 0) {
                 return {
                     status: 404,
-                    message: "Product not found",
+                    message: "Rol not found",
                     data: null,
                 };
-            }*/
-            await config_1.ProductDB.destroy({ where: { product_id } });
+            }
             return {
                 status: 200,
-                message: "Product deleted successfully",
+                message: "Rol deleted successfully",
+                data: null,
             };
         }
         catch (error) {
-            console.error("Error deleting product: ", error);
+            console.error("Error deleting rol: ", error);
             return {
                 status: 500,
                 message: "Internal server error",
@@ -131,4 +122,4 @@ class ProductService {
         }
     }
 }
-exports.ProductServices = new ProductService();
+exports.RolServices = new RolService();

@@ -76,7 +76,26 @@ class CategoryService {
             };
         }
     }
-    //mas adelante me encargo de ver como funciona las actualziaciones para saber si poner put o patch
+    async update(movement_id, movement) {
+        try {
+            const { createdAt, updatedAt } = movement, movementData = __rest(movement, ["createdAt", "updatedAt"]);
+            await config_1.CategoryDB.update(movementData, { where: { movement_id } });
+            const updatedMovement = await config_1.CategoryDB.findByPk(movement_id);
+            return {
+                status: 200,
+                message: "Category update correctly",
+                data: updatedMovement,
+            };
+        }
+        catch (error) {
+            console.error("Error updating category: ", error);
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }
+    }
     async delete(category_id) {
         try {
             const category = await config_1.CategoryDB.destroy({ where: { category_id } });

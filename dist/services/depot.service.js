@@ -35,13 +35,6 @@ class DepotService {
     async getOne(depot_id) {
         try {
             const depot = await config_1.DepotDB.findByPk(depot_id);
-            /*if (!depot) {
-                return {
-                    status: 404,
-                    message: "Depot not found",
-                    data: null,
-                };
-            }*/
             return {
                 status: 200,
                 message: "Depot obtained correctly",

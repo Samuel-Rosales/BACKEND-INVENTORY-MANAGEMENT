@@ -10,6 +10,7 @@ import {
   DepotRoute,
   MovementRoute,
   ProductRoute,
+  RolRoute,
 } from "../routes/index.route"; 
 
 export class Server {
@@ -28,6 +29,7 @@ export class Server {
       depots: this.pre + "/depot",
       movements: this.pre + "/movement",
       products: this.pre + "/product",
+      rols: this.pre + "/rol",
     }
     
     this.middlewares()
@@ -51,6 +53,7 @@ export class Server {
     this.app.use(this.paths.depots, DepotRoute);
     this.app.use(this.paths.movements, MovementRoute);
     this.app.use(this.paths.products, ProductRoute);
+    this.app.use(this.paths.rols, RolRoute);
   }
 
   listen() {

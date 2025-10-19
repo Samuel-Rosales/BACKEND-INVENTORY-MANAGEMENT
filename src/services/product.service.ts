@@ -5,7 +5,9 @@ class ProductService {
     async getAll() {
         try {
             const products = await ProductDB.findAll({
-                include: { model: CategoryDB }
+                include: [{
+                    model: CategoryDB, as: "category"
+                }]
             });
 
             return { 
@@ -27,7 +29,9 @@ class ProductService {
     async getOne(product_id: number) {
         try {
             const product = await ProductDB.findByPk(product_id, {
-                include: { model: CategoryDB },
+                include: [{
+                    model: CategoryDB, as: "category"
+                }]
             });
 
             if (!product) {
@@ -54,7 +58,7 @@ class ProductService {
         }
     } 
 
-    async create (product: ProductInterface) {
+    async create(product: ProductInterface) {
         try {
             const { createdAt, updatedAt, ...productData  } = product;
 
@@ -103,15 +107,6 @@ class ProductService {
     
     async delete ( product_id: number) {
         try {
-            /*const product = await ProductDB.findByPk(product_id);
-
-            if(!product) {
-                return {
-                    status: 404,
-                    message: "Product not found",
-                    data: null,
-                };
-            }*/
             await ProductDB.destroy({ where: {product_id} });
 
             return { 

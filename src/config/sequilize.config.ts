@@ -7,6 +7,7 @@ import {
     DepotModel,
     MovementModel,
     ProductModel,
+    RolModel,
 } from "../models";
 
 const dbName: string = process.env.DATABASE_NAME!;
@@ -59,6 +60,11 @@ export const ProductDB = db.define("products", ProductModel, {
     tableName: "products",
 });
 
+export const RolDB = db.define("rols", RolModel, {
+    timestamps: true,
+    tableName: "rols",
+});
+
 //Relacionships
 
 ProductDB.belongsTo(CategoryDB, { foreignKey: "category_id", as: "category" });
@@ -87,13 +93,7 @@ export const syncModels = async() => {
         console.log("Connecting to database...");
 
         await db.sync({ alter: true});
-        console.log("Database Synced"); 
-        /*await ProductDB.create({
-            name: 'Arroz',
-            description: 'Arroz blanco de la marca mary',
-            base_price: 260.00,
-            min_stock: 10,
-            });*/
+        console.log("Database Synced");
         console.log("Test product created");
     } catch (error) {
         console.error("Error to connect to database: ", error);

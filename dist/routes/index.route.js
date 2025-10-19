@@ -18,3 +18,4 @@ __exportStar(require("./category.routes"), exports);
 __exportStar(require("./depot.routes"), exports);
 __exportStar(require("./movement.routes"), exports);
 __exportStar(require("./product.routes"), exports);
+__exportStar(require("./rol.routes"), exports);
