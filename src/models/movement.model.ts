@@ -1,30 +1,35 @@
 import { DataTypes } from "sequelize";
 
-export const ProductModel = {
-    product_id: {
+export const MovementModel = {
+    movement_id: {
         type: DataTypes.INTEGER(),
         primaryKey: true,
-        autoIncrement: true,
+        autoIncrement: true, 
     },
-    name: {
-        type: DataTypes.STRING(100),
+    depot_id: {
+        type: DataTypes.INTEGER(),
         allowNull: false,
     },
-    description: {
+    product_id: {
+        type: DataTypes.INTEGER(),
+        allowNull: false,
+    },
+    type: {
+        type: DataTypes.ENUM('Entrada', 'Salida'),
+        allowNull: false,
+    },
+    amount: {
+        type: DataTypes.INTEGER(),
+        allowNull: false,
+    },
+    observation: {
         type: DataTypes.STRING(255),
         allowNull: false,
     },
-    category_id: {
-        type: DataTypes.INTEGER(),
+    date: {
+        type: DataTypes.DATE,
         allowNull: false,
-    },
-    base_price: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
-    },
-    min_stock: {
-        type: DataTypes.INTEGER(),
-        allowNull: false,
+        defaultValue: DataTypes.NOW,
     },
     status: {
         type: DataTypes.BOOLEAN,

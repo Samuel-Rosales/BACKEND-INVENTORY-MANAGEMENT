@@ -1,11 +1,11 @@
-import type { Request, Response } from "express";
-import { ProductServices } from "../services";
+import { Request, Response } from "express";
+import { MovementServices } from "../services";
 
-export class ProductController {
+export class MovementController {
     constructor() {}
 
     all = async (req: Request, res: Response) => {
-        const { status, message, data } = await ProductServices.getAll();
+        const { status, message, data } = await MovementServices.getAll();
 
         return res.status(status).json({
             message,
@@ -13,18 +13,19 @@ export class ProductController {
         });
     };
 
-    one = async (req: Request, res: Response) => { 
+    one = async (req: Request, res: Response) => {
         const { id } = req.params;
-        const { status, message, data } = await ProductServices.getOne(Number(id));
-        
-        return res.status(status).json({ 
+
+        const { status, message, data } = await MovementServices.getOne(Number(id));
+
+        return res.status(status).json({
             message,
             data,
         });
-    };  
+    };
 
-    create = async (req: Request,  res: Response  ) => {
-        const { status, message, data } = await ProductServices.create(req.body);
+    create = async (req: Request, res: Response) => {
+        const { status, message, data } = await MovementServices.create(req.body);
 
         return res.status(status).json({
             message,
@@ -34,7 +35,7 @@ export class ProductController {
 
     update = async (req: Request, res: Response) => {
         const { id } = req.params; 
-        const { status, message, data } = await ProductServices.update(Number(id), req.body);
+        const { status, message, data } = await MovementServices.update(Number(id), req.body);
 
         return res.status(status).json({
             message,
@@ -44,8 +45,8 @@ export class ProductController {
 
     delete = async (req: Request, res: Response) => {
         const { id } = req.params;
-        const { status, message } = await ProductServices.delete(Number(id));
-        
+        const { status, message } = await MovementServices.delete(Number(id));
+
         return res.status(status).json({
             message,
         });

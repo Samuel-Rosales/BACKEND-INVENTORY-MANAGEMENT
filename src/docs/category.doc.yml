@@ -200,22 +200,22 @@ components:
 
 
 {
-  name: "Aseo personal",
-  description: "Productos de higiene como jabón, champú, papel higiénico, toallas sanitarias y desodorantes."
+  "name": "Aseo personal",
+  "description": "Productos de higiene como jabón, champú, papel higiénico, toallas sanitarias y desodorantes."
 }
 {
-  name: "Limpieza del hogar",
-  description: "Artículos para limpieza como detergentes, cloro, esponjas, escobas y desinfectantes."
+  "name": "Limpieza del hogar",
+  "description": "Artículos para limpieza como detergentes, cloro, esponjas, escobas y desinfectantes."
 }
 {
-  name: "Cocina básica",
-  description: "Utensilios y consumibles esenciales como fósforos, papel aluminio, bolsas plásticas y servilletas."
+  "name": "Cocina básica",
+  "description": "Utensilios y consumibles esenciales como fósforos, papel aluminio, bolsas plásticas y servilletas."
 }
 {
-  name: "Mascotas",
-  description: "Alimentos y productos básicos para el cuidado de animales domésticos como concentrado, arena y shampoo."
+  "name": "Mascotas",
+  "description": "Alimentos y productos básicos para el cuidado de animales domésticos como concentrado, arena y shampoo."
 }
 {
-  name: "Farmacia básica",
-  description: "Productos de primeros auxilios y cuidado general como alcohol, curitas, acetaminofén y termómetros."
+  "name": "Farmacia básica",
+  "description": "Productos de primeros auxilios y cuidado general como alcohol, curitas, acetaminofén y termómetros."
 }

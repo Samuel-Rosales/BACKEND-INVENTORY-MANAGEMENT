@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CategoryModel = void 0;
+exports.DepotModel = void 0;
 const sequelize_1 = require("sequelize");
-exports.CategoryModel = {
-    category_id: {
+exports.DepotModel = {
+    depot_id: {
         type: sequelize_1.DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
@@ -12,7 +12,7 @@ exports.CategoryModel = {
         type: sequelize_1.DataTypes.STRING(100),
         allowNull: false,
     },
-    description: {
+    location: {
         type: sequelize_1.DataTypes.STRING(255),
         allowNull: false,
     },

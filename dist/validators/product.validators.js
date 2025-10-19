@@ -42,7 +42,7 @@ class ProductValidators {
                 });
             }
         };
-        this.validateProductIdExists = async (req, res, next) => {
+        this.validateProductParamIdExists = async (req, res, next) => {
             var _a;
             try {
                 const rawId = ((_a = req.params.id) !== null && _a !== void 0 ? _a : "").toString().trim();

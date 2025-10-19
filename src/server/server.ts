@@ -6,8 +6,10 @@ import swaggerUi from "swagger-ui-express";
 import { swaggerOptions } from "../config";
 
 import { 
-  ProductRoute,
   CategoryRoute,
+  DepotRoute,
+  MovementRoute,
+  ProductRoute,
 } from "../routes/index.route"; 
 
 export class Server {
@@ -22,8 +24,10 @@ export class Server {
     this.port = process.env.PORT || "3000"
     this.apiurl = process.env.API_URL || `http://localhost:${this.port}`
     this.paths = {
-      products: this.pre + "/product",
       categories: this.pre + "/category",
+      depots: this.pre + "/depot",
+      movements: this.pre + "/movement",
+      products: this.pre + "/product",
     }
     
     this.middlewares()
@@ -34,7 +38,7 @@ export class Server {
   middlewares() {
     this.app.use(cors({
       origin: "*", // o una lista segura de dominios
-      methods: ["GET", "POST", "PUT", "DELETE"],
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     }))
 
     this.app.use(express.json())
@@ -43,8 +47,10 @@ export class Server {
   }
 
   routes() {
-    this.app.use(this.paths.products, ProductRoute)
-    this.app.use(this.paths.categories, CategoryRoute)
+    this.app.use(this.paths.categories, CategoryRoute);
+    this.app.use(this.paths.depots, DepotRoute);
+    this.app.use(this.paths.movements, MovementRoute);
+    this.app.use(this.paths.products, ProductRoute);
   }
 
   listen() {

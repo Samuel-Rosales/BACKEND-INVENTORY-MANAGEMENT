@@ -14,6 +14,11 @@ export const CategoryModel = {
         type: DataTypes.STRING(255),
         allowNull: false,
     },
+    status: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+    },
     createdAt: {
         type: DataTypes.DATE,
         allowNull: false,

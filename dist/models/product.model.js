@@ -4,7 +4,7 @@ exports.ProductModel = void 0;
 const sequelize_1 = require("sequelize");
 exports.ProductModel = {
     product_id: {
-        type: sequelize_1.DataTypes.INTEGER,
+        type: sequelize_1.DataTypes.INTEGER(),
         primaryKey: true,
         autoIncrement: true,
     },
@@ -27,6 +27,11 @@ exports.ProductModel = {
     min_stock: {
         type: sequelize_1.DataTypes.INTEGER(),
         allowNull: false,
+    },
+    status: {
+        type: sequelize_1.DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
     },
     createdAt: {
         type: sequelize_1.DataTypes.DATE,

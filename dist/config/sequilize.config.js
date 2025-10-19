@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.syncModels = exports.CategoryDB = exports.ProductDB = exports.db = void 0;
+exports.syncModels = exports.ProductDB = exports.MovementDB = exports.DepotDB = exports.CategoryDB = exports.db = void 0;
 const sequelize_1 = require("sequelize");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -33,17 +33,29 @@ if (dbHost !== "localhost") {
 }
 exports.db = new sequelize_1.Sequelize(dbName, dbUser, dbPassword, sequelizeConfig);
 //Models
-exports.ProductDB = exports.db.define("products", models_1.ProductModel, {
-    timestamps: true,
-    tableName: "products",
-});
 exports.CategoryDB = exports.db.define("categories", models_1.CategoryModel, {
     timestamps: true,
     tableName: "categories",
 });
+exports.DepotDB = exports.db.define("depots", models_1.DepotModel, {
+    timestamps: true,
+    tableName: "depots",
+});
+exports.MovementDB = exports.db.define("movements", models_1.MovementModel, {
+    timestamps: true,
+    tableName: "movemnts",
+});
+exports.ProductDB = exports.db.define("products", models_1.ProductModel, {
+    timestamps: true,
+    tableName: "products",
+});
 //Relacionships
 exports.ProductDB.belongsTo(exports.CategoryDB, { foreignKey: "category_id", as: "category" });
 exports.CategoryDB.hasMany(exports.ProductDB, { foreignKey: "category_id", as: "products" });
+exports.MovementDB.belongsTo(exports.DepotDB, { foreignKey: "depot_id", as: "depot" });
+exports.DepotDB.hasMany(exports.MovementDB, { foreignKey: "depot_id", as: "movements", onDelete: "CASCADE", hooks: true });
+exports.MovementDB.belongsTo(exports.ProductDB, { foreignKey: "product_id", as: "product" });
+exports.ProductDB.hasMany(exports.MovementDB, { foreignKey: "product_id", as: "movements", onDelete: "CASCADE", hooks: true });
 //Sync
 const syncModels = async () => {
     try {

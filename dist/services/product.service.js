@@ -83,14 +83,15 @@ class ProductService {
     //mas adelante me encargo de ver como funciona las actualziaciones para saber si poner put o patch
     async delete(product_id) {
         try {
-            const product = await config_1.ProductDB.findByPk(product_id);
-            if (!product) {
+            /*const product = await ProductDB.findByPk(product_id);
+
+            if(!product) {
                 return {
                     status: 404,
                     message: "Product not found",
                     data: null,
                 };
-            }
+            }*/
             await config_1.ProductDB.destroy({ where: { product_id } });
             return {
                 status: 200,

@@ -1,18 +1,20 @@
 import { Router  } from "express";
 import { validateFields } from "../middlewares";
-import { CategroyController } from "../controllers";
+import { CategoryController } from "../controllers";
 import { categoryValidators } from "../validators";
 
 const router = Router();
-const categoryController = new CategroyController();
+const categoryController = new CategoryController();
 
 // METHOD GET
 router.get("/", 
-    categoryController.all); // http://localhost:3000/api/category
+    categoryController.all
+); // http://localhost:3000/api/category
 
 router.get("/:id", 
-    categoryValidators.validateCategoryIdExists, 
-    categoryController.one); // http://localhost:3000/api/category/:id
+    categoryValidators.validateCategoryParamIdExists, 
+    categoryController.one
+); // http://localhost:3000/api/category/:id
 
 // METHOD POST
 router.post("/",
@@ -21,9 +23,17 @@ router.post("/",
     categoryController.create
 ); // http://localhost:3000/api/category
 
+// METHOD PATCH
+router.patch("/:id",
+    categoryValidators.validateFields,
+    categoryValidators.validateCategoryParamIdExists,
+    validateFields,
+    categoryController.update
+); // http://localhost:3000/api/category/:id
+
 // METHOD DELETE
 router.delete("/:id", 
-    categoryValidators.validateCategoryIdExists,
+    categoryValidators.validateCategoryParamIdExists,
     categoryController.delete
 ); // http://localhost:3000/api/category/:id
 

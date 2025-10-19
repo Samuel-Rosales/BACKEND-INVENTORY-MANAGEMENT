@@ -3,10 +3,11 @@ import dotenv  from "dotenv";
 dotenv.config();
 
 import {
+    CategoryModel,
+    DepotModel,
+    MovementModel,
     ProductModel,
-    CategoryModel
 } from "../models";
-
 
 const dbName: string = process.env.DATABASE_NAME!;
 const dbUser: string = process.env.DATABASE_USER!;
@@ -38,20 +39,37 @@ export const db = new Sequelize(dbName, dbUser, dbPassword, sequelizeConfig);
 
 //Models
 
-export const ProductDB = db.define("products", ProductModel, {
-    timestamps: true,
-    tableName: "products",
-});
-
 export const CategoryDB = db.define("categories", CategoryModel, {
     timestamps: true,
     tableName: "categories",
+});
+
+export const DepotDB = db.define("depots", DepotModel, {
+    timestamps: true,
+    tableName: "depots",
+});
+
+export const MovementDB = db.define("movements", MovementModel, {
+    timestamps: true,
+    tableName: "movemnts",
+});
+
+export const ProductDB = db.define("products", ProductModel, {
+    timestamps: true,
+    tableName: "products",
 });
 
 //Relacionships
 
 ProductDB.belongsTo(CategoryDB, { foreignKey: "category_id", as: "category" });
 CategoryDB.hasMany(ProductDB, { foreignKey: "category_id", as: "products" });
+
+MovementDB.belongsTo(DepotDB, { foreignKey: "depot_id", as: "depot" });
+DepotDB.hasMany(MovementDB, { foreignKey: "depot_id", as: "movements", onDelete: "CASCADE", hooks: true});
+
+MovementDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
+ProductDB.hasMany(MovementDB, { foreignKey: "product_id", as: "movements", onDelete: "CASCADE", hooks: true });
+
 
 //Sync
 

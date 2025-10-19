@@ -4,14 +4,13 @@ import { CategoryInterface } from "../interfaces";
 class CategoryService {
     async getAll() {
         try {
-            const categories = await CategoryDB.findAll()
+            const categories = await CategoryDB.findAll();
 
             return {
                 status: 200,
                 message: "Categories obtained correctly",
                 data: categories,
             };
-
         } catch (error) {
             console.error("Error fetching products: ", error);
 
@@ -41,7 +40,7 @@ class CategoryService {
                 data: category,
             };
         } catch (error) {
-            console.error("error fetching product: ", error);
+            console.error("Error fetching product: ", error);
 
             return {
                 status: 500,
@@ -59,7 +58,7 @@ class CategoryService {
 
             return {
                 status: 201,
-                message: "Catgeroy created correctly",
+                message: "Category created correctly",
                 data: newCategory,
             };
         } catch (error) {
@@ -71,10 +70,31 @@ class CategoryService {
                 data: null,
             };
         }
-
     }
 
-    //mas adelante me encargo de ver como funciona las actualziaciones para saber si poner put o patch
+    async update(movement_id: number, movement: Partial<CategoryInterface>) {
+            try {
+                const { createdAt, updatedAt, ... movementData} = movement;
+    
+                await CategoryDB.update(movementData, { where: { movement_id } });
+    
+                const updatedMovement = await CategoryDB.findByPk(movement_id);
+    
+                return {
+                    status: 200,
+                    message: "Category update correctly",
+                    data: updatedMovement,
+                };
+            } catch (error) {
+                console.error("Error updating category: ", error);
+    
+                return {
+                    status: 500,
+                    message: "Internal server error",
+                    data: null,
+                };
+            }
+        }
 
     async delete (category_id: number) {
         try {

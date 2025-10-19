@@ -75,12 +75,35 @@ class ProductService {
             };
         }
     }
-    //mas adelante me encargo de ver como funciona las actualziaciones para saber si poner put o patch
+    
+    async update(movement_id: number, movement: Partial<ProductInterface>) {
+        try {
+            const { createdAt, updatedAt, ... movementData} = movement;
+
+            await ProductDB.update(movementData, { where: { movement_id } });
+
+            const updatedMovement = await ProductDB.findByPk(movement_id);
+
+            return {
+                status: 200,
+                message: "Product update correctly",
+                data: updatedMovement,
+            };
+        } catch (error) {
+            console.error("Error updating product: ", error);
+
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }
+    }
 
     
     async delete ( product_id: number) {
         try {
-            const product = await ProductDB.findByPk(product_id);
+            /*const product = await ProductDB.findByPk(product_id);
 
             if(!product) {
                 return {
@@ -88,7 +111,7 @@ class ProductService {
                     message: "Product not found",
                     data: null,
                 };
-            }
+            }*/
             await ProductDB.destroy({ where: {product_id} });
 
             return { 

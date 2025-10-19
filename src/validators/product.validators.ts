@@ -46,9 +46,9 @@ export class ProductValidators {
                 message: "Internal server error in validateCategoryExists."
             }); 
         }
-    }
+    };
 
-    validateProductIdExists = async (req: Request, res: Response, next: NextFunction) => {
+    validateProductParamIdExists = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const rawId = (req.params.id ?? "").toString().trim();
             if (!rawId) return next();
@@ -75,7 +75,7 @@ export class ProductValidators {
                 message: "Internal server error in validateProductIdExists.",
             });
         }
-    }
+    };
     
 }
 

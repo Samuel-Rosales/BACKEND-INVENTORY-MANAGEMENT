@@ -8,6 +8,12 @@ Backend API para gestionar y manejar el inventario de una emprea o negocio comer
 - Seguimiento de entradas y salidas
 - Endpoints RESTful
 
+### Validación por capas
+- **Validador**: estructura, tipo y existencia básica
+- **Controlador**: transformación y flujo
+- **Servicio**: lógica de negocio y persistencia
+
+
 ## Stack Tecnológico
 
 - Node.js
@@ -25,8 +31,8 @@ Backend API para gestionar y manejar el inventario de una emprea o negocio comer
 ### Instalación
 
 ```bash
-git clone https://github.com/NikkuRek/liga-ping-pong-backend.git
-cd liga-ping-pong-backend
+git https://github.com/Sad0318Xd/BACKEND-INVENTORY-MANAGEMENT.git
+cd BACKEND-INVENTORY-MANAGEMENT
 npm install
 ```
 
@@ -37,11 +43,11 @@ Crea un archivo `.env` con el siguiente contenido:
 ```env
 DATABASE_PORT=3000
 API_URL=
-DATABASE_DIALECT=mysql
+DATABASE_DIALECT=postgres
 DATABASE_HOST=localhost
-DATABASE_USER=root
+DATABASE_USER=postgres
 DATABASE_PASSWORD=[inserta tu contraseña aquí]
-DATABASE_NAME=LPP_DB
+DATABASE_NAME=db_inventario
 DEV=true
 ```
 

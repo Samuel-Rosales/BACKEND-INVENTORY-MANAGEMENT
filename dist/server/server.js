@@ -18,8 +18,10 @@ class Server {
         this.port = process.env.PORT || "3000";
         this.apiurl = process.env.API_URL || `http://localhost:${this.port}`;
         this.paths = {
-            products: this.pre + "/product",
             categories: this.pre + "/category",
+            depots: this.pre + "/depot",
+            movements: this.pre + "/movement",
+            products: this.pre + "/product",
         };
         this.middlewares();
         this.routes();
@@ -28,15 +30,17 @@ class Server {
     middlewares() {
         this.app.use((0, cors_1.default)({
             origin: "*", // o una lista segura de dominios
-            methods: ["GET", "POST", "PUT", "DELETE"],
+            methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
         }));
         this.app.use(express_1.default.json());
         this.app.use(express_1.default.static("src/public"));
         this.app.use((0, morgan_1.default)("dev"));
     }
     routes() {
-        this.app.use(this.paths.products, index_route_1.ProductRoute);
         this.app.use(this.paths.categories, index_route_1.CategoryRoute);
+        this.app.use(this.paths.depots, index_route_1.DepotRoute);
+        this.app.use(this.paths.movements, index_route_1.MovementRoute);
+        this.app.use(this.paths.products, index_route_1.ProductRoute);
     }
     listen() {
         this.app.listen(this.port, () => {

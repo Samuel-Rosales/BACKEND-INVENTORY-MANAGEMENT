@@ -7,9 +7,18 @@ const router = Router();
 const productController = new ProductController();
 
 //  METHOD GET
-router.get("/", productController.all); // http://localhost:3000/api/product
-router.get("/:id", productValidators.validateProductIdExists, productController.one); // http://localhost:3000/api/product/:id
-router.get("/category/:categoryId", productController.all); // http://localhost:3000/api/product/category/:categoryId
+router.get("/", 
+    productController.all
+); // http://localhost:3000/api/product
+
+router.get("/:id", 
+    productValidators.validateProductParamIdExists, 
+    productController.one
+); // http://localhost:3000/api/product/:id
+
+router.get("/category/:category_id", 
+    productController.all
+); // http://localhost:3000/api/product/category/:categoryId
 
 //METHOD POST
 router.post("/",
@@ -17,14 +26,21 @@ router.post("/",
     productValidators.validateCatgegoryIdExists,
     validateFields,
     productController.create
-);
+); // http://localhost:3000/api/product
 
-//METHOD PUT OR PATCH
-    //LUEGO VEO COMO HACER QUE FUNCIONE DE LA MANERA MAS EFICIENTE POSIBLE
-
+//METHOD PATCH
+router.patch("/:id",
+    productValidators.validateFields,
+    productValidators.validateProductParamIdExists,
+    validateFields,
+    productController.update,
+); // http://localhost:3000/api/product/:id
 
 //METHOD DELETE
-router.delete("/:id", productValidators.validateProductIdExists, productController.delete);
+router.delete("/:id", 
+    productValidators.validateProductParamIdExists, 
+    productController.delete
+); // http://localhost:3000/api/product/:id
 
 export  const ProductRoute = router;
 

@@ -1,20 +1,37 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CategoryModel = void 0;
+exports.MovementModel = void 0;
 const sequelize_1 = require("sequelize");
-exports.CategoryModel = {
-    category_id: {
-        type: sequelize_1.DataTypes.INTEGER,
+exports.MovementModel = {
+    movement_id: {
+        type: sequelize_1.DataTypes.INTEGER(),
         primaryKey: true,
         autoIncrement: true,
     },
-    name: {
-        type: sequelize_1.DataTypes.STRING(100),
+    depot_id: {
+        type: sequelize_1.DataTypes.INTEGER(),
         allowNull: false,
     },
-    description: {
+    product_id: {
+        type: sequelize_1.DataTypes.INTEGER(),
+        allowNull: false,
+    },
+    type: {
+        type: sequelize_1.DataTypes.ENUM('Entrada', 'Salida'),
+        allowNull: false,
+    },
+    amount: {
+        type: sequelize_1.DataTypes.INTEGER(),
+        allowNull: false,
+    },
+    observation: {
         type: sequelize_1.DataTypes.STRING(255),
         allowNull: false,
+    },
+    date: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: false,
+        defaultValue: sequelize_1.DataTypes.NOW,
     },
     status: {
         type: sequelize_1.DataTypes.BOOLEAN,

@@ -49,7 +49,7 @@ class CategoryService {
             };
         }
         catch (error) {
-            console.error("error fetching product: ", error);
+            console.error("Error fetching product: ", error);
             return {
                 status: 500,
                 message: "Internal server error",
@@ -63,7 +63,7 @@ class CategoryService {
             const newCategory = await config_1.CategoryDB.create(categoryData);
             return {
                 status: 201,
-                message: "Catgeroy created correctly",
+                message: "Category created correctly",
                 data: newCategory,
             };
         }
