@@ -14,10 +14,10 @@ export const ProductModel = {
         type: DataTypes.STRING(255),
         allowNull: false,
     },
-    /*category_id: {
+    category_id: {
         type: DataTypes.INTEGER(),
         allowNull: false,
-    },*/
+    },
     base_price: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
@@ -36,5 +36,4 @@ export const ProductModel = {
         allowNull: false,
         defaultValue: DataTypes.NOW,
     },
-
 };

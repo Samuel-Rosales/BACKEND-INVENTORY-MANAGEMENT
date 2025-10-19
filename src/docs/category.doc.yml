@@ -1,0 +1,221 @@
+# filepath: c:\Users\Usuario\Documents\dev\liga-ping-pong-backend\src\docs\product.doc.yml
+paths:
+  /Category:
+    get:
+      tags:
+        - Category
+      summary: Obtiene todos los productos
+      description: Retorna un array con todos los productos
+      responses:
+        200:
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProducthWithCategory'
+        500:
+          description: Error al obtener los productos
+
+    post:
+      tags:
+        - Category
+      summary: Crea un nuevo producto
+      description: Crea un nuevo producto con los datos proporcionados
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        201:
+          description: Producto creado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/ProducthWithCategory'
+        400:
+          description: Datos inválidos
+        404:
+          description: Torneo o inscripción no encontrada
+        500:
+          description: Error al crear partido
+
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        match_id:
+          type: integer
+          description: ID del partido
+        tournament_id:
+          type: integer
+          description: ID del torneo
+        inscription1_id:
+          type: integer
+          description: ID de la primera inscripción
+        inscription2_id:
+          type: integer
+          description: ID de la segunda inscripción
+        winner_inscription_id:
+          type: integer
+          nullable: true
+          description: ID de la inscripción ganadora
+        match_datetime:
+          type: string
+          format: date-time
+          nullable: true
+          description: Fecha y hora del partido
+        round:
+          type: string
+          description: Ronda del partido
+        status:
+          type: string
+          enum: [Pendiente, En Juego, Finalizado]
+          description: Estado del partido
+        createdAt:
+          type: string
+          format: date-time
+          description: Fecha de creación
+        updatedAt:
+          type: string
+          format: date-time
+          description: Fecha de última actualización
+        set:
+          $ref: '#/components/schemas/Category'
+
+    ProducthWithCategory:
+      type: object
+      properties:
+        match_id:
+          type: integer
+          description: ID del partido
+        tournament_id:
+          type: integer
+          description: ID del torneo
+        inscription1_id:
+          type: integer
+          description: ID de la primera inscripción
+        inscription2_id:
+          type: integer
+          description: ID de la segunda inscripción
+        winner_inscription_id:
+          type: integer
+          nullable: true
+          description: ID de la inscripción ganadora
+        match_datetime:
+          type: string
+          format: date-time
+          nullable: true
+          description: Fecha y hora del partido
+        round:
+          type: string
+          description: Ronda del partido
+        status:
+          type: string
+          enum: [Pendiente, En Juego, Finalizado]
+          description: Estado del partido
+        createdAt:
+          type: string
+          format: date-time
+          description: Fecha de creación
+        updatedAt:
+          type: string
+          format: date-time
+          description: Fecha de última actualización
+        sets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Set'
+            
+    MatchInput:
+      type: object
+      properties:
+        tournament_id:
+          type: integer
+          description: ID del torneo
+        inscription1_id:
+          type: integer
+          description: ID de la primera inscripción
+        inscription2_id:
+          type: integer
+          description: ID de la segunda inscripción
+        winner_inscription_id:
+          type: integer
+          nullable: true
+          description: ID de la inscripción ganadora
+        match_datetime:
+          type: string
+          format: date-time
+          nullable: true
+          description: Fecha y hora del partido
+        round:
+          type: string
+          description: Ronda del partido
+        status:
+          type: string
+          enum: [Pendiente, En Juego, Finalizado]
+          description: Estado del partido
+      required:
+        - tournament_id
+        - inscription1_id
+        - inscription2_id
+        - match_datetime
+        - round
+
+
+{
+  "name": "Comestible",
+  "description": "Productos alimenticios listos para el consumo o preparación inmediata, como arroz, pasta, azúcar, sal, etc."
+}
+{
+  "name": "Perecedero",
+  "description": "Alimentos con vida útil corta que requieren refrigeración o rotación rápida, como frutas, verduras, carnes y lácteos."
+}
+{
+  "name": "Bebidas",
+  "description": "Líquidos para consumo humano como jugos, refrescos, agua embotellada, café y té."
+}
+{
+  "name": "Snacks",
+  "description": "Productos de consumo rápido como galletas, papas fritas, chocolates y barras energéticas."
+}
+{
+  "name": "Panadería",
+  "description": "Productos horneados como pan, tortas, dulces y bollería fresca o empacada."
+}
+
+
+{
+  name: "Aseo personal",
+  description: "Productos de higiene como jabón, champú, papel higiénico, toallas sanitarias y desodorantes."
+}
+{
+  name: "Limpieza del hogar",
+  description: "Artículos para limpieza como detergentes, cloro, esponjas, escobas y desinfectantes."
+}
+{
+  name: "Cocina básica",
+  description: "Utensilios y consumibles esenciales como fósforos, papel aluminio, bolsas plásticas y servilletas."
+}
+{
+  name: "Mascotas",
+  description: "Alimentos y productos básicos para el cuidado de animales domésticos como concentrado, arena y shampoo."
+}
+{
+  name: "Farmacia básica",
+  description: "Productos de primeros auxilios y cuidado general como alcohol, curitas, acetaminofén y termómetros."
+}

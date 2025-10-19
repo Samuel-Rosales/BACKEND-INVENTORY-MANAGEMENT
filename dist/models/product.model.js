@@ -16,10 +16,10 @@ exports.ProductModel = {
         type: sequelize_1.DataTypes.STRING(255),
         allowNull: false,
     },
-    /*category_id: {
-        type: DataTypes.INTEGER(),
+    category_id: {
+        type: sequelize_1.DataTypes.INTEGER(),
         allowNull: false,
-    },*/
+    },
     base_price: {
         type: sequelize_1.DataTypes.DECIMAL(10, 2),
         allowNull: false,

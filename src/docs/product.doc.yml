@@ -1,0 +1,58 @@
+components:
+  schemas:
+    ProductInput:
+      type: object
+      required: [name, description, category_id, base_price, min_stock]
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 255
+        category_id:
+          type: integer
+        base_price:
+          type: number
+          format: decimal
+        min_stock:
+          type: integer
+
+    ProductWithCategory:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          $ref: '#/components/schemas/Category'
+        base_price:
+          type: number
+          format: decimal
+        min_stock:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Category:
+      type: object
+      properties:
+        category_id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time

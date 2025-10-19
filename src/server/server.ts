@@ -5,7 +5,10 @@ import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { swaggerOptions } from "../config";
 
-//import { ProductRoute } from "../routes/index.route"; 
+import { 
+  ProductRoute,
+  CategoryRoute,
+} from "../routes/index.route"; 
 
 export class Server {
     private app: Application
@@ -19,10 +22,29 @@ export class Server {
     this.port = process.env.PORT || "3000"
     this.apiurl = process.env.API_URL || `http://localhost:${this.port}`
     this.paths = {
-      products: this.pre + "/products"
+      products: this.pre + "/product",
+      categories: this.pre + "/category",
     }
-
+    
+    this.middlewares()
+    this.routes()
     this.swaggerSetup()
+  }
+
+  middlewares() {
+    this.app.use(cors({
+      origin: "*", // o una lista segura de dominios
+      methods: ["GET", "POST", "PUT", "DELETE"],
+    }))
+
+    this.app.use(express.json())
+    this.app.use(express.static("src/public"))
+    this.app.use(morgan("dev"))
+  }
+
+  routes() {
+    this.app.use(this.paths.products, ProductRoute)
+    this.app.use(this.paths.categories, CategoryRoute)
   }
 
   listen() {
@@ -34,4 +56,6 @@ export class Server {
 
   swaggerSetup() {
     const swaggerDocs = swaggerJSDoc(swaggerOptions)
-    this.app.use("/swagger", swaggerUi.serv
+    this.app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+  }
+}

@@ -3,9 +3,9 @@ import dotenv  from "dotenv";
 dotenv.config();
 
 import {
-    ProductModel
+    ProductModel,
+    CategoryModel
 } from "../models";
-import { timeStamp } from "console";
 
 
 const dbName: string = process.env.DATABASE_NAME!;
@@ -36,16 +36,24 @@ if (dbHost !==  "localhost" ) {
 
 export const db = new Sequelize(dbName, dbUser, dbPassword, sequelizeConfig); 
 
-const noTimeStampsOptions = {
-    timestamps: false,
-} 
-
 //Models
+
 export const ProductDB = db.define("products", ProductModel, {
     timestamps: true,
     tableName: "products",
 });
 
+export const CategoryDB = db.define("categories", CategoryModel, {
+    timestamps: true,
+    tableName: "categories",
+});
+
+//Relacionships
+
+ProductDB.belongsTo(CategoryDB, { foreignKey: "category_id", as: "category" });
+CategoryDB.hasMany(ProductDB, { foreignKey: "category_id", as: "products" });
+
+//Sync
 
 export const syncModels = async() => {
     try {
@@ -62,11 +70,19 @@ export const syncModels = async() => {
 
         await db.sync({ alter: true});
         console.log("Database Synced"); 
+        /*await ProductDB.create({
+            name: 'Arroz',
+            description: 'Arroz blanco de la marca mary',
+            base_price: 260.00,
+            min_stock: 10,
+            });*/
+        console.log("Test product created");
     } catch (error) {
         console.error("Error to connect to database: ", error);
         throw error;    
     }
 }
+
 syncModels();
 
 export default db

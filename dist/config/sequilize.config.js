@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.syncModels = exports.ProductDB = exports.db = void 0;
+exports.syncModels = exports.CategoryDB = exports.ProductDB = exports.db = void 0;
 const sequelize_1 = require("sequelize");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -32,14 +32,19 @@ if (dbHost !== "localhost") {
     sequelizeConfig.port = dbPort;
 }
 exports.db = new sequelize_1.Sequelize(dbName, dbUser, dbPassword, sequelizeConfig);
-const noTimeStampsOptions = {
-    timestamps: false,
-};
 //Models
 exports.ProductDB = exports.db.define("products", models_1.ProductModel, {
     timestamps: true,
     tableName: "products",
 });
+exports.CategoryDB = exports.db.define("categories", models_1.CategoryModel, {
+    timestamps: true,
+    tableName: "categories",
+});
+//Relacionships
+exports.ProductDB.belongsTo(exports.CategoryDB, { foreignKey: "category_id", as: "category" });
+exports.CategoryDB.hasMany(exports.ProductDB, { foreignKey: "category_id", as: "products" });
+//Sync
 const syncModels = async () => {
     try {
         console.log('DB env', {
@@ -53,6 +58,13 @@ const syncModels = async () => {
         console.log("Connecting to database...");
         await exports.db.sync({ alter: true });
         console.log("Database Synced");
+        /*await ProductDB.create({
+            name: 'Arroz',
+            description: 'Arroz blanco de la marca mary',
+            base_price: 260.00,
+            min_stock: 10,
+            });*/
+        console.log("Test product created");
     }
     catch (error) {
         console.error("Error to connect to database: ", error);
