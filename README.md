@@ -32,7 +32,7 @@ Backend API para gestionar y manejar el inventario de una empresa o negocio come
 ### Instalación
 
 ```bash
-git https://github.com/Sad0318Xd/BACKEND-INVENTORY-MANAGEMENT.git
+git https://github.com/Samuel-Rosales/BACKEND-INVENTORY-MANAGEMENT.git
 cd BACKEND-INVENTORY-MANAGEMENT
 npm install
 ```
