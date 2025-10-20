@@ -11,10 +11,6 @@ export const UserModel = {
         type: DataTypes.STRING(100),
         allowNull: false,
     },
-    password: {
-        type: DataTypes.STRING(255),
-        allowNull: false,
-    },
     rol_id: {
         type: DataTypes.INTEGER,
         allowNull: false,

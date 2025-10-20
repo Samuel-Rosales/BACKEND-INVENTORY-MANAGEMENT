@@ -72,18 +72,18 @@ class ProductService {
         }
     }
     
-    async update(movement_id: number, movement: Partial<ProductInterface>) {
+    async update(product_id: number, product: Partial<ProductInterface>) {
         try {
-            const { createdAt, updatedAt, ... movementData} = movement;
+            const { createdAt, updatedAt, ... productData} = product;
 
-            await ProductDB.update(movementData, { where: { movement_id } });
+            await ProductDB.update(productData, { where: { product_id } });
 
-            const updatedMovement = await ProductDB.findByPk(movement_id);
+            const updatedProduct = await ProductDB.findByPk(product_id);
 
             return {
                 status: 200,
                 message: "Product update correctly",
-                data: updatedMovement,
+                data: updatedProduct,
             };
         } catch (error) {
             console.error("Error updating product: ", error);
@@ -97,7 +97,7 @@ class ProductService {
     }
 
     
-    async delete ( product_id: number) {
+    async delete (product_id: number) {
         try {
             await ProductDB.destroy({ where: {product_id} });
 

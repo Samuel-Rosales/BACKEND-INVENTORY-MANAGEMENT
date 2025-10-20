@@ -28,7 +28,7 @@ exports.MovementModel = {
         type: sequelize_1.DataTypes.STRING(255),
         allowNull: false,
     },
-    date: {
+    moved_at: {
         type: sequelize_1.DataTypes.DATE,
         allowNull: false,
         defaultValue: sequelize_1.DataTypes.NOW,

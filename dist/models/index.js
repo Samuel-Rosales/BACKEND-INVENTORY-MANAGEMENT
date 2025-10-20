@@ -15,8 +15,13 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./category.model"), exports);
+__exportStar(require("./client.model"), exports);
 __exportStar(require("./depot.model"), exports);
 __exportStar(require("./movement.model"), exports);
 __exportStar(require("./product.model"), exports);
+__exportStar(require("./provider.model"), exports);
+__exportStar(require("./purchase.model"), exports);
+//export * from "./sale.model";
 __exportStar(require("./rol.model"), exports);
+__exportStar(require("./type-payment.model"), exports);
 __exportStar(require("./user.model"), exports);

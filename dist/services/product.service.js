@@ -77,15 +77,15 @@ class ProductService {
             };
         }
     }
-    async update(movement_id, movement) {
+    async update(product_id, product) {
         try {
-            const { createdAt, updatedAt } = movement, movementData = __rest(movement, ["createdAt", "updatedAt"]);
-            await config_1.ProductDB.update(movementData, { where: { movement_id } });
-            const updatedMovement = await config_1.ProductDB.findByPk(movement_id);
+            const { createdAt, updatedAt } = product, productData = __rest(product, ["createdAt", "updatedAt"]);
+            await config_1.ProductDB.update(productData, { where: { product_id } });
+            const updatedProduct = await config_1.ProductDB.findByPk(product_id);
             return {
                 status: 200,
                 message: "Product update correctly",
-                data: updatedMovement,
+                data: updatedProduct,
             };
         }
         catch (error) {

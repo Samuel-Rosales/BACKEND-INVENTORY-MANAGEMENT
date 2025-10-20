@@ -13,10 +13,6 @@ exports.UserModel = {
         type: sequelize_1.DataTypes.STRING(100),
         allowNull: false,
     },
-    password: {
-        type: sequelize_1.DataTypes.STRING(255),
-        allowNull: false,
-    },
     rol_id: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,

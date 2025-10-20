@@ -26,7 +26,7 @@ export const MovementModel = {
         type: DataTypes.STRING(255),
         allowNull: false,
     },
-    date: {
+    moved_at: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,

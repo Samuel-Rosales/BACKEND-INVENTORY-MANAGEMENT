@@ -19,4 +19,7 @@ __exportStar(require("./depot.validators"), exports);
 __exportStar(require("./rol.validators"), exports);
 __exportStar(require("./movement.validators"), exports);
 __exportStar(require("./product.validators"), exports);
+__exportStar(require("./provider.validators"), exports);
+__exportStar(require("./purchase.validators"), exports);
+__exportStar(require("./type-payment.validators"), exports);
 __exportStar(require("./user.validators"), exports);

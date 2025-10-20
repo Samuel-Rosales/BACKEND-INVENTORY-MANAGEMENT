@@ -24,7 +24,8 @@ router.get("/rol/:rol_id",
 //METHOD POST
 router.post("/",
     userValidators.validateCreateFields,
-    userValidators.validateUserParamIdExists,
+    userValidators.validateRolIdExists,
+    userValidators.validateUserAlreadyExists,
     validateFields,
     userController.create
 ); // http://localhost:3000/api/user

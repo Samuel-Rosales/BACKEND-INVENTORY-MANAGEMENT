@@ -56,3 +56,44 @@ components:
         updatedAt:
           type: string
           format: date-time
+
+
+{
+  "name": "Café Premium Lara",
+  "category_id": 1,
+  "description": "Café tostado artesanal con aroma intenso.",
+  "base_price": "850.00",
+  "min_stock": 50
+}
+
+{
+  "name": "Taladro Eléctrico 500W",
+  "category_id": 3,
+  "description": "Herramienta potente para trabajos de precisión.",
+  "base_price": "12500.00",
+  "min_stock": 15
+}
+
+{
+  "name": "Silla ergonómica de oficina",
+  "category_id": 2,
+  "description": "Diseño cómodo con soporte lumbar ajustable.",
+  "base_price": "9800.00",
+  "min_stock": 10
+}
+
+{
+  "name": "Juguete educativo Montessori",
+  "category_id": 4,
+  "description": "Desarrolla habilidades cognitivas en niños de 3 a 6 años.",
+  "base_price": "3200.00",
+  "min_stock": 25
+}
+
+{
+    "name": "Galletas María",
+    "category_id": 4,
+    "description": "La galleta más rica que comerás papi.",
+    "base_price": "250.00",
+    "min_stock": 70
+}

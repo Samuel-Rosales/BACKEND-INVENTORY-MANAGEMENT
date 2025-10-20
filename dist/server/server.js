@@ -22,7 +22,10 @@ class Server {
             depots: this.pre + "/depot",
             movements: this.pre + "/movement",
             products: this.pre + "/product",
+            providers: this.pre + "/provider",
+            purchase: this.pre + "/purchase",
             rols: this.pre + "/rol",
+            types_payments: this.pre + "/type_payment",
             users: this.pre + "/user",
         };
         this.middlewares();
@@ -43,7 +46,10 @@ class Server {
         this.app.use(this.paths.depots, index_route_1.DepotRoute);
         this.app.use(this.paths.movements, index_route_1.MovementRoute);
         this.app.use(this.paths.products, index_route_1.ProductRoute);
+        this.app.use(this.paths.providers, index_route_1.ProviderRoute);
+        this.app.use(this.paths.purchase, index_route_1.PurchaseRoute);
         this.app.use(this.paths.rols, index_route_1.RolRoute);
+        this.app.use(this.paths.types_payments, index_route_1.TypePaymentRoute);
         this.app.use(this.paths.users, index_route_1.UserRoute);
     }
     listen() {

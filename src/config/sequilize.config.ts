@@ -7,7 +7,10 @@ import {
     DepotModel,
     MovementModel,
     ProductModel,
+    ProviderModel,
+    PurchaseModel,
     RolModel,
+    TypePaymentModel,
     UserModel,
 } from "../models";
 
@@ -39,7 +42,7 @@ if (dbHost !==  "localhost" ) {
 
 export const db = new Sequelize(dbName, dbUser, dbPassword, sequelizeConfig); 
 
-//Models
+// Models
 
 export const CategoryDB = db.define("categories", CategoryModel, {
     timestamps: true,
@@ -61,9 +64,24 @@ export const ProductDB = db.define("products", ProductModel, {
     tableName: "products",
 });
 
+export const ProviderDB = db.define("providers", ProviderModel, {
+    timestamps: true,
+    tableName: "providers",
+});
+
+export const PurchaseDB = db.define("purchases", PurchaseModel, {
+    timestamps: true,
+    tableName: "purchases",
+});
+
 export const RolDB = db.define("rols", RolModel, {
     timestamps: true,
     tableName: "rols",
+});
+
+export const TypePaymentDB = db.define("types_payments", TypePaymentModel, {
+    timestamps: true,
+    tableName: "types_payments",
 });
 
 export const UserDB = db.define("users", UserModel, {
@@ -71,7 +89,7 @@ export const UserDB = db.define("users", UserModel, {
     tableName: "users",
 }); 
 
-//Relacionships
+// Relacionships
 
 ProductDB.belongsTo(CategoryDB, { foreignKey: "category_id", as: "category" });
 CategoryDB.hasMany(ProductDB, { foreignKey: "category_id", as: "products" });
@@ -85,7 +103,16 @@ ProductDB.hasMany(MovementDB, { foreignKey: "product_id", as: "movements", onDel
 UserDB.belongsTo(RolDB, { foreignKey: "rol_id", as: "rol" });
 RolDB.hasMany(UserDB, { foreignKey: "rol_id", as: "users" });
 
-//Sync
+PurchaseDB.belongsTo(TypePaymentDB, { foreignKey: "type_payment_id", as: "type_payment" });
+TypePaymentDB.hasMany(PurchaseDB, { foreignKey: "type_payment_id", as: "purchases" });
+
+PurchaseDB.belongsTo(ProviderDB, { foreignKey: "provider_id", as: "provider" });
+ProviderDB.hasMany(PurchaseDB, { foreignKey: "provider_id", as: "purchases" });
+
+PurchaseDB.belongsTo(UserDB, { foreignKey: "user_ci", as: "user" });
+UserDB.hasMany(PurchaseDB, { foreignKey: "user_ci", as: "purchases" });
+
+// Sync
 
 export const syncModels = async() => {
     try {
