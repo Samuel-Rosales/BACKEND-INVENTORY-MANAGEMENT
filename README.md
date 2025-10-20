@@ -1,6 +1,6 @@
 # Gestión e Inventario Backend
 
-Backend API para gestionar y manejar el inventario de una emprea o negocio comerciante, construido con Node.js y Express.
+Backend API para gestionar y manejar el inventario de una empresa o negocio comerciante, construido con Node.js y Express.
 
 ## Características
 
@@ -9,6 +9,7 @@ Backend API para gestionar y manejar el inventario de una emprea o negocio comer
 - Endpoints RESTful
 
 ### Validación por capas
+
 - **Validador**: estructura, tipo y existencia básica
 - **Controlador**: transformación y flujo
 - **Servicio**: lógica de negocio y persistencia
