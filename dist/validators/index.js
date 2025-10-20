@@ -19,3 +19,4 @@ __exportStar(require("./depot.validators"), exports);
 __exportStar(require("./rol.validators"), exports);
 __exportStar(require("./movement.validators"), exports);
 __exportStar(require("./product.validators"), exports);
+__exportStar(require("./user.validators"), exports);

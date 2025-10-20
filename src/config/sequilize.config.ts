@@ -8,6 +8,7 @@ import {
     MovementModel,
     ProductModel,
     RolModel,
+    UserModel,
 } from "../models";
 
 const dbName: string = process.env.DATABASE_NAME!;
@@ -52,7 +53,7 @@ export const DepotDB = db.define("depots", DepotModel, {
 
 export const MovementDB = db.define("movements", MovementModel, {
     timestamps: true,
-    tableName: "movemnts",
+    tableName: "movements",
 });
 
 export const ProductDB = db.define("products", ProductModel, {
@@ -65,6 +66,11 @@ export const RolDB = db.define("rols", RolModel, {
     tableName: "rols",
 });
 
+export const UserDB = db.define("users", UserModel, {
+    timestamps: true,
+    tableName: "users",
+}); 
+
 //Relacionships
 
 ProductDB.belongsTo(CategoryDB, { foreignKey: "category_id", as: "category" });
@@ -76,6 +82,8 @@ DepotDB.hasMany(MovementDB, { foreignKey: "depot_id", as: "movements", onDelete:
 MovementDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
 ProductDB.hasMany(MovementDB, { foreignKey: "product_id", as: "movements", onDelete: "CASCADE", hooks: true });
 
+UserDB.belongsTo(RolDB, { foreignKey: "rol_id", as: "rol" });
+RolDB.hasMany(UserDB, { foreignKey: "rol_id", as: "users" });
 
 //Sync
 
@@ -94,7 +102,6 @@ export const syncModels = async() => {
 
         await db.sync({ alter: true});
         console.log("Database Synced");
-        console.log("Test product created");
     } catch (error) {
         console.error("Error to connect to database: ", error);
         throw error;    

@@ -11,24 +11,24 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductServices = void 0;
+exports.UserServices = void 0;
 const config_1 = require("../config");
-class ProductService {
+class UserService {
     async getAll() {
         try {
-            const products = await config_1.ProductDB.findAll({
+            const users = await config_1.UserDB.findAll({
                 include: [{
-                        model: config_1.CategoryDB, as: "category"
+                        model: config_1.RolDB, as: "rol"
                     }]
             });
             return {
                 status: 200,
-                message: "Products obtained correctly",
-                data: products,
+                message: "Users obtained correctly",
+                data: users,
             };
         }
         catch (error) {
-            console.error("Error fetching products: ", error);
+            console.error("Error fetching users", error);
             return {
                 status: 500,
                 message: "Internal server error",
@@ -36,21 +36,21 @@ class ProductService {
             };
         }
     }
-    async getOne(product_id) {
+    async getOne(user_ci) {
         try {
-            const product = await config_1.ProductDB.findByPk(product_id, {
+            const user = await config_1.UserDB.findByPk(user_ci, {
                 include: [{
-                        model: config_1.CategoryDB, as: "category"
+                        model: config_1.RolDB, as: "rol"
                     }]
             });
             return {
                 status: 200,
-                message: "Product obtained correctly",
-                data: product,
+                message: "User obtained correctly",
+                data: user,
             };
         }
         catch (error) {
-            console.error("Error fetching product: ", error);
+            console.error("Error fetching user: ", error);
             return {
                 status: 500,
                 message: "Internal server error",
@@ -58,18 +58,18 @@ class ProductService {
             };
         }
     }
-    async create(product) {
+    async create(user) {
         try {
-            const { createdAt, updatedAt } = product, productData = __rest(product, ["createdAt", "updatedAt"]);
-            const newProduct = await config_1.ProductDB.create(productData);
+            const { createdAt, updatedAt } = user, userData = __rest(user, ["createdAt", "updatedAt"]);
+            const newUser = await config_1.UserDB.create(userData);
             return {
                 status: 201,
-                message: "Product created successfully",
-                data: newProduct,
+                message: "User created successfully",
+                data: newUser,
             };
         }
         catch (error) {
-            console.error("Error creating product: ", error);
+            console.error("Error creating user: ", error);
             return {
                 status: 500,
                 message: "Internal server error",
@@ -77,19 +77,19 @@ class ProductService {
             };
         }
     }
-    async update(movement_id, movement) {
+    async update(ci, user) {
         try {
-            const { createdAt, updatedAt } = movement, movementData = __rest(movement, ["createdAt", "updatedAt"]);
-            await config_1.ProductDB.update(movementData, { where: { movement_id } });
-            const updatedMovement = await config_1.ProductDB.findByPk(movement_id);
+            const { createdAt, updatedAt, ci: _ } = user, userData = __rest(user, ["createdAt", "updatedAt", "ci"]);
+            await config_1.UserDB.update(userData, { where: { ci } });
+            const updatedUser = await config_1.UserDB.findByPk(ci);
             return {
                 status: 200,
-                message: "Product update correctly",
-                data: updatedMovement,
+                message: "User update correctly",
+                data: updatedUser,
             };
         }
         catch (error) {
-            console.error("Error updating product: ", error);
+            console.error("Error updating user: ", error);
             return {
                 status: 500,
                 message: "Internal server error",
@@ -97,16 +97,16 @@ class ProductService {
             };
         }
     }
-    async delete(product_id) {
+    async delete(user_ci) {
         try {
-            await config_1.ProductDB.destroy({ where: { product_id } });
+            await config_1.UserDB.destroy({ where: { user_ci } });
             return {
                 status: 200,
-                message: "Product deleted successfully",
+                message: "User deleting successfully",
             };
         }
         catch (error) {
-            console.error("Error deleting product: ", error);
+            console.error("Error deleting user", error);
             return {
                 status: 500,
                 message: "Internal server error",
@@ -115,4 +115,4 @@ class ProductService {
         }
     }
 }
-exports.ProductServices = new ProductService();
+exports.UserServices = new UserService();

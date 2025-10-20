@@ -18,3 +18,4 @@ __exportStar(require("./category.interface"), exports);
 __exportStar(require("./depot.interface"), exports);
 __exportStar(require("./movement.interface"), exports);
 __exportStar(require("./product.interface"), exports);
+__exportStar(require("./user.interface"), exports);

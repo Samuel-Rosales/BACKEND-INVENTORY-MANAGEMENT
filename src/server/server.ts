@@ -11,6 +11,7 @@ import {
   MovementRoute,
   ProductRoute,
   RolRoute,
+  UserRoute,
 } from "../routes/index.route"; 
 
 export class Server {
@@ -30,6 +31,7 @@ export class Server {
       movements: this.pre + "/movement",
       products: this.pre + "/product",
       rols: this.pre + "/rol",
+      users: this.pre + "/user",
     }
     
     this.middlewares()
@@ -54,6 +56,7 @@ export class Server {
     this.app.use(this.paths.movements, MovementRoute);
     this.app.use(this.paths.products, ProductRoute);
     this.app.use(this.paths.rols, RolRoute);
+    this.app.use(this.paths.users, UserRoute);
   }
 
   listen() {

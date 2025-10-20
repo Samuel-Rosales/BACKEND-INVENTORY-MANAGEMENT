@@ -23,6 +23,7 @@ class Server {
             movements: this.pre + "/movement",
             products: this.pre + "/product",
             rols: this.pre + "/rol",
+            users: this.pre + "/user",
         };
         this.middlewares();
         this.routes();
@@ -43,6 +44,7 @@ class Server {
         this.app.use(this.paths.movements, index_route_1.MovementRoute);
         this.app.use(this.paths.products, index_route_1.ProductRoute);
         this.app.use(this.paths.rols, index_route_1.RolRoute);
+        this.app.use(this.paths.users, index_route_1.UserRoute);
     }
     listen() {
         this.app.listen(this.port, () => {

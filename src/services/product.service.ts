@@ -34,14 +34,6 @@ class ProductService {
                 }]
             });
 
-            if (!product) {
-                return {
-                    status: 404,
-                    message: "Product not found",
-                    data: null,
-                };
-            }
-
             return {
                 status: 200,
                 message: "Product obtained correctly",
@@ -62,7 +54,7 @@ class ProductService {
         try {
             const { createdAt, updatedAt, ...productData  } = product;
 
-            const newProduct = await ProductDB.create(productData as any);
+            const newProduct = await ProductDB.create(productData);
 
             return {
                 status: 201,

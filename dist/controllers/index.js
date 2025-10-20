@@ -19,3 +19,4 @@ __exportStar(require("./depot.controller"), exports);
 __exportStar(require("./rol.controller"), exports);
 __exportStar(require("./movement.controller"), exports);
 __exportStar(require("./product.controller"), exports);
+__exportStar(require("./user.controller"), exports);
