@@ -19,7 +19,6 @@ exports.UserModel = {
     },
     status: {
         type: sequelize_1.DataTypes.BOOLEAN,
-        allowNull: false,
         defaultValue: true,
     },
     createdAt: {

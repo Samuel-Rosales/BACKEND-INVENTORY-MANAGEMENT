@@ -15,10 +15,12 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./category.interface"), exports);
+__exportStar(require("./client.interface"), exports);
 __exportStar(require("./depot.interface"), exports);
 __exportStar(require("./movement.interface"), exports);
 __exportStar(require("./product.interface"), exports);
 __exportStar(require("./provider.interface"), exports);
 __exportStar(require("./purchase.interface"), exports);
 __exportStar(require("./type-payment.interface"), exports);
+__exportStar(require("./sale.interface"), exports);
 __exportStar(require("./user.interface"), exports);

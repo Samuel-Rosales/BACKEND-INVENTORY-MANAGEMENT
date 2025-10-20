@@ -21,7 +21,7 @@ __exportStar(require("./movement.model"), exports);
 __exportStar(require("./product.model"), exports);
 __exportStar(require("./provider.model"), exports);
 __exportStar(require("./purchase.model"), exports);
-//export * from "./sale.model";
+__exportStar(require("./sale.model"), exports);
 __exportStar(require("./rol.model"), exports);
 __exportStar(require("./type-payment.model"), exports);
 __exportStar(require("./user.model"), exports);

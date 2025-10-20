@@ -5,7 +5,7 @@ export * from "./movement.model";
 export * from "./product.model";
 export * from "./provider.model";
 export * from "./purchase.model";
-//export * from "./sale.model";
+export * from "./sale.model";
 export * from "./rol.model";
 export * from "./type-payment.model";
 export * from "./user.model";

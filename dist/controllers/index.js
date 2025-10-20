@@ -15,6 +15,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./category.controller"), exports);
+__exportStar(require("./client.controller"), exports);
 __exportStar(require("./depot.controller"), exports);
 __exportStar(require("./movement.controller"), exports);
 __exportStar(require("./rol.controller"), exports);
@@ -22,4 +23,5 @@ __exportStar(require("./product.controller"), exports);
 __exportStar(require("./provider.controller"), exports);
 __exportStar(require("./purchase.controller"), exports);
 __exportStar(require("./type-payment.controller"), exports);
+__exportStar(require("./sale.controller"), exports);
 __exportStar(require("./user.controller"), exports);

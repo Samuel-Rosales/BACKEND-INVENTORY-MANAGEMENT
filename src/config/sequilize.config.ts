@@ -4,12 +4,14 @@ dotenv.config();
 
 import {
     CategoryModel,
+    ClientModel,
     DepotModel,
     MovementModel,
     ProductModel,
     ProviderModel,
     PurchaseModel,
     RolModel,
+    SaleModel,
     TypePaymentModel,
     UserModel,
 } from "../models";
@@ -49,6 +51,11 @@ export const CategoryDB = db.define("categories", CategoryModel, {
     tableName: "categories",
 });
 
+export const ClientDB = db.define("clients", ClientModel, {
+    timestamps: true,
+    tableName: "clients",
+});
+
 export const DepotDB = db.define("depots", DepotModel, {
     timestamps: true,
     tableName: "depots",
@@ -78,6 +85,11 @@ export const RolDB = db.define("rols", RolModel, {
     timestamps: true,
     tableName: "rols",
 });
+
+export const SaleDB = db.define("sales", SaleModel, {
+    timestamps: true,
+    tableName: "sales",
+}); 
 
 export const TypePaymentDB = db.define("types_payments", TypePaymentModel, {
     timestamps: true,
@@ -111,6 +123,15 @@ ProviderDB.hasMany(PurchaseDB, { foreignKey: "provider_id", as: "purchases" });
 
 PurchaseDB.belongsTo(UserDB, { foreignKey: "user_ci", as: "user" });
 UserDB.hasMany(PurchaseDB, { foreignKey: "user_ci", as: "purchases" });
+
+SaleDB.belongsTo(TypePaymentDB, { foreignKey: "type_payment_id", as: "type_payment" });
+TypePaymentDB.hasMany(SaleDB, { foreignKey: "type_payment_id", as: "sales" });
+
+SaleDB.belongsTo(ClientDB, { foreignKey: "client_ci", as: "client" });
+ClientDB.hasMany(SaleDB, { foreignKey: "client_ci", as: "sales" });
+
+SaleDB.belongsTo(UserDB, { foreignKey: "user_ci", as: "user" });
+UserDB.hasMany(SaleDB, { foreignKey: "user_ci", as: "sales" });
 
 // Sync
 

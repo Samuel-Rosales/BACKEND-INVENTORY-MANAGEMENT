@@ -1,4 +1,5 @@
 export * from "./category.service";
+export * from "./client.service";
 export * from "./depot.service";
 export * from "./movement.service";
 export * from "./product.service";
@@ -6,4 +7,5 @@ export * from "./provider.service";
 export * from "./purchase.service";
 export * from "./rol.service";
 export * from "./type-payment.service";
+export * from "./sale.service";
 export * from "./user.service";

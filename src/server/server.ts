@@ -7,12 +7,14 @@ import { swaggerOptions } from "../config";
 
 import { 
   CategoryRoute,
+  ClientRoute,
   DepotRoute,
   MovementRoute,
   ProductRoute,
   ProviderRoute,
   PurchaseRoute,
   RolRoute,
+  SaleRoute,
   TypePaymentRoute,
   UserRoute,
 } from "../routes/index.route"; 
@@ -30,6 +32,7 @@ export class Server {
     this.apiurl = process.env.API_URL || `http://localhost:${this.port}`
     this.paths = {
       categories: this.pre + "/category",
+      clients: this.pre + "/client",
       depots: this.pre + "/depot",
       movements: this.pre + "/movement",
       products: this.pre + "/product",
@@ -37,6 +40,7 @@ export class Server {
       purchase: this.pre + "/purchase",
       rols: this.pre + "/rol",
       types_payments: this.pre + "/type_payment",
+      sales: this.pre + "/sale",
       users: this.pre + "/user",
     }
     
@@ -58,6 +62,7 @@ export class Server {
 
   routes() {
     this.app.use(this.paths.categories, CategoryRoute);
+    this.app.use(this.paths.clients, ClientRoute);
     this.app.use(this.paths.depots, DepotRoute);
     this.app.use(this.paths.movements, MovementRoute);
     this.app.use(this.paths.products, ProductRoute);
@@ -65,6 +70,7 @@ export class Server {
     this.app.use(this.paths.purchase, PurchaseRoute);
     this.app.use(this.paths.rols, RolRoute);
     this.app.use(this.paths.types_payments, TypePaymentRoute);
+    this.app.use(this.paths.sales, SaleRoute);
     this.app.use(this.paths.users, UserRoute);
   }
 

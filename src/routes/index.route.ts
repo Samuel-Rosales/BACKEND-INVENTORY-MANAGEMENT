@@ -1,4 +1,5 @@
 export * from "./category.routes";
+export * from "./client.routes";
 export * from "./depot.routes";
 export * from "./movement.routes";
 export * from "./product.routes";
@@ -6,4 +7,5 @@ export * from "./provider.routes";
 export * from "./purchase.routes";
 export * from "./rol.routes";
 export * from "./type-payment.routes";
+export * from "./sale.routes";
 export * from "./user.routes";

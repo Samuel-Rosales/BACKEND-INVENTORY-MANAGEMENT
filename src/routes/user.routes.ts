@@ -12,7 +12,7 @@ router.get("/",
 ); // http://localhost:3000/api/user
 
 router.get("/:id", 
-    userValidators.validateUserParamIdExists, 
+    userValidators.validateUserParamCIExists, 
     userController.one
 ); // http://localhost:3000/api/user/:id
 
@@ -33,14 +33,14 @@ router.post("/",
 //METHOD PATCH
 router.patch("/:id",
     userValidators.validateUpdateFields,
-    userValidators.validateUserParamIdExists,
+    userValidators.validateUserParamCIExists,
     validateFields,
     userController.update,
 ); // http://localhost:3000/api/product/:id
 
 //METHOD DELETE
 router.delete("/:id", 
-    userValidators.validateUserParamIdExists, 
+    userValidators.validateUserParamCIExists, 
     userController.delete
 ); // http://localhost:3000/api/product/:id
 

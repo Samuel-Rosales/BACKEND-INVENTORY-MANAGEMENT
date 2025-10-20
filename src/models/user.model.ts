@@ -17,7 +17,6 @@ export const UserModel = {
     },
     status: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
         defaultValue: true,
     },
     createdAt: {

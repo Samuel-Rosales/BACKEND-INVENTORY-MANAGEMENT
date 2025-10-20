@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.syncModels = exports.UserDB = exports.TypePaymentDB = exports.RolDB = exports.PurchaseDB = exports.ProviderDB = exports.ProductDB = exports.MovementDB = exports.DepotDB = exports.CategoryDB = exports.db = void 0;
+exports.syncModels = exports.UserDB = exports.TypePaymentDB = exports.SaleDB = exports.RolDB = exports.PurchaseDB = exports.ProviderDB = exports.ProductDB = exports.MovementDB = exports.DepotDB = exports.ClientDB = exports.CategoryDB = exports.db = void 0;
 const sequelize_1 = require("sequelize");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -37,6 +37,10 @@ exports.CategoryDB = exports.db.define("categories", models_1.CategoryModel, {
     timestamps: true,
     tableName: "categories",
 });
+exports.ClientDB = exports.db.define("clients", models_1.ClientModel, {
+    timestamps: true,
+    tableName: "clients",
+});
 exports.DepotDB = exports.db.define("depots", models_1.DepotModel, {
     timestamps: true,
     tableName: "depots",
@@ -61,6 +65,10 @@ exports.RolDB = exports.db.define("rols", models_1.RolModel, {
     timestamps: true,
     tableName: "rols",
 });
+exports.SaleDB = exports.db.define("sales", models_1.SaleModel, {
+    timestamps: true,
+    tableName: "sales",
+});
 exports.TypePaymentDB = exports.db.define("types_payments", models_1.TypePaymentModel, {
     timestamps: true,
     tableName: "types_payments",
@@ -84,6 +92,12 @@ exports.PurchaseDB.belongsTo(exports.ProviderDB, { foreignKey: "provider_id", as
 exports.ProviderDB.hasMany(exports.PurchaseDB, { foreignKey: "provider_id", as: "purchases" });
 exports.PurchaseDB.belongsTo(exports.UserDB, { foreignKey: "user_ci", as: "user" });
 exports.UserDB.hasMany(exports.PurchaseDB, { foreignKey: "user_ci", as: "purchases" });
+exports.SaleDB.belongsTo(exports.TypePaymentDB, { foreignKey: "type_payment_id", as: "type_payment" });
+exports.TypePaymentDB.hasMany(exports.SaleDB, { foreignKey: "type_payment_id", as: "sales" });
+exports.SaleDB.belongsTo(exports.ClientDB, { foreignKey: "client_ci", as: "client" });
+exports.ClientDB.hasMany(exports.SaleDB, { foreignKey: "client_ci", as: "sales" });
+exports.SaleDB.belongsTo(exports.UserDB, { foreignKey: "user_ci", as: "user" });
+exports.UserDB.hasMany(exports.SaleDB, { foreignKey: "user_ci", as: "sales" });
 // Sync
 const syncModels = async () => {
     try {

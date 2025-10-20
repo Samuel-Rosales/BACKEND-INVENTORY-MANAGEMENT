@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { validateFields } from "../middlewares";
-import { ProviderController, PurchaseController } from "../controllers";
-import { providerValidators, purchaseValidators } from "../validators";
+import { PurchaseController } from "../controllers";
+import { purchaseValidators } from "../validators";
 
 const router = Router();
 const purchaseController = new PurchaseController();
@@ -20,7 +20,7 @@ router.get("/:id",
 router.post("/",
     purchaseValidators.validateCreateFields,
     purchaseValidators.validateProviderIdExists,
-    purchaseValidators.validateUserIdExists,
+    purchaseValidators.validateUserCIExists,
     purchaseValidators.validateTypePaymentIdExists,
     validateFields,
     purchaseController.create
@@ -30,7 +30,7 @@ router.post("/",
 router.patch("/:id",
     purchaseValidators.validateUpdateFields,
     purchaseValidators.validateProviderIdExists,
-    purchaseValidators.validateUserIdExists,
+    purchaseValidators.validateUserCIExists,
     purchaseValidators.validateTypePaymentIdExists,
     validateFields,
     purchaseController.update,

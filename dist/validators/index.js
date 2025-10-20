@@ -15,6 +15,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./category.validators"), exports);
+__exportStar(require("./client.validators"), exports);
 __exportStar(require("./depot.validators"), exports);
 __exportStar(require("./rol.validators"), exports);
 __exportStar(require("./movement.validators"), exports);
@@ -22,4 +23,5 @@ __exportStar(require("./product.validators"), exports);
 __exportStar(require("./provider.validators"), exports);
 __exportStar(require("./purchase.validators"), exports);
 __exportStar(require("./type-payment.validators"), exports);
+__exportStar(require("./sale.validators"), exports);
 __exportStar(require("./user.validators"), exports);

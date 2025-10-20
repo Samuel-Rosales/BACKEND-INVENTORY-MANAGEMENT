@@ -1,13 +1,14 @@
 import { check } from "express-validator";
 import type { NextFunction, Request, Response } from "express";
-import { PurchaseDB, ProviderDB, TypePaymentDB, UserDB } from "../config";
+import { SaleDB, ClientDB, TypePaymentDB, UserDB } from "../config";
 
-export class PurchaseValidators {
+export class SaleValidators {
     
     validateCreateFields = [
-        check("provider_id")
-            .notEmpty().withMessage("El ID del proveedor es obligatorio.")
-            .isInt().withMessage("El ID del proveedor debe ser un número entero."),
+        check("client_ci")
+            .notEmpty().withMessage("La cédula del cliente no puede estar vacía.")
+            .isLength({ min: 7, max: 8 }).withMessage("La cédula del cliente debe tener entre 7 y 8 caracteres.")
+            .isString().withMessage("La cédula del cliente debe ser una cadena de texto."),
 
         check("user_ci")
             .notEmpty().withMessage("La cédula del usuario es obligatoria.")
@@ -20,16 +21,17 @@ export class PurchaseValidators {
     ];
 
     validateUpdateFields = [
-        check("provider_id")
+        check("client_ci")
             .optional()
-            .notEmpty().withMessage("El ID del proveedor no puede estar vacío.")
-            .isInt().withMessage("El ID del proveedor debe ser un número entero."),
+            .notEmpty().withMessage("La cédula del cliente no puede estar vacía.")
+            .isLength({ min: 7, max: 8 }).withMessage("La cédula del cliente debe tener entre 7 y 8 caracteres.")
+            .isString().withMessage("La cédula del cliente debe ser una cadena de texto."),
 
         check("user_ci")
             .optional()
-            .notEmpty().withMessage("La cédula no puede estar vacía.")
-            .isLength({ min: 7, max: 8 }).withMessage("La cédula debe tener entre 7 y 8 caracteres.")
-            .isString().withMessage("La cédula debe ser una cadena de texto."),
+            .notEmpty().withMessage("La cédula del usuario no puede estar vacía.")
+            .isLength({ min: 7, max: 8 }).withMessage("La cédula del usuario debe tener entre 7 y 8 caracteres.")
+            .isString().withMessage("La cédula del usuario debe ser una cadena de texto."),
 
         check("type_payment_id")
             .optional()
@@ -42,31 +44,28 @@ export class PurchaseValidators {
             .isBoolean().withMessage("El estado de la compra debe ser un valor booleano."),
     ];
 
-    validateProviderIdExists = async (req: Request, res: Response, next: NextFunction) => {
+    validateClientCIExists = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const rawId = (req.body.provider_id ?? "").toString().trim();
-            if (!rawId) return next();
+            const client_ci = (req.body.client_ci ?? "").toString().trim();
+            if (!client_ci) return next();
+            
 
-            const provider_id = Number.parseInt(rawId, 10);
-
-            if (Number.isNaN(provider_id) || !Number.isInteger(provider_id)) {
-                return res.status(400).json({ message: `El ID proporcionado '${rawId}' no es un número entero válido.` });
+            if (!client_ci || client_ci.length < 6 || client_ci.length > 10 || !/^\d{6,10}$/.test(client_ci)) {
+                return res.status(400).json({
+                message: `La cédula proporcionada '${client_ci}' no es válida. Debe ser un número entre 6 y 10 dígitos.`,
+                });
             }
 
-            if (provider_id <= 0) {
-                return res.status(400).json({ message: `El ID '${rawId}' no puede ser un numero negativo.` });
-            }
+            const existingClient = await ClientDB.findByPk(client_ci);
 
-            // consulta DB
-            const existingProvider = await ProviderDB.findByPk(provider_id);
-            if (!existingProvider) {
-                return res.status(404).json({ message: `Proveedor con ID '${provider_id}' no encontrado.` });
+            if (!existingClient) {
+                return res.status(404).json({ message: `Cliente con la cédula '${client_ci}' no encontrado.` });
             }
 
             next();
         } catch (error) {
             return res.status(500).json({
-                message: "Internal server error in validateProviderParamIdExists.",
+                message: "Internal server error in validateClientCIExists.",
             });
         }
     };
@@ -126,34 +125,34 @@ export class PurchaseValidators {
         }
     };
 
-    validatePurchaseParamIdExists = async (req: Request, res: Response, next: NextFunction) => {
+    validateSaleParamIdExists = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const rawId = (req.params.id ?? "").toString().trim();
             if (!rawId) return next();
 
-            const pruchase_id = Number.parseInt(rawId, 10);
+            const sale_id = Number.parseInt(rawId, 10);
 
-            if (Number.isNaN(pruchase_id) || !Number.isInteger(pruchase_id)) {
+            if (Number.isNaN(sale_id) || !Number.isInteger(sale_id)) {
                 return res.status(400).json({ message: `El ID proporcionado '${rawId}' no es un número entero válido.` });
             }
 
-            if (pruchase_id <= 0) {
+            if (sale_id <= 0) {
                 return res.status(400).json({ message: `El ID '${rawId}' no puede ser un numero negativo.` });
             }
 
             // consulta DB
-            const existingPruchase = await PurchaseDB.findByPk(pruchase_id);
-            if (!existingPruchase) {
-                return res.status(404).json({ message: `Compra con ID '${pruchase_id}' no encontrado.` });
+            const existingSale = await SaleDB.findByPk(sale_id);
+            if (!existingSale) {
+                return res.status(404).json({ message: `Venta con ID '${sale_id}' no encontrado.` });
             }
 
             next();
         } catch (error) {
             return res.status(500).json({
-                message: "Internal server error in validatePurchaseParamIdExists.",
+                message: "Internal server error in validateSaleParamIdExists.",
             });
         }
     };
 }
 
-export const purchaseValidators = new PurchaseValidators();
+export const saleValidators = new SaleValidators();

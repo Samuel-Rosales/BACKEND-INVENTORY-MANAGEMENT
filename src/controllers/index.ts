@@ -1,4 +1,5 @@
 export * from "./category.controller";
+export * from "./client.controller";
 export * from "./depot.controller";
 export * from "./movement.controller";
 export * from "./rol.controller";
@@ -6,4 +7,5 @@ export * from "./product.controller";
 export * from "./provider.controller";
 export * from "./purchase.controller";
 export * from "./type-payment.controller";
+export * from "./sale.controller";
 export * from "./user.controller";

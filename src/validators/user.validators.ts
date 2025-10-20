@@ -77,7 +77,7 @@ export class UserValidators {
         }
     }; 
 
-    validateUserParamIdExists = async (req: Request, res: Response, next: NextFunction) => {
+    validateUserParamCIExists = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const user_ci = (req.params.id ?? "").toString().trim();
             if (!user_ci) return next();

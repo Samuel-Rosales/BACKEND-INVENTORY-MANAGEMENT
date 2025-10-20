@@ -19,6 +19,7 @@ class Server {
         this.apiurl = process.env.API_URL || `http://localhost:${this.port}`;
         this.paths = {
             categories: this.pre + "/category",
+            clients: this.pre + "/client",
             depots: this.pre + "/depot",
             movements: this.pre + "/movement",
             products: this.pre + "/product",
@@ -26,6 +27,7 @@ class Server {
             purchase: this.pre + "/purchase",
             rols: this.pre + "/rol",
             types_payments: this.pre + "/type_payment",
+            sales: this.pre + "/sale",
             users: this.pre + "/user",
         };
         this.middlewares();
@@ -43,6 +45,7 @@ class Server {
     }
     routes() {
         this.app.use(this.paths.categories, index_route_1.CategoryRoute);
+        this.app.use(this.paths.clients, index_route_1.ClientRoute);
         this.app.use(this.paths.depots, index_route_1.DepotRoute);
         this.app.use(this.paths.movements, index_route_1.MovementRoute);
         this.app.use(this.paths.products, index_route_1.ProductRoute);
@@ -50,6 +53,7 @@ class Server {
         this.app.use(this.paths.purchase, index_route_1.PurchaseRoute);
         this.app.use(this.paths.rols, index_route_1.RolRoute);
         this.app.use(this.paths.types_payments, index_route_1.TypePaymentRoute);
+        this.app.use(this.paths.sales, index_route_1.SaleRoute);
         this.app.use(this.paths.users, index_route_1.UserRoute);
     }
     listen() {

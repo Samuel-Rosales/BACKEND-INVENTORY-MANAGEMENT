@@ -1,9 +1,9 @@
-export interface PurchaseInterface {
-    purchase_id: number;
-    provider_id: number;
+export interface SaleInterface {
+    sale_id: number;
+    client_ci: string;
     user_ci: string;
     type_payment_id: number;
-    bought_at: Date;
+    sold_at: Date;
     status: boolean;
     createdAt?: Date;
     updatedAt?: Date;

@@ -65,7 +65,7 @@ class UserValidators {
                 });
             }
         };
-        this.validateUserParamIdExists = async (req, res, next) => {
+        this.validateUserParamCIExists = async (req, res, next) => {
             var _a;
             try {
                 const user_ci = ((_a = req.params.id) !== null && _a !== void 0 ? _a : "").toString().trim();

@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 
 export const ClientModel = {
     client_ci: {
-        type: DataTypes.STRING(10), // Ej: "12345678"
+        type: DataTypes.STRING(10),
         primaryKey: true,
         allowNull: false,
         unique: true,
@@ -11,9 +11,16 @@ export const ClientModel = {
         type: DataTypes.STRING(100),
         allowNull: false,
     },
+    phone: {
+        type: DataTypes.STRING(12)
+    },
     address: {
         type: DataTypes.STRING(255),
         allowNull: false,
+    },
+    status: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
     },
     createdAt: {
         type: DataTypes.DATE,
