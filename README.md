@@ -70,14 +70,11 @@ Puedes ejecutar el servidor en diferentes modos según los scripts definidos en 
 - **`npm run seeds`**  
   Ejecuta los scripts en la carpeta `dist` para poblar la base de datos con datos de ejemplo (semillas).
 
-- **`npm run seeds-build`**  
-  Compila y ejecuta los scripts para poblar la base de datos.
+- **`npm run reset-insert`**  
+  Ejecuta un script para resetear la base de datos y volver a poblarla.
 
-- **`npm run seeds-dev`**  
-  Compila, ejecuta los scripts para poblar la base de datos y arranca el servidor en modo desarrollo. Ideal para empezar a desarrollar desde cero.
-
-- **`npm run render`**  
-  Script específico para despliegues en servicios como Render. Instala dependencias, compila el proyecto y ejecuta las semillas.
+- **`npm run reset`**  
+  resetea la base de datos completamente dejandola vacía.
 
 Puedes usar estos comandos según el entorno y la necesidad de tu desarrollo.
 
