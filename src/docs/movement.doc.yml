@@ -1,0 +1,50 @@
+paths:
+  /movement:
+    get:
+      tags: [Movement]
+      summary: Obtiene todos los movimientos
+      responses:
+        '200': { description: 'OK' }
+    post:
+      tags: [Movement]
+      summary: Crea un nuevo movimiento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovementInput'
+      responses:
+        '201': { description: 'Created' }
+  /movement/{id}:
+    get:
+      tags: [Movement]
+      summary: Obtiene un movimiento por ID
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200': { description: 'OK' }
+        '404': { description: 'Not Found' }
+
+components:
+  schemas:
+    Movement:
+      type: object
+      properties:
+        movement_id: { type: integer }
+        depot_id: { type: integer }
+        product_id: { type: integer }
+        type: { type: string, enum: [Entrada, Salida] }
+        amount: { type: integer }
+        observation: { type: string }
+        moved_at: { type: string, format: date-time }
+        status: { type: boolean }
+    MovementInput:
+      type: object
+      properties:
+        depot_id: { type: integer }
+        product_id: { type: integer }
+        type: { type: string, enum: [Entrada, Salida] }
+        amount: { type: integer }
+        observation: { type: string }
+      required: [depot_id, product_id, type, amount, observation]

@@ -1,0 +1,69 @@
+paths:
+  /provider:
+    get:
+      tags: [Provider]
+      summary: Obtiene todos los proveedores
+      responses:
+        '200': { description: 'OK' }
+    post:
+      tags: [Provider]
+      summary: Crea un nuevo proveedor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProviderInput'
+      responses:
+        '201': { description: 'Created' }
+  /provider/{id}:
+    get:
+      tags: [Provider]
+      summary: Obtiene un proveedor por ID
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200': { description: 'OK' }
+        '404': { description: 'Not Found' }
+    put:
+      tags: [Provider]
+      summary: Actualiza un proveedor
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProviderUpdate'
+      responses:
+        '200': { description: 'OK' }
+        '404': { description: 'Not Found' }
+    delete:
+      tags: [Provider]
+      summary: Elimina un proveedor
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200': { description: 'OK' }
+        '404': { description: 'Not Found' }
+
+components:
+  schemas:
+    Provider:
+      type: object
+      properties:
+        provider_id: { type: integer }
+        name: { type: string }
+        located: { type: string }
+    ProviderInput:
+      type: object
+      properties:
+        name: { type: string }
+        located: { type: string }
+      required: [name, located]
+    ProviderUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        located: { type: string }

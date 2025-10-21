@@ -1,0 +1,65 @@
+paths:
+  /user:
+    get:
+      tags: [User]
+      summary: Obtiene todos los usuarios
+      responses:
+        '200': { description: 'OK' }
+    post:
+      tags: [User]
+      summary: Crea un nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '201': { description: 'Created' }
+  /user/{ci}:
+    get:
+      tags: [User]
+      summary: Obtiene un usuario por CI
+      parameters:
+        - { name: ci, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: 'OK' }
+        '404': { description: 'Not Found' }
+    patch:
+      tags: [User]
+      summary: Actualiza un usuario
+      parameters:
+        - { name: ci, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200': { description: 'OK' }
+        '404': { description: 'Not Found' }
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        ci: { type: string }
+        name: { type: string }
+        rol_id: { type: integer }
+        status: { type: boolean }
+    UserInput:
+      type: object
+      properties:
+        ci: { type: string }
+        name: { type: string }
+        rol_id: { type: integer }
+        status: { type: boolean }
+      required: [ci, name, rol_id]
+    UserUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        rol_id: { type: integer }
+        status: { type: boolean }

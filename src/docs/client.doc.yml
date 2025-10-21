@@ -1,0 +1,104 @@
+paths:
+  /client:
+    get:
+      tags: [Client]
+      summary: Obtiene todos los clientes
+      responses:
+        '200':
+          description: Lista de clientes.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+    post:
+      tags: [Client]
+      summary: Crea un nuevo cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientInput'
+      responses:
+        '201':
+          description: Cliente creado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+  /client/{ci}:
+    get:
+      tags: [Client]
+      summary: Obtiene un cliente por CI
+      parameters:
+        - { name: ci, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Cliente encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '404':
+          description: Cliente no encontrado.
+    put:
+      tags: [Client]
+      summary: Actualiza un cliente
+      parameters:
+        - { name: ci, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientUpdate'
+      responses:
+        '200':
+          description: Cliente actualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '404':
+          description: Cliente no encontrado.
+    delete:
+      tags: [Client]
+      summary: Elimina un cliente
+      parameters:
+        - { name: ci, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Cliente eliminado.
+        '404':
+          description: Cliente no encontrado.
+
+components:
+  schemas:
+    Client:
+      type: object
+      properties:
+        client_ci: { type: string }
+        name: { type: string }
+        phone: { type: string }
+        address: { type: string }
+        status: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    ClientInput:
+      type: object
+      properties:
+        client_ci: { type: string }
+        name: { type: string }
+        phone: { type: string }
+        address: { type: string }
+        status: { type: boolean }
+      required: [client_ci, name, address]
+    ClientUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        phone: { type: string }
+        address: { type: string }
+        status: { type: boolean }

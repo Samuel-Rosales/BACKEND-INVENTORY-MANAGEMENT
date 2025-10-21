@@ -1,0 +1,15 @@
+paths:
+  /type_payment:
+    get:
+      tags: [TypePayment]
+      summary: Obtiene todos los tipos de pago
+      responses:
+        '200': { description: 'OK' }
+
+components:
+  schemas:
+    TypePayment:
+      type: object
+      properties:
+        type_payment_id: { type: integer }
+        name: { type: string }

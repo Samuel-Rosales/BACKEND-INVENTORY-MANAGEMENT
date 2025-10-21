@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.swaggerOptions = void 0;
-const port = process.env.DATABASE_PORT;
+// 1. Usa el puerto del SERVIDOR, no de la base de datos
+const port = process.env.PORT || "3000";
 const apiUrl = process.env.API_URL || `http://localhost:${port}`;
 const pre = "/api";
-const swaggerOptions = {
-    swaggerDefinition: {
+exports.swaggerOptions = {
+    // 2. 'definition' es la propiedad moderna
+    definition: {
         openapi: "3.0.0",
         info: {
             title: "API Inventario",
@@ -14,11 +16,11 @@ const swaggerOptions = {
         },
         servers: [
             {
+                // 3. La URL base completa va aquí
                 url: `${apiUrl}${pre}`,
             },
         ],
     },
-    basePath: "/api",
+    // La ruta a los archivos que contienen la documentación
     apis: ["./src/docs/*.yml", "./src/routes/*.ts"],
 };
-exports.swaggerOptions = swaggerOptions;

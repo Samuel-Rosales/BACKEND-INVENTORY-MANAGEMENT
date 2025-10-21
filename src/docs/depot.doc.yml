@@ -1,0 +1,72 @@
+paths:
+  /depot:
+    get:
+      tags: [Depot]
+      summary: Obtiene todos los depósitos
+      responses:
+        '200': { description: 'OK' }
+    post:
+      tags: [Depot]
+      summary: Crea un nuevo depósito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepotInput'
+      responses:
+        '201': { description: 'Created' }
+  /depot/{id}:
+    get:
+      tags: [Depot]
+      summary: Obtiene un depósito por ID
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200': { description: 'OK' }
+        '404': { description: 'Not Found' }
+    put:
+      tags: [Depot]
+      summary: Actualiza un depósito
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepotUpdate'
+      responses:
+        '200': { description: 'OK' }
+        '404': { description: 'Not Found' }
+    delete:
+      tags: [Depot]
+      summary: Elimina un depósito
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200': { description: 'OK' }
+        '404': { description: 'Not Found' }
+
+components:
+  schemas:
+    Depot:
+      type: object
+      properties:
+        depot_id: { type: integer }
+        name: { type: string }
+        location: { type: string }
+        status: { type: boolean }
+    DepotInput:
+      type: object
+      properties:
+        name: { type: string }
+        location: { type: string }
+        status: { type: boolean }
+      required: [name, location]
+    DepotUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        location: { type: string }
+        status: { type: boolean }

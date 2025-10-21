@@ -1,0 +1,57 @@
+paths:
+  /sale:
+    get:
+      tags: [Sale]
+      summary: Obtiene todas las ventas
+      responses:
+        '200': { description: 'OK' }
+    post:
+      tags: [Sale]
+      summary: Crea una nueva venta (cabecera y detalles)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaleInput'
+      responses:
+        '201': { description: 'Created' }
+  /sale/{id}:
+    get:
+      tags: [Sale]
+      summary: Obtiene una venta por ID con sus detalles
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200': { description: 'OK' }
+        '404': { description: 'Not Found' }
+
+components:
+  schemas:
+    Sale:
+      type: object
+      properties:
+        sale_id: { type: integer }
+        client_ci: { type: string }
+        user_ci: { type: string }
+        type_payment_id: { type: integer }
+        sold_at: { type: string, format: date-time }
+        status: { type: boolean }
+    SaleInput:
+      type: object
+      properties:
+        client_ci: { type: string }
+        user_ci: { type: string }
+        type_payment_id: { type: integer }
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/SaleDetailInput'
+      required: [client_ci, user_ci, type_payment_id, details]
+    SaleDetailInput:
+      type: object
+      properties:
+        product_id: { type: integer }
+        unit_cost: { type: number, format: double }
+        amount: { type: integer }
+      required: [product_id, unit_cost, amount]

@@ -1,0 +1,58 @@
+paths:
+  /purchase:
+    get:
+      tags: [Purchase]
+      summary: Obtiene todas las compras
+      responses:
+        '200': { description: 'OK' }
+    post:
+      tags: [Purchase]
+      summary: Crea una nueva compra (cabecera)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseInput'
+      responses:
+        '201': { description: 'Created' }
+  /purchase/{id}:
+    get:
+      tags: [Purchase]
+      summary: Obtiene una compra por ID con sus detalles
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200': { description: 'OK' }
+        '404': { description: 'Not Found' }
+
+components:
+  schemas:
+    Purchase:
+      type: object
+      properties:
+        purchase_id: { type: integer }
+        provider_id: { type: integer }
+        user_ci: { type: string }
+        type_payment_id: { type: integer }
+        bought_at: { type: string, format: date-time }
+        status: { type: string, enum: [Pendiente, Aprobado] }
+        active: { type: boolean }
+    PurchaseInput:
+      type: object
+      properties:
+        provider_id: { type: integer }
+        user_ci: { type: string }
+        type_payment_id: { type: integer }
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/PurchaseDetailInput'
+      required: [provider_id, user_ci, type_payment_id, details]
+    PurchaseDetailInput:
+      type: object
+      properties:
+        product_id: { type: integer }
+        unit_cost: { type: number, format: double }
+        amount: { type: integer }
+      required: [product_id, unit_cost, amount]

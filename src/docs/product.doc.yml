@@ -1,99 +1,256 @@
+# paths:
+#   /product:
+#     ... (otras rutas)
+#   /product/{id}:
+#     ... (otras rutas)
+
+paths:
+  /product:
+    get:
+      tags:
+        - Product
+      summary: Obtiene todos los productos
+      description: Retorna un array con todos los productos registrados.
+      responses:
+        '200':
+          description: Operación exitosa. Devuelve una lista de productos.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+        '500':
+          description: Error interno del servidor al obtener los productos.
+
+    post:
+      tags:
+        - Product
+      summary: Crea un nuevo producto
+      description: Registra un nuevo producto en la base de datos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Producto creado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '400':
+          description: Datos de entrada inválidos o producto ya existente.
+        '500':
+          description: Error interno del servidor al crear el producto.
+
+  /product/{id}:
+    get:
+      tags:
+        - Product
+      summary: Obtiene un producto por su ID
+      description: Retorna los detalles de un producto específico.
+      parameters:
+        - name: id
+          in: path
+          description: ID del producto a obtener.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Operación exitosa. Devuelve el producto encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '404':
+          description: Producto no encontrado.
+        '500':
+          description: Error interno del servidor.
+
+    put:
+      tags:
+        - Product
+      summary: Actualiza un producto existente
+      description: Modifica los datos de un producto existente según su ID.
+      parameters:
+        - name: id
+          in: path
+          description: ID del producto a actualizar.
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdate'
+      responses:
+        '200':
+          description: Producto actualizado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '400':
+          description: Datos de entrada inválidos.
+        '404':
+          description: Producto no encontrado.
+        '500':
+          description: Error interno del servidor al actualizar el producto.
+
+    delete:
+      tags:
+        - Product
+      summary: Elimina un producto
+      description: Elimina un producto de la base de datos según su ID (borrado lógico).
+      parameters:
+        - name: id
+          in: path
+          description: ID del producto a eliminar.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Producto eliminado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Producto no encontrado.
+        '500':
+          description: Error interno del servidor al eliminar el producto.
+
+# components:
+#   schemas:
+#     Product:
+#       ...
+#     ProductInput:
+#       ...
+#     ProductUpdate:
+#       ...
+
 components:
   schemas:
-    ProductInput:
-      type: object
-      required: [name, description, category_id, base_price, min_stock]
-      properties:
-        name:
-          type: string
-          maxLength: 100
-        description:
-          type: string
-          maxLength: 255
-        category_id:
-          type: integer
-        base_price:
-          type: number
-          format: decimal
-        min_stock:
-          type: integer
-
-    ProductWithCategory:
+    Product:
       type: object
       properties:
         product_id:
           type: integer
+          description: ID único del producto.
         name:
           type: string
+          description: Nombre del producto.
         description:
           type: string
-        category:
-          $ref: '#/components/schemas/Category'
-        base_price:
-          type: number
-          format: decimal
-        min_stock:
-          type: integer
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-
-    Category:
-      type: object
-      properties:
+          description: Descripción detallada del producto.
         category_id:
           type: integer
-        name:
-          type: string
-        description:
-          type: string
+          description: ID de la categoría a la que pertenece el producto.
+        base_price:
+          type: number
+          format: double
+          description: Precio base del producto.
+        stock:
+          type: integer
+          description: Cantidad actual en inventario.
+        min_stock:
+          type: integer
+          description: Nivel mínimo de stock antes de generar una alerta.
+        status:
+          type: boolean
+          description: Estado del producto (activo/inactivo).
         createdAt:
           type: string
           format: date-time
+          description: Fecha de creación del registro.
         updatedAt:
           type: string
           format: date-time
+          description: Fecha de la última actualización del registro.
 
+    ProductInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nombre del producto.
+        description:
+          type: string
+          description: Descripción detallada del producto.
+        category_id:
+          type: integer
+          description: ID de la categoría a la que pertenece el producto.
+        base_price:
+          type: number
+          format: double
+          description: Precio base del producto.
+        stock:
+          type: integer
+          description: Cantidad inicial en inventario.
+        min_stock:
+          type: integer
+          description: Nivel mínimo de stock.
+        status:
+          type: boolean
+          description: Estado inicial del producto (opcional, por defecto es true).
+      required:
+        - name
+        - description
+        - category_id
+        - base_price
+        - stock
+        - min_stock
 
-{
-  "name": "Café Premium Lara",
-  "category_id": 1,
-  "description": "Café tostado artesanal con aroma intenso.",
-  "base_price": "850.00",
-  "min_stock": 50
-}
-
-{
-  "name": "Taladro Eléctrico 500W",
-  "category_id": 3,
-  "description": "Herramienta potente para trabajos de precisión.",
-  "base_price": "12500.00",
-  "min_stock": 15
-}
-
-{
-  "name": "Silla ergonómica de oficina",
-  "category_id": 2,
-  "description": "Diseño cómodo con soporte lumbar ajustable.",
-  "base_price": "9800.00",
-  "min_stock": 10
-}
-
-{
-  "name": "Juguete educativo Montessori",
-  "category_id": 4,
-  "description": "Desarrolla habilidades cognitivas en niños de 3 a 6 años.",
-  "base_price": "3200.00",
-  "min_stock": 25
-}
-
-{
-    "name": "Galletas María",
-    "category_id": 4,
-    "description": "La galleta más rica que comerás papi.",
-    "base_price": "250.00",
-    "min_stock": 70
-}
+    ProductUpdate:
+      type: object
+      description: Campos opcionales para actualizar un producto.
+      properties:
+        name:
+          type: string
+          description: Nuevo nombre del producto.
+        description:
+          type: string
+          description: Nueva descripción del producto.
+        category_id:
+          type: integer
+          description: Nuevo ID de categoría.
+        base_price:
+          type: number
+          format: double
+          description: Nuevo precio base.
+        min_stock:
+          type: integer
+          description: Nuevo nivel mínimo de stock.
+        status:
+          type: boolean
+          description: Nuevo estado del producto.

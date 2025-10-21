@@ -20,7 +20,6 @@ class Server {
         this.port = process.env.PORT || "3000";
         this.apiurl = process.env.API_URL || `http://localhost:${this.port}`;
         this.paths = {
-            // ...tus paths se quedan igual
             categories: this.pre + "/category",
             clients: this.pre + "/client",
             depots: this.pre + "/depot",

@@ -1,0 +1,31 @@
+paths:
+  /rol:
+    get:
+      tags: [Rol]
+      summary: Obtiene todos los roles
+      responses:
+        '200': { description: 'OK' }
+    post:
+      tags: [Rol]
+      summary: Crea un nuevo rol
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RolInput'
+      responses:
+        '201': { description: 'Created' }
+
+components:
+  schemas:
+    Rol:
+      type: object
+      properties:
+        rol_id: { type: integer }
+        name: { type: string }
+    RolInput:
+      type: object
+      properties:
+        name: { type: string }
+      required: [name]

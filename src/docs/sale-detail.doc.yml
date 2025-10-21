@@ -1,0 +1,19 @@
+paths:
+  /sale_detail:
+    get:
+      tags: [SaleDetail]
+      summary: Obtiene todos los detalles de ventas
+      responses:
+        '200': { description: 'OK' }
+
+components:
+  schemas:
+    SaleDetail:
+      type: object
+      properties:
+        sale_detail_id: { type: integer }
+        product_id: { type: integer }
+        sale_id: { type: integer }
+        unit_cost: { type: number, format: double }
+        amount: { type: integer }
+        status: { type: boolean }
