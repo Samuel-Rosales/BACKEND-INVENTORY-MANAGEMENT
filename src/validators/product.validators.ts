@@ -4,25 +4,62 @@ import { ProductDB, CategoryDB } from "../models";
 
 export class ProductValidators {
     
-    validateFields = [
-        check("name", "El nombre del producto es obligatorio.").not().isEmpty(),
-        check("name", "El nombre del producto debe ser una cadena de texto.").isString(),
-        
-        check("description", "La descripción del producto es obligatoria.").not().isEmpty(),
-        check("description", "La descripción del producto debe ser una cadena de texto.").isString(),
+    validateCreateFields = [
+        check("name")
+            .notEmpty().withMessage("El nombre del producto es obligatorio.")
+            .isString().withMessage("El nombre del producto debe ser una cadena de texto."),
+            
+        check("description")
+            .notEmpty().withMessage("La descripción del producto es obligatoria.")
+            .isString().withMessage("La descripción del producto debe ser una cadena de texto."),
 
-        check("category_id", "El ID de la categoría es obligatorio.").not().isEmpty(),
-        check("category_id", "El ID de la categoría debe ser un número entero.").isNumeric(),
+        check("category_id")
+            .notEmpty().withMessage("El ID de la categoría es obligatorio.")
+            .isInt().withMessage("El ID de la categoría debe ser un número entero."),
 
-        check("base_price", "El precio base del producto es obligatorio.").not().isEmpty(),
-        check("base_price", "El precio base del produce debe ser un número decimal.").isDecimal(),
+        check("base_price")
+            .notEmpty().withMessage("El precio base del producto es obligatorio.")
+            .isDecimal().withMessage("El precio base del producto debe ser un número decimal."),
 
-        check("amount")
-            .notEmpty().withMessage("La cantidad del producto en existencia es obligatorio.")
-            .isInt().withMessage("La cantidad del producto en existencia debe ser un número entero."),
+        check("stock")
+            .notEmpty().withMessage("El stock del producto es obligatorio.")
+            .isInt({ min: 0 }).withMessage("El stock debe ser un número entero igual o mayor a 0."),
 
-        check("min_stock", "El stock mínimo del producto es obligatorio.").not().isEmpty(),
-        check("min_stock", "El precio mínimo del producto debe ser un número entero.").isNumeric(),
+        check("min_stock")
+            .notEmpty().withMessage("El stock mínimo del producto es obligatorio.")
+            .isInt({ min: 0 }).withMessage("El stock mínimo debe ser un número entero igual o mayor a 0."),
+    ];
+
+    validateUpdateFields = [
+        check("name")
+            .optional()
+            .notEmpty().withMessage("El nombre no puede ser una cadena vacía.")
+            .isString().withMessage("El nombre debe ser una cadena de texto."),
+            
+        check("description")
+            .optional()
+            .notEmpty().withMessage("La descripción no puede ser una cadena vacía.")
+            .isString().withMessage("La descripción debe ser una cadena de texto."),
+
+        check("category_id")
+            .optional()
+            .notEmpty().withMessage("El ID de la categoría no puede estar vacío.")
+            .isInt().withMessage("El ID de la categoría debe ser un número entero."),
+
+        check("base_price")
+            .optional()
+            .notEmpty().withMessage("El precio base no puede estar vacío.")
+            .isDecimal().withMessage("El precio base debe ser un número decimal."),
+
+        check("stock")
+            .optional()
+            .notEmpty().withMessage("El stock no puede estar vacío.")
+            .isInt({ min: 0 }).withMessage("El stock debe ser un número entero igual o mayor a 0."),
+
+        check("min_stock")
+            .optional()
+            .notEmpty().withMessage("El stock mínimo no puede estar vacío.")
+            .isInt({ min: 0 }).withMessage("El stock mínimo debe ser un número entero igual o mayor a 0."),
     ];
 
     validateCatgegoryIdExists = async (req: Request, res: Response, next: NextFunction) => {

@@ -2,6 +2,7 @@ import { Router } from "express";
 import { validateFields } from "../middlewares";
 import { ProductController } from "../controllers";
 import { productValidators } from "../validators";
+import { upload } from "../middlewares";
 
 const router = Router();
 const productController = new ProductController();
@@ -22,7 +23,8 @@ router.get("/category/:category_id",
 
 //METHOD POST
 router.post("/",
-    productValidators.validateFields,
+    upload.single('image'),
+    productValidators.validateCreateFields,
     productValidators.validateCatgegoryIdExists,
     validateFields,
     productController.create
@@ -31,7 +33,8 @@ router.post("/",
 
 //METHOD PATCH
 router.patch("/:id",
-    productValidators.validateFields,
+    upload.single('image'),
+    productValidators.validateUpdateFields,
     productValidators.validateProductParamIdExists,
     validateFields,
     productController.update,

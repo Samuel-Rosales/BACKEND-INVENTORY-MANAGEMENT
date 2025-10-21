@@ -1,0 +1,26 @@
+# Archivo de secretos y variables de entorno
+# ¡NUNCA subas este archivo a GitHub!
+.env
+
+# Directorio de dependencias de Node.js
+# Se regenera al ejecutar 'npm install'
+node_modules/
+
+# Archivos de compilación de TypeScript
+# Se regenera al ejecutar 'npm run build'
+dist/
+
+# Archivos de registro (logs)
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de configuración del editor de código
+.vscode/
+.idea/
