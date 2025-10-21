@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "node dist/app.js",
-    "dev": "tsc && node dist/app.js"
+    "dev": "tsc && node dist/app.js",
+    "reset": "ts-node -r tsconfig-paths/register src/data/reset.seed.ts",
+    "seeds": "ts-node -r tsconfig-paths/register src/data/main.seed.ts",
+    "reset-insert": "ts-node -r tsconfig-paths/register src/data/main.seed.ts --reset"
   },
   "keywords": [],
   "author": "Samuel Rosales",
@@ -21,6 +24,7 @@
     "@types/pg": "^8.15.5",
     "@types/sequelize": "^4.28.20",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.5.2"
   },
   "dependencies": {

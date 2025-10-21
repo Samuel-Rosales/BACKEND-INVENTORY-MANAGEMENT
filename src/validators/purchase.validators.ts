@@ -35,11 +35,16 @@ export class PurchaseValidators {
             .optional()
             .notEmpty().withMessage("El ID del tipo de pago no puede estar vacío.")
             .isInt().withMessage("El ID del tipo de pago debe ser un número entero."),
-
+        
         check("status")
             .optional()
             .notEmpty().withMessage("El estado de la compra no puede estar vacío.")
-            .isBoolean().withMessage("El estado de la compra debe ser un valor booleano."),
+            .isIn(["Pendiente", "Aprobado"]).withMessage("El estado de la compra debe ser uno de: Pendiente, Aprobado."),
+
+        check("active")
+            .optional()
+            .notEmpty().withMessage("El campo activo de la compra no puede estar vacío.")
+            .isBoolean().withMessage("El campo activo de la compra debe ser un valor booleano."),
     ];
 
     validateProviderIdExists = async (req: Request, res: Response, next: NextFunction) => {

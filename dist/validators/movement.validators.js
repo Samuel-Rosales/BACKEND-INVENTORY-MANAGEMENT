@@ -5,19 +5,59 @@ const express_validator_1 = require("express-validator");
 const config_1 = require("../config");
 class MovementValidator {
     constructor() {
-        this.validateFields = [
-            (0, express_validator_1.check)("depot_id", "El almacén del movimiento es obligatorio.").not().isEmpty(),
-            (0, express_validator_1.check)("depot_id", "El ID del almacén del movimiento debe ser un número entero.").isNumeric(),
-            (0, express_validator_1.check)("product_id", "El producto del movimiento es obligatorio.").not().isEmpty(),
-            (0, express_validator_1.check)("product_id", "El ID del producto del almacén debe ser un número entero.").isNumeric(),
-            (0, express_validator_1.check)("type", "El tipo del movimiento es obligatorio.").not().isEmpty(),
-            (0, express_validator_1.check)("type", "El tipo del movimiento debe ser uno de: Entrada, Salida.").optional().isIn(["Entrada", "Salida"]),
-            (0, express_validator_1.check)("amount", "La cantidad del movimiento es obligatorio.").not().isEmpty(),
-            (0, express_validator_1.check)("amount", "La cantidad del movimiento debe ser un número entero.").isNumeric(),
-            (0, express_validator_1.check)("observation", "La observación del movimiento es obligatorio.").not().isEmpty(),
-            (0, express_validator_1.check)("observation", "La observación del movimiento debe ser una cadena de texto.").isString(),
-            (0, express_validator_1.check)("status", "El estado del movimiento es obligatorio.").not().isEmpty(),
-            (0, express_validator_1.check)("status", "El estado del movimiento debe ser un valor booleano.").isBoolean(),
+        this.validateCreateFields = [
+            // --- depot_id ---
+            (0, express_validator_1.check)("depot_id")
+                .notEmpty().withMessage("El almacén del movimiento es obligatorio.")
+                .isNumeric().withMessage("El ID del almacén debe ser un número entero."),
+            // --- product_id ---
+            (0, express_validator_1.check)("product_id")
+                .notEmpty().withMessage("El producto del movimiento es obligatorio.")
+                .isNumeric().withMessage("El ID del producto debe ser un número entero."),
+            // --- type ---
+            (0, express_validator_1.check)("type")
+                .notEmpty().withMessage("El tipo del movimiento es obligatorio.")
+                .isIn(["Entrada", "Salida"]).withMessage("El tipo del movimiento debe ser uno de: Entrada, Salida."),
+            // --- amount ---
+            (0, express_validator_1.check)("amount")
+                .notEmpty().withMessage("La cantidad del movimiento es obligatoria.")
+                .isNumeric().withMessage("La cantidad del movimiento debe ser un número entero."),
+            // --- observation ---
+            (0, express_validator_1.check)("observation")
+                .notEmpty().withMessage("La observación del movimiento es obligatoria.")
+                .isString().withMessage("La observación del movimiento debe ser una cadena de texto."),
+        ];
+        this.validateUpdateMovementFields = [
+            // --- depot_id ---
+            (0, express_validator_1.check)("depot_id")
+                .optional()
+                .notEmpty().withMessage("El almacén del movimiento no puede estar vacío.") // Verifica si existe el campo y no está vacío
+                .isNumeric().withMessage("El ID del almacén debe ser un número entero."),
+            // --- product_id ---
+            (0, express_validator_1.check)("product_id")
+                .optional()
+                .notEmpty().withMessage("El producto del movimiento no puede estar vacío.")
+                .isNumeric().withMessage("El ID del producto debe ser un número entero."),
+            // --- type ---
+            (0, express_validator_1.check)("type")
+                .optional()
+                .notEmpty().withMessage("El tipo del movimiento no puede estar vacío.")
+                .isIn(["Entrada", "Salida"]).withMessage("El tipo del movimiento debe ser uno de: Entrada, Salida."),
+            // --- amount ---
+            (0, express_validator_1.check)("amount")
+                .optional()
+                .notEmpty().withMessage("La cantidad del movimiento no puede estar vacía.")
+                .isNumeric().withMessage("La cantidad del movimiento debe ser un número entero."),
+            // --- observation ---
+            (0, express_validator_1.check)("observation")
+                .optional()
+                .notEmpty().withMessage("La observación del movimiento no puede estar vacía.")
+                .isString().withMessage("La observación del movimiento debe ser una cadena de texto."),
+            // --- status ---
+            (0, express_validator_1.check)("status")
+                .optional()
+                .notEmpty().withMessage("El estado del movimiento no puede estar vacío.")
+                .isBoolean().withMessage("El estado del movimiento debe ser un valor booleano."),
         ];
         this.validateDepotIdExists = async (req, res, next) => {
             var _a;

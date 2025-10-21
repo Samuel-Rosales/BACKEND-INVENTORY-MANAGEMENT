@@ -11,6 +11,7 @@ exports.CategoryModel = {
     name: {
         type: sequelize_1.DataTypes.STRING(100),
         allowNull: false,
+        unique: true,
     },
     description: {
         type: sequelize_1.DataTypes.STRING(255),

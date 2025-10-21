@@ -11,3 +11,5 @@ export * from "./sale.model";
 export * from "./sale-detail.model";
 export * from "./type-payment.model";
 export * from "./user.model";
+
+

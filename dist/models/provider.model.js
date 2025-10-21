@@ -11,6 +11,7 @@ exports.ProviderModel = {
     name: {
         type: sequelize_1.DataTypes.STRING(100),
         allowNull: false,
+        anique: true,
     },
     located: {
         type: sequelize_1.DataTypes.STRING(255),

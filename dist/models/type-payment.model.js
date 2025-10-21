@@ -11,6 +11,7 @@ exports.TypePaymentModel = {
     name: {
         type: sequelize_1.DataTypes.STRING(100),
         allowNull: false,
+        unique: true,
     },
     createdAt: {
         type: sequelize_1.DataTypes.DATE,

@@ -13,8 +13,9 @@
     "incremental": true,
     "outDir": "./dist",
     "rootDir": "./src", 
+    "baseUrl": ".", // Importante: esto le dice a TS que la base para las rutas es el directorio raíz
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["src/*"] // Define que '@/' apunta a 'src/'
     }
   },
   "include": ["src/**/*"], 

@@ -24,6 +24,13 @@ exports.ProductModel = {
         type: sequelize_1.DataTypes.DECIMAL(10, 2),
         allowNull: false,
     },
+    stock: {
+        type: sequelize_1.DataTypes.INTEGER(),
+        allowNull: false,
+        validate: {
+            min: 0,
+        },
+    },
     min_stock: {
         type: sequelize_1.DataTypes.INTEGER(),
         allowNull: false,

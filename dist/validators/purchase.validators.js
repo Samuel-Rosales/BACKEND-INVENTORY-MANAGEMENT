@@ -34,7 +34,11 @@ class PurchaseValidators {
             (0, express_validator_1.check)("status")
                 .optional()
                 .notEmpty().withMessage("El estado de la compra no puede estar vacío.")
-                .isBoolean().withMessage("El estado de la compra debe ser un valor booleano."),
+                .isIn(["Pendiente", "Aprobado"]).withMessage("El estado de la compra debe ser uno de: Pendiente, Aprobado."),
+            (0, express_validator_1.check)("active")
+                .optional()
+                .notEmpty().withMessage("El campo activo de la compra no puede estar vacío.")
+                .isBoolean().withMessage("El campo activo de la compra debe ser un valor booleano."),
         ];
         this.validateProviderIdExists = async (req, res, next) => {
             var _a;

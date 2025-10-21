@@ -9,6 +9,7 @@ export const CategoryModel = {
     name: {
         type: DataTypes.STRING(100),
         allowNull: false,
+        unique: true,
     },
     description: {
         type: DataTypes.STRING(255),

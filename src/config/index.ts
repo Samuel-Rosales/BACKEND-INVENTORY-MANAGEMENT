@@ -1,2 +1,2 @@
-export * from "./sequilize.config";
+export * from "./sequelize.config";
 export * from "./swagger.config";

@@ -11,6 +11,7 @@ exports.DepotModel = {
     name: {
         type: sequelize_1.DataTypes.STRING(100),
         allowNull: false,
+        unique: true,
     },
     location: {
         type: sequelize_1.DataTypes.STRING(255),

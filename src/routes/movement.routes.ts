@@ -22,7 +22,7 @@ router.get("/product/:product_id",
 
 //METHOD POST 
 router.post("/:id",
-    movementValidators.validateFields,
+    movementValidators.validateCreateFields,
     movementValidators.validateDepotIdExists,
     movementValidators.validateProductIdExists,
     validateFields,
@@ -31,7 +31,7 @@ router.post("/:id",
 
 //METHOD PATCH
 router.patch("/:id",
-    movementValidators.validateFields,
+    movementValidators.validateUpdateMovementFields,
     movementValidators.validateMovementParamIdExists,
     movementValidators.validateDepotIdExists,
     movementValidators.validateProductIdExists,

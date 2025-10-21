@@ -12,9 +12,9 @@ router.get("/", movementController.all); // http://localhost:3000/api/movement
 router.get("/:id", validators_1.movementValidators.validateMovementParamIdExists, movementController.one); // http://localhost:3000/api/movement/:id
 router.get("/product/:product_id", movementController.all); // http://localhost:3000/api/movement/product/:product_id
 //METHOD POST 
-router.post("/:id", validators_1.movementValidators.validateFields, validators_1.movementValidators.validateDepotIdExists, validators_1.movementValidators.validateProductIdExists, middlewares_1.validateFields, movementController.create); // http://localhost:3000/api/movement/:id
+router.post("/:id", validators_1.movementValidators.validateCreateFields, validators_1.movementValidators.validateDepotIdExists, validators_1.movementValidators.validateProductIdExists, middlewares_1.validateFields, movementController.create); // http://localhost:3000/api/movement/:id
 //METHOD PATCH
-router.patch("/:id", validators_1.movementValidators.validateFields, validators_1.movementValidators.validateMovementParamIdExists, validators_1.movementValidators.validateDepotIdExists, validators_1.movementValidators.validateProductIdExists, middlewares_1.validateFields, movementController.update); // http://localhost:3000/api/movement/:id
+router.patch("/:id", validators_1.movementValidators.validateUpdateMovementFields, validators_1.movementValidators.validateMovementParamIdExists, validators_1.movementValidators.validateDepotIdExists, validators_1.movementValidators.validateProductIdExists, middlewares_1.validateFields, movementController.update); // http://localhost:3000/api/movement/:id
 //METHOD DELETE
 router.delete("/:id", validators_1.movementValidators.validateMovementParamIdExists, movementController.delete); // http://localhost:3000/api/movement/:id
 exports.MovementRoute = router;

@@ -22,6 +22,13 @@ export const ProductModel = {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
     },
+    stock: {
+        type: DataTypes.INTEGER(),
+        allowNull: false,
+        validate: {
+            min: 0,
+        },
+    },
     min_stock: {
         type: DataTypes.INTEGER(),
         allowNull: false,

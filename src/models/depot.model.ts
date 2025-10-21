@@ -9,6 +9,7 @@ export const DepotModel =  {
     name: {
         type: DataTypes.STRING(100),
         allowNull: false,
+        unique: true,
     },
     location: {
         type: DataTypes.STRING(255),

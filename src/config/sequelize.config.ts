@@ -29,13 +29,13 @@ const sequelizeConfig: any = {
     dialect: dbDialect,
     host: dbHost,
     logging: false,
-    dialecOpions: {
-        connectYimeout: 60000,
+    dialectOptions: {
+        connectTimeout: 60000,
     },
     pool: {
         max: 5,
         min: 0,
-        acquiere: 30000,
+        acquire: 30000,
         idle: 10000,
     },
 }
@@ -182,4 +182,4 @@ export const syncModels = async() => {
 
 syncModels();
 
-export default db
+export default db;

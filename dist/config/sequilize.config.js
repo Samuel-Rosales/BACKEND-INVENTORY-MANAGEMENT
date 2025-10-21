@@ -18,13 +18,13 @@ const sequelizeConfig = {
     dialect: dbDialect,
     host: dbHost,
     logging: false,
-    dialecOpions: {
-        connectYimeout: 60000,
+    dialectOpions: {
+        connectTimeout: 60000,
     },
     pool: {
         max: 5,
         min: 0,
-        acquiere: 30000,
+        acquire: 30000,
         idle: 10000,
     },
 };

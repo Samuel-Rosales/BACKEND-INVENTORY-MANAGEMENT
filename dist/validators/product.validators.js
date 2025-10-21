@@ -14,6 +14,9 @@ class ProductValidators {
             (0, express_validator_1.check)("category_id", "El ID de la categoría debe ser un número entero.").isNumeric(),
             (0, express_validator_1.check)("base_price", "El precio base del producto es obligatorio.").not().isEmpty(),
             (0, express_validator_1.check)("base_price", "El precio base del produce debe ser un número decimal.").isDecimal(),
+            (0, express_validator_1.check)("amount")
+                .notEmpty().withMessage("La cantidad del producto en existencia es obligatorio.")
+                .isInt().withMessage("La cantidad del producto en existencia debe ser un número entero."),
             (0, express_validator_1.check)("min_stock", "El stock mínimo del producto es obligatorio.").not().isEmpty(),
             (0, express_validator_1.check)("min_stock", "El precio mínimo del producto debe ser un número entero.").isNumeric(),
         ];

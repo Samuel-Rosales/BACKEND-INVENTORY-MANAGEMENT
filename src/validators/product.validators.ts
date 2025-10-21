@@ -17,6 +17,10 @@ export class ProductValidators {
         check("base_price", "El precio base del producto es obligatorio.").not().isEmpty(),
         check("base_price", "El precio base del produce debe ser un número decimal.").isDecimal(),
 
+        check("amount")
+            .notEmpty().withMessage("La cantidad del producto en existencia es obligatorio.")
+            .isInt().withMessage("La cantidad del producto en existencia debe ser un número entero."),
+
         check("min_stock", "El stock mínimo del producto es obligatorio.").not().isEmpty(),
         check("min_stock", "El precio mínimo del producto debe ser un número entero.").isNumeric(),
     ];

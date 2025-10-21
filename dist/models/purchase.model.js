@@ -26,6 +26,11 @@ exports.PurchaseModel = {
         defaultValue: sequelize_1.DataTypes.NOW
     },
     status: {
+        type: sequelize_1.DataTypes.ENUM('Pendiente', 'Aprobado'),
+        allowNull: false,
+        defaultValue: 'Pendiente',
+    },
+    active: {
         type: sequelize_1.DataTypes.BOOLEAN,
         defaultValue: true,
     },

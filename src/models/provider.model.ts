@@ -9,6 +9,7 @@ export const ProviderModel = {
     name: {
         type: DataTypes.STRING(100),
         allowNull: false,
+        anique: true,
     },
     located: {
         type: DataTypes.STRING(255),

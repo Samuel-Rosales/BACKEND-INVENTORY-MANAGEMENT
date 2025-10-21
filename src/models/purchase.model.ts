@@ -24,6 +24,11 @@ export const PurchaseModel = {
         defaultValue: DataTypes.NOW
     },
     status: {
+        type: DataTypes.ENUM('Pendiente', 'Aprobado'),
+        allowNull: false,
+        defaultValue: 'Pendiente',
+    },
+    active: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
     },

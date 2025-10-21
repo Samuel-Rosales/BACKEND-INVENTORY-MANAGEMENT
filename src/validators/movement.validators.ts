@@ -4,26 +4,70 @@ import { DepotDB, MovementDB, ProductDB } from "../config";
 
 export class MovementValidator {
 
-    validateFields = [
-        check("depot_id", "El almacén del movimiento es obligatorio.").not().isEmpty(),
-        check("depot_id", "El ID del almacén del movimiento debe ser un número entero.").isNumeric(),
+     validateCreateFields = [
+        // --- depot_id ---
+        check("depot_id")
+            .notEmpty().withMessage("El almacén del movimiento es obligatorio.")
+            .isNumeric().withMessage("El ID del almacén debe ser un número entero."),
 
-        check("product_id", "El producto del movimiento es obligatorio.").not().isEmpty(),
-        check("product_id", "El ID del producto del almacén debe ser un número entero.").isNumeric(),
+        // --- product_id ---
+        check("product_id")
+            .notEmpty().withMessage("El producto del movimiento es obligatorio.")
+            .isNumeric().withMessage("El ID del producto debe ser un número entero."),
 
-        check("type", "El tipo del movimiento es obligatorio.").not().isEmpty(),
-        check("type", "El tipo del movimiento debe ser uno de: Entrada, Salida.").optional().isIn(["Entrada", "Salida"]),
+        // --- type ---
+        check("type")
+            .notEmpty().withMessage("El tipo del movimiento es obligatorio.")
+            .isIn(["Entrada", "Salida"]).withMessage("El tipo del movimiento debe ser uno de: Entrada, Salida."),
         
-        check("amount", "La cantidad del movimiento es obligatorio.").not().isEmpty(),
-        check("amount", "La cantidad del movimiento debe ser un número entero.").isNumeric(),
+        // --- amount ---
+        check("amount")
+            .notEmpty().withMessage("La cantidad del movimiento es obligatoria.")
+            .isNumeric().withMessage("La cantidad del movimiento debe ser un número entero."),
 
-        check("observation", "La observación del movimiento es obligatorio.").not().isEmpty(),
-        check("observation", "La observación del movimiento debe ser una cadena de texto.").isString(),
-
-        check("status", "El estado del movimiento es obligatorio.").not().isEmpty(),
-        check("status", "El estado del movimiento debe ser un valor booleano.").isBoolean(),
+        // --- observation ---
+        check("observation")
+            .notEmpty().withMessage("La observación del movimiento es obligatoria.")
+            .isString().withMessage("La observación del movimiento debe ser una cadena de texto."),
     ];
 
+    validateUpdateMovementFields = [
+        // --- depot_id ---
+        check("depot_id")
+            .optional()
+            .notEmpty().withMessage("El almacén del movimiento no puede estar vacío.") // Verifica si existe el campo y no está vacío
+            .isNumeric().withMessage("El ID del almacén debe ser un número entero."),
+
+        // --- product_id ---
+        check("product_id")
+            .optional()
+            .notEmpty().withMessage("El producto del movimiento no puede estar vacío.")
+            .isNumeric().withMessage("El ID del producto debe ser un número entero."),
+
+        // --- type ---
+        check("type")
+            .optional()
+            .notEmpty().withMessage("El tipo del movimiento no puede estar vacío.")
+            .isIn(["Entrada", "Salida"]).withMessage("El tipo del movimiento debe ser uno de: Entrada, Salida."),
+        
+        // --- amount ---
+        check("amount")
+            .optional()
+            .notEmpty().withMessage("La cantidad del movimiento no puede estar vacía.")
+            .isNumeric().withMessage("La cantidad del movimiento debe ser un número entero."),
+
+        // --- observation ---
+        check("observation")
+            .optional()
+            .notEmpty().withMessage("La observación del movimiento no puede estar vacía.")
+            .isString().withMessage("La observación del movimiento debe ser una cadena de texto."),
+
+        // --- status ---
+        check("status")
+            .optional()
+            .notEmpty().withMessage("El estado del movimiento no puede estar vacío.")
+            .isBoolean().withMessage("El estado del movimiento debe ser un valor booleano."),
+    ];
 
     validateDepotIdExists = async (req: Request, res: Response, next: NextFunction) => {
         try {

@@ -9,6 +9,7 @@ export const RolModel = {
     name: {
         type: DataTypes.STRING(100),
         allowNull: false,
+        unique: true,
     },
     createdAt: {
         type: DataTypes.DATE,
