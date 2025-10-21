@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.categoryValidators = exports.CategoryValidator = void 0;
 const express_validator_1 = require("express-validator");
-const config_1 = require("../config");
+const models_1 = require("../models");
 class CategoryValidator {
     constructor() {
         this.validateFields = [
@@ -47,7 +47,7 @@ class CategoryValidator {
                         message: `El ID de categoría "${rawId}" no es válido.`,
                     });
                 }
-                const existingCategory = await config_1.CategoryDB.findByPk(category_id);
+                const existingCategory = await models_1.CategoryDB.findByPk(category_id);
                 if (!existingCategory) {
                     return res.status(404).json({
                         message: `Categoría con ID "${category_id}" no encontrado.`,

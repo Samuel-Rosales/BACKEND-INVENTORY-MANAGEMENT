@@ -1,4 +1,4 @@
-import { PurchaseDetailDB } from "src/config";
+import { PurchaseDetailDB } from "src/models";
 
 export const purchaseDetailSeed = async () => {
     try {

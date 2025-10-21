@@ -1,6 +1,6 @@
 import { check } from "express-validator";
 import type { NextFunction, Request, Response } from "express";
-import { ProviderDB } from "../config";
+import { ProviderDB } from "../models";
 
 export class ProviderValidators {
     

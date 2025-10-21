@@ -12,14 +12,14 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PurchaseDetailServices = void 0;
-const config_1 = require("../config");
+const models_1 = require("../models");
 class PurchaseDetailService {
     async getAll() {
         try {
-            const purchasesDetails = await config_1.PurchaseDetailDB.findAll({
+            const purchasesDetails = await models_1.PurchaseDetailDB.findAll({
                 include: [
-                    { model: config_1.PurchaseDB, as: "purchase" },
-                    { model: config_1.ProductDB, as: "product" },
+                    { model: models_1.PurchaseDB, as: "purchase" },
+                    { model: models_1.ProductDB, as: "product" },
                 ],
             });
             return {
@@ -39,10 +39,10 @@ class PurchaseDetailService {
     }
     async getOne(purchase_detail_id) {
         try {
-            const purchaseDetail = await config_1.PurchaseDetailDB.findByPk(purchase_detail_id, {
+            const purchaseDetail = await models_1.PurchaseDetailDB.findByPk(purchase_detail_id, {
                 include: [
-                    { model: config_1.PurchaseDB, as: "purchase" },
-                    { model: config_1.ProductDB, as: "product" },
+                    { model: models_1.PurchaseDB, as: "purchase" },
+                    { model: models_1.ProductDB, as: "product" },
                 ]
             });
             return {
@@ -63,7 +63,7 @@ class PurchaseDetailService {
     async create(purchaseDetail) {
         try {
             const { createdAt, updatedAt } = purchaseDetail, purchaseDetailData = __rest(purchaseDetail, ["createdAt", "updatedAt"]);
-            const newPurchaseDetail = await config_1.PurchaseDetailDB.create(purchaseDetailData);
+            const newPurchaseDetail = await models_1.PurchaseDetailDB.create(purchaseDetailData);
             return {
                 status: 201,
                 message: "Purchase detail created successfully",
@@ -82,8 +82,8 @@ class PurchaseDetailService {
     async update(purchase_detail_id, purchaseDetail) {
         try {
             const { createdAt, updatedAt, purchase_detail_id: _ } = purchaseDetail, purchaseDetailData = __rest(purchaseDetail, ["createdAt", "updatedAt", "purchase_detail_id"]);
-            await config_1.PurchaseDetailDB.update(purchaseDetailData, { where: { purchase_detail_id } });
-            const updatedPurchaseDetail = await config_1.PurchaseDetailDB.findByPk(purchase_detail_id);
+            await models_1.PurchaseDetailDB.update(purchaseDetailData, { where: { purchase_detail_id } });
+            const updatedPurchaseDetail = await models_1.PurchaseDetailDB.findByPk(purchase_detail_id);
             return {
                 status: 200,
                 message: "Purchase detail update correctly",
@@ -101,7 +101,7 @@ class PurchaseDetailService {
     }
     async delete(purchase_detail_id) {
         try {
-            await config_1.PurchaseDetailDB.destroy({ where: { purchase_detail_id } });
+            await models_1.PurchaseDetailDB.destroy({ where: { purchase_detail_id } });
             return {
                 status: 200,
                 message: "Purchase detail deleted successfully",

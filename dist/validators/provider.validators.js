@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.providerValidators = exports.ProviderValidators = void 0;
 const express_validator_1 = require("express-validator");
-const config_1 = require("../config");
+const models_1 = require("../models");
 class ProviderValidators {
     constructor() {
         this.validateCreateFields = [
@@ -37,7 +37,7 @@ class ProviderValidators {
                     return res.status(400).json({ message: `El ID '${rawId}' no puede ser un numero negativo.` });
                 }
                 // consulta DB
-                const existingProvider = await config_1.ProviderDB.findByPk(provider_id);
+                const existingProvider = await models_1.ProviderDB.findByPk(provider_id);
                 if (!existingProvider) {
                     return res.status(404).json({ message: `Tipo de pago con ID '${provider_id}' no encontrado.` });
                 }

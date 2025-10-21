@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.movementSeed = void 0;
-const config_1 = require("src/config");
+const models_1 = require("src/models");
 const movementSeed = async () => {
     try {
         console.log("Iniciando seed de Movimientos...");
@@ -50,7 +50,7 @@ const movementSeed = async () => {
         // Simplemente insertamos los datos sin verificación de duplicados, ya que cada movimiento es único.
         // Asignamos las fechas de creación/actualización
         const finalMovements = movementsToCreate.map(movement => (Object.assign(Object.assign({}, movement), { createdAt: new Date(), updatedAt: new Date() })));
-        const createdMovements = await config_1.MovementDB.bulkCreate(finalMovements);
+        const createdMovements = await models_1.MovementDB.bulkCreate(finalMovements);
         console.log(`Seed de Movimientos ejecutado correctamente. Insertados: ${createdMovements.length}`);
     }
     catch (error) {

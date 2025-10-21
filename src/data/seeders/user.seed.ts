@@ -1,4 +1,4 @@
-import { UserDB } from "src/config";
+import { UserDB } from "src/models";
 
 export const userSeed = async () => {
     try {

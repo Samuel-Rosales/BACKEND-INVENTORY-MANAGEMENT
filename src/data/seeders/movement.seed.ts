@@ -1,4 +1,4 @@
-import { MovementDB } from "src/config";
+import { MovementDB } from "src/models";
 
 export const movementSeed = async () => {
     try {

@@ -1,25 +1,28 @@
-import express, { type Application } from "express"; 
+import express, { type Application } from "express";
 import cors from "cors";
 import morgan from "morgan";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { swaggerOptions } from "../config";
 
-import { 
-  CategoryRoute,
-  ClientRoute,
-  DepotRoute,
-  MovementRoute,
-  ProductRoute,
-  ProviderRoute,
-  PurchaseDetailRoute,
-  PurchaseRoute,
-  RolRoute,
-  SaleDetailRoute,
-  SaleRoute,
-  TypePaymentRoute,
-  UserRoute,
-} from "../routes/index.route"; 
+// --- CAMBIO CLAVE 1: Importar desde el nuevo índice de modelos ---
+import { syncDatabase } from "../models";
+
+import {
+    CategoryRoute,
+    ClientRoute,
+    DepotRoute,
+    MovementRoute,
+    ProductRoute,
+    ProviderRoute,
+    PurchaseDetailRoute,
+    PurchaseRoute,
+    RolRoute,
+    SaleDetailRoute,
+    SaleRoute,
+    TypePaymentRoute,
+    UserRoute,
+} from "../routes/index.route";
 
 export class Server {
     private app: Application
@@ -29,66 +32,85 @@ export class Server {
     private paths: any
 
     constructor() {
-    this.app = express()
-    this.port = process.env.PORT || "3000"
-    this.apiurl = process.env.API_URL || `http://localhost:${this.port}`
-    this.paths = {
-      categories: this.pre + "/category",
-      clients: this.pre + "/client",
-      depots: this.pre + "/depot",
-      movements: this.pre + "/movement",
-      products: this.pre + "/product",
-      providers: this.pre + "/provider",
-      purchases: this.pre + "/purchase",
-      purchases_details: this.pre + "/purchase_detail",
-      rols: this.pre + "/rol",
-      types_payments: this.pre + "/type_payment",
-      sales: this.pre + "/sale",
-      sales_details: this.pre + "/sale_detail",
-      users: this.pre + "/user",
+        this.app = express()
+        this.port = process.env.PORT || "3000"
+        this.apiurl = process.env.API_URL || `http://localhost:${this.port}`
+        this.paths = {
+            // ...tus paths se quedan igual
+            categories: this.pre + "/category",
+            clients: this.pre + "/client",
+            depots: this.pre + "/depot",
+            movements: this.pre + "/movement",
+            products: this.pre + "/product",
+            providers: this.pre + "/provider",
+            purchases: this.pre + "/purchase",
+            purchases_details: this.pre + "/purchase_detail",
+            rols: this.pre + "/rol",
+            types_payments: this.pre + "/type_payment",
+            sales: this.pre + "/sale",
+            sales_details: this.pre + "/sale_detail",
+            users: this.pre + "/user",
+        }
+
+        this.middlewares()
+        this.routes()
+        this.swaggerSetup()
     }
-    
-    this.middlewares()
-    this.routes()
-    this.swaggerSetup()
-  }
 
-  middlewares() {
-    this.app.use(cors({
-      origin: "*", // o una lista segura de dominios
-      methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    }))
+    // --- CAMBIO CLAVE 2: Nuevo método para conectar y sincronizar la DB ---
+    async dbConnect() {
+        try {
+            // La opción 'alter: true' es ideal para desarrollo
+            await syncDatabase({ alter: true });
+            console.log("Database successfully synchronized");
+        } catch (error) {
+            console.error("Unable to connect to the database:", error);
+            throw new Error("Unable to connect to the database");
+        }
+    }
 
-    this.app.use(express.json())
-    this.app.use(express.static("src/public"))
-    this.app.use(morgan("dev"))
-  }
+    middlewares() {
+        this.app.use(cors({
+            origin: "*",
+            methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+        }))
 
-  routes() {
-    this.app.use(this.paths.categories, CategoryRoute);
-    this.app.use(this.paths.clients, ClientRoute);
-    this.app.use(this.paths.depots, DepotRoute);
-    this.app.use(this.paths.movements, MovementRoute);
-    this.app.use(this.paths.products, ProductRoute);
-    this.app.use(this.paths.providers, ProviderRoute);
-    this.app.use(this.paths.purchases, PurchaseRoute);
-    this.app.use(this.paths.purchases_details, PurchaseDetailRoute);
-    this.app.use(this.paths.rols, RolRoute);
-    this.app.use(this.paths.types_payments, TypePaymentRoute);
-    this.app.use(this.paths.sales, SaleRoute);
-    this.app.use(this.paths.sales_details, SaleDetailRoute);
-    this.app.use(this.paths.users, UserRoute);
-  }
+        this.app.use(express.json())
+        this.app.use(express.static("src/public"))
+        this.app.use(morgan("dev"))
+    }
 
-  listen() {
-    this.app.listen(this.port, () => {
-      const URL = `${this.apiurl}/swagger/#`
-      console.log(`Server running in ${URL}`)
-    })
-  }
+    routes() {
+        // ...tus rutas se quedan igual
+        this.app.use(this.paths.categories, CategoryRoute);
+        this.app.use(this.paths.clients, ClientRoute);
+        this.app.use(this.paths.depots, DepotRoute);
+        this.app.use(this.paths.movements, MovementRoute);
+        this.app.use(this.paths.products, ProductRoute);
+        this.app.use(this.paths.providers, ProviderRoute);
+        this.app.use(this.paths.purchases, PurchaseRoute);
+        this.app.use(this.paths.purchases_details, PurchaseDetailRoute);
+        this.app.use(this.paths.rols, RolRoute);
+        this.app.use(this.paths.types_payments, TypePaymentRoute);
+        this.app.use(this.paths.sales, SaleRoute);
+        this.app.use(this.paths.sales_details, SaleDetailRoute);
+        this.app.use(this.paths.users, UserRoute);
+    }
 
-  swaggerSetup() {
-    const swaggerDocs = swaggerJSDoc(swaggerOptions)
-    this.app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
-  }
+    // --- CAMBIO CLAVE 3: El método listen ahora es asíncrono ---
+    async listen() {
+        // Primero, espera a que la base de datos esté lista
+        await this.dbConnect();
+
+        // Luego, inicia el servidor
+        this.app.listen(this.port, () => {
+            const URL = `${this.apiurl}/swagger/#`
+            console.log(`🚀 Server running in ${URL}`)
+        })
+    }
+
+    swaggerSetup() {
+        const swaggerDocs = swaggerJSDoc(swaggerOptions)
+        this.app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+    }
 }

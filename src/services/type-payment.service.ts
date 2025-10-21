@@ -1,4 +1,4 @@
-import { TypePaymentDB } from "../config";
+import { TypePaymentDB } from "../models";
 import { TypePaymentInterface } from "../interfaces";
 
 class TypePaymentService {

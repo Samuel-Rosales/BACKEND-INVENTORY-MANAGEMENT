@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.rolSeed = void 0;
-const config_1 = require("src/config");
+const models_1 = require("src/models");
 const rolSeed = async () => {
     try {
         console.log("Starting rol seeds...");
@@ -25,7 +25,7 @@ const rolSeed = async () => {
         ];
         // 1. Obtener los nombres de los roles ya existentes en la DB
         // Usamos 'as { name: string }[]' para el tipado, evitando el error de TypeScript
-        const existingRoles = await config_1.RolDB.findAll({
+        const existingRoles = await models_1.RolDB.findAll({
             attributes: ['name']
         });
         const existingNames = existingRoles.map(rol => rol.name);
@@ -35,7 +35,7 @@ const rolSeed = async () => {
         const finalRoles = uniqueRolesToCreate.map(rol => (Object.assign(Object.assign({}, rol), { createdAt: new Date(), updatedAt: new Date() })));
         if (finalRoles.length > 0) {
             // 4. Insertar SOLO los nuevos roles
-            const createdRoles = await config_1.RolDB.bulkCreate(finalRoles);
+            const createdRoles = await models_1.RolDB.bulkCreate(finalRoles);
             console.log(`Seed de Roles ejecutado correctamente. Insertados: ${createdRoles.length}`);
         }
         else {

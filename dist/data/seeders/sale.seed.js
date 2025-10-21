@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.saleSeed = void 0;
-const config_1 = require("src/config");
+const models_1 = require("src/models");
 const saleSeed = async () => {
     try {
         console.log("Iniciando seed de Ventas (Cabecera)...");
@@ -46,7 +46,7 @@ const saleSeed = async () => {
         ];
         // --- Lógica de inserción ---
         const finalSales = salesToCreate.map(sale => (Object.assign(Object.assign({}, sale), { createdAt: new Date(), updatedAt: new Date() })));
-        const createdSales = await config_1.SaleDB.bulkCreate(finalSales);
+        const createdSales = await models_1.SaleDB.bulkCreate(finalSales);
         console.log(`Seed de Ventas ejecutado correctamente. Insertadas: ${createdSales.length} ventas.`);
     }
     catch (error) {

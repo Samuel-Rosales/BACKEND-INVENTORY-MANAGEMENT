@@ -1,4 +1,4 @@
-import { DepotDB } from "src/config";
+import { DepotDB } from "src/models";
 
 export const depotSeed = async () => {
     try {

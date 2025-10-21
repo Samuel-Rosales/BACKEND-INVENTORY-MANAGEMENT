@@ -1,6 +1,6 @@
 import { check } from "express-validator";
 import type { NextFunction, Request, Response } from "express";
-import { TypePaymentDB } from "../config";
+import { TypePaymentDB } from "../models";
 
 export class TypePaymentValidators {
     

@@ -12,14 +12,14 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MovementServices = void 0;
-const config_1 = require("../config");
+const models_1 = require("../models");
 class MovementService {
     async getAll() {
         try {
-            const movements = await config_1.MovementDB.findAll({
+            const movements = await models_1.MovementDB.findAll({
                 include: [
-                    { model: config_1.ProductDB, as: "product" },
-                    { model: config_1.DepotDB, as: "depot" }
+                    { model: models_1.ProductDB, as: "product" },
+                    { model: models_1.DepotDB, as: "depot" }
                 ]
             });
             return {
@@ -39,10 +39,10 @@ class MovementService {
     }
     async getOne(movement_id) {
         try {
-            const movement = await config_1.MovementDB.findByPk(movement_id, {
+            const movement = await models_1.MovementDB.findByPk(movement_id, {
                 include: [
-                    { model: config_1.ProductDB, as: "product" },
-                    { model: config_1.DepotDB, as: "depot" }
+                    { model: models_1.ProductDB, as: "product" },
+                    { model: models_1.DepotDB, as: "depot" }
                 ]
             });
             return {
@@ -63,7 +63,7 @@ class MovementService {
     async create(movement) {
         try {
             const { createdAt, updatedAt, movement_id } = movement, movementData = __rest(movement, ["createdAt", "updatedAt", "movement_id"]);
-            const newMovement = await config_1.MovementDB.create(movementData);
+            const newMovement = await models_1.MovementDB.create(movementData);
             return {
                 status: 201,
                 message: "Movement created correctly",
@@ -82,8 +82,8 @@ class MovementService {
     async update(movement_id, movement) {
         try {
             const { createdAt, updatedAt, movement_id: _ } = movement, movementData = __rest(movement, ["createdAt", "updatedAt", "movement_id"]);
-            await config_1.MovementDB.update(movementData, { where: { movement_id } });
-            const updatedMovement = await config_1.MovementDB.findByPk(movement_id);
+            await models_1.MovementDB.update(movementData, { where: { movement_id } });
+            const updatedMovement = await models_1.MovementDB.findByPk(movement_id);
             return {
                 status: 200,
                 message: "Movement update correctly",
@@ -101,7 +101,7 @@ class MovementService {
     }
     async delete(movement_id) {
         try {
-            const deletedCount = await config_1.MovementDB.destroy({ where: { movement_id } });
+            const deletedCount = await models_1.MovementDB.destroy({ where: { movement_id } });
             if (deletedCount === 0) {
                 return {
                     status: 404,

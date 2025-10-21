@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userValidators = exports.UserValidators = void 0;
 const express_validator_1 = require("express-validator");
-const config_1 = require("../config");
+const models_1 = require("../models");
 class UserValidators {
     constructor() {
         this.validateCreateFields = [
@@ -51,7 +51,7 @@ class UserValidators {
                         message: `El ID del rol '${rawId}' no es válido.`,
                     });
                 }
-                const rol = await config_1.RolDB.findByPk(rol_id);
+                const rol = await models_1.RolDB.findByPk(rol_id);
                 if (!rol) {
                     return res.status(400).json({
                         message: `El rol con ID '${rol_id}' no existe.`
@@ -76,7 +76,7 @@ class UserValidators {
                         message: `La cédula proporcionada '${user_ci}' no es válida. Debe ser un número entre 6 y 10 dígitos.`,
                     });
                 }
-                const existingUser = await config_1.UserDB.findByPk(user_ci);
+                const existingUser = await models_1.UserDB.findByPk(user_ci);
                 if (!existingUser) {
                     return res.status(404).json({ message: `Usuario con la cédula '${user_ci}' no encontrado.` });
                 }
@@ -99,7 +99,7 @@ class UserValidators {
                         message: `La cédula proporcionada '${user_ci}' no es válida. Debe ser un número entre 6 y 10 dígitos.`,
                     });
                 }
-                const existingUser = await config_1.UserDB.findByPk(user_ci);
+                const existingUser = await models_1.UserDB.findByPk(user_ci);
                 if (existingUser) {
                     return res.status(400).json({ message: `Ya existe un usuario registrado con la cédula: '${user_ci}'.` });
                 }

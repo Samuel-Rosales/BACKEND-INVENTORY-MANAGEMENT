@@ -12,11 +12,11 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TypePaymentServices = void 0;
-const config_1 = require("../config");
+const models_1 = require("../models");
 class TypePaymentService {
     async getAll() {
         try {
-            const typesPaymets = await config_1.TypePaymentDB.findAll();
+            const typesPaymets = await models_1.TypePaymentDB.findAll();
             return {
                 status: 200,
                 message: "Types payments obtained correctly",
@@ -34,7 +34,7 @@ class TypePaymentService {
     }
     async getOne(type_payment_id) {
         try {
-            const typePayment = await config_1.TypePaymentDB.findByPk(type_payment_id);
+            const typePayment = await models_1.TypePaymentDB.findByPk(type_payment_id);
             return {
                 status: 200,
                 message: "Type payment obtained correctly",
@@ -53,7 +53,7 @@ class TypePaymentService {
     async create(typePayment) {
         try {
             const { createdAt, updatedAt } = typePayment, typePaymentData = __rest(typePayment, ["createdAt", "updatedAt"]);
-            const newTypePayment = await config_1.TypePaymentDB.create(typePaymentData);
+            const newTypePayment = await models_1.TypePaymentDB.create(typePaymentData);
             return {
                 status: 201,
                 message: "Type payment created successfully",
@@ -72,8 +72,8 @@ class TypePaymentService {
     async update(type_payment_id, typePayment) {
         try {
             const { createdAt, updatedAt, type_payment_id: _ } = typePayment, typePaymentData = __rest(typePayment, ["createdAt", "updatedAt", "type_payment_id"]);
-            await config_1.TypePaymentDB.update(typePaymentData, { where: { type_payment_id } });
-            const updatedTypePayment = await config_1.TypePaymentDB.findByPk(type_payment_id);
+            await models_1.TypePaymentDB.update(typePaymentData, { where: { type_payment_id } });
+            const updatedTypePayment = await models_1.TypePaymentDB.findByPk(type_payment_id);
             return {
                 status: 200,
                 message: "Type payment update correctly",
@@ -91,7 +91,7 @@ class TypePaymentService {
     }
     async delete(type_payment_id) {
         try {
-            await config_1.TypePaymentDB.destroy({ where: { type_payment_id } });
+            await models_1.TypePaymentDB.destroy({ where: { type_payment_id } });
             return {
                 status: 200,
                 message: "Type payment deleted successfully",

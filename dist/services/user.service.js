@@ -12,13 +12,13 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserServices = void 0;
-const config_1 = require("../config");
+const models_1 = require("../models");
 class UserService {
     async getAll() {
         try {
-            const users = await config_1.UserDB.findAll({
+            const users = await models_1.UserDB.findAll({
                 include: [{
-                        model: config_1.RolDB, as: "rol"
+                        model: models_1.RolDB, as: "rol"
                     }]
             });
             return {
@@ -38,9 +38,9 @@ class UserService {
     }
     async getOne(user_ci) {
         try {
-            const user = await config_1.UserDB.findByPk(user_ci, {
+            const user = await models_1.UserDB.findByPk(user_ci, {
                 include: [{
-                        model: config_1.RolDB, as: "rol"
+                        model: models_1.RolDB, as: "rol"
                     }]
             });
             return {
@@ -61,7 +61,7 @@ class UserService {
     async create(user) {
         try {
             const { createdAt, updatedAt } = user, userData = __rest(user, ["createdAt", "updatedAt"]);
-            const newUser = await config_1.UserDB.create(userData);
+            const newUser = await models_1.UserDB.create(userData);
             return {
                 status: 201,
                 message: "User created successfully",
@@ -80,8 +80,8 @@ class UserService {
     async update(ci, user) {
         try {
             const { createdAt, updatedAt, ci: _ } = user, userData = __rest(user, ["createdAt", "updatedAt", "ci"]);
-            await config_1.UserDB.update(userData, { where: { ci } });
-            const updatedUser = await config_1.UserDB.findByPk(ci);
+            await models_1.UserDB.update(userData, { where: { ci } });
+            const updatedUser = await models_1.UserDB.findByPk(ci);
             return {
                 status: 200,
                 message: "User update correctly",
@@ -99,7 +99,7 @@ class UserService {
     }
     async delete(user_ci) {
         try {
-            await config_1.UserDB.destroy({ where: { user_ci } });
+            await models_1.UserDB.destroy({ where: { user_ci } });
             return {
                 status: 200,
                 message: "User deleting successfully",

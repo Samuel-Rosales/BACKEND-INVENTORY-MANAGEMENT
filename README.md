@@ -70,8 +70,8 @@ Puedes ejecutar el servidor en diferentes modos según los scripts definidos en 
 - **`npm run seeds`**  
   Ejecuta los scripts en la carpeta `dist` para poblar la base de datos con datos de ejemplo (semillas).
 
-- **`npm run reset-insert`**  
-  Ejecuta un script para resetear la base de datos y volver a poblarla.
+- **`npm run seeds-reset`**  
+  Ejecuta un script para resetear la base de datos y volver a poblarla (El mas recomendado para iniciar el proyecto).
 
 - **`npm run reset`**  
   resetea la base de datos completamente dejandola vacía.

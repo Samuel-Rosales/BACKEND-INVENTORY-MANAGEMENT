@@ -1,4 +1,4 @@
-import { SaleDB } from "src/config";
+import { SaleDB } from "src/models";
 
 export const saleSeed = async () => {
     try {

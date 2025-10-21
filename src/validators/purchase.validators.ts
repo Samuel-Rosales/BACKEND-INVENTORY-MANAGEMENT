@@ -1,6 +1,6 @@
 import { check } from "express-validator";
 import type { NextFunction, Request, Response } from "express";
-import { PurchaseDB, ProviderDB, TypePaymentDB, UserDB } from "../config";
+import { PurchaseDB, ProviderDB, TypePaymentDB, UserDB } from "../models";
 
 export class PurchaseValidators {
     

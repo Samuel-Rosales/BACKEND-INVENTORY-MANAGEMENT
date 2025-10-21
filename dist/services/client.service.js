@@ -12,11 +12,11 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClientServices = void 0;
-const config_1 = require("../config");
+const models_1 = require("../models");
 class ClientService {
     async getAll() {
         try {
-            const clients = await config_1.ClientDB.findAll();
+            const clients = await models_1.ClientDB.findAll();
             return {
                 status: 200,
                 message: "Clients obtained correctly",
@@ -34,7 +34,7 @@ class ClientService {
     }
     async getOne(client_id) {
         try {
-            const client = await config_1.ClientDB.findByPk(client_id);
+            const client = await models_1.ClientDB.findByPk(client_id);
             return {
                 status: 200,
                 message: "Client obtained correctly",
@@ -53,7 +53,7 @@ class ClientService {
     async create(client) {
         try {
             const { createdAt, updatedAt } = client, clientData = __rest(client, ["createdAt", "updatedAt"]);
-            const newClient = await config_1.ClientDB.create(clientData);
+            const newClient = await models_1.ClientDB.create(clientData);
             return {
                 status: 201,
                 message: "Client created successfully",
@@ -72,8 +72,8 @@ class ClientService {
     async update(client_ci, client) {
         try {
             const { createdAt, updatedAt, client_ci: _ } = client, clientData = __rest(client, ["createdAt", "updatedAt", "client_ci"]);
-            await config_1.ClientDB.update(clientData, { where: { client_ci } });
-            const updatedClient = await config_1.ClientDB.findByPk(client_ci);
+            await models_1.ClientDB.update(clientData, { where: { client_ci } });
+            const updatedClient = await models_1.ClientDB.findByPk(client_ci);
             return {
                 status: 200,
                 message: "Client update correctly",
@@ -91,7 +91,7 @@ class ClientService {
     }
     async delete(client_ci) {
         try {
-            await config_1.ClientDB.destroy({ where: { client_ci } });
+            await models_1.ClientDB.destroy({ where: { client_ci } });
             return {
                 status: 200,
                 message: "Client deleted successfully",

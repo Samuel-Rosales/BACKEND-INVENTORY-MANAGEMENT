@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.saleValidators = exports.SaleValidators = void 0;
 const express_validator_1 = require("express-validator");
-const config_1 = require("../config");
+const models_1 = require("../models");
 class SaleValidators {
     constructor() {
         this.validateCreateFields = [
@@ -49,7 +49,7 @@ class SaleValidators {
                         message: `La cédula proporcionada '${client_ci}' no es válida. Debe ser un número entre 6 y 10 dígitos.`,
                     });
                 }
-                const existingClient = await config_1.ClientDB.findByPk(client_ci);
+                const existingClient = await models_1.ClientDB.findByPk(client_ci);
                 if (!existingClient) {
                     return res.status(404).json({ message: `Cliente con la cédula '${client_ci}' no encontrado.` });
                 }
@@ -75,7 +75,7 @@ class SaleValidators {
                     return res.status(400).json({ message: `El ID "${rawId}" no puede ser un numero negativo.` });
                 }
                 // consulta DB
-                const existingTypePayment = await config_1.TypePaymentDB.findByPk(type_payment_id);
+                const existingTypePayment = await models_1.TypePaymentDB.findByPk(type_payment_id);
                 if (!existingTypePayment) {
                     return res.status(404).json({ message: `Tipo de pago con ID "${type_payment_id}" no encontrado.` });
                 }
@@ -98,7 +98,7 @@ class SaleValidators {
                         message: `La cédula proporcionada '${user_ci}' no es válida. Debe ser un número entre 6 y 10 dígitos.`,
                     });
                 }
-                const existingUser = await config_1.UserDB.findByPk(user_ci);
+                const existingUser = await models_1.UserDB.findByPk(user_ci);
                 if (!existingUser) {
                     return res.status(404).json({ message: `Usuario con la cédula '${user_ci}' no encontrado.` });
                 }
@@ -124,7 +124,7 @@ class SaleValidators {
                     return res.status(400).json({ message: `El ID '${rawId}' no puede ser un numero negativo.` });
                 }
                 // consulta DB
-                const existingSale = await config_1.SaleDB.findByPk(sale_id);
+                const existingSale = await models_1.SaleDB.findByPk(sale_id);
                 if (!existingSale) {
                     return res.status(404).json({ message: `Venta con ID '${sale_id}' no encontrado.` });
                 }

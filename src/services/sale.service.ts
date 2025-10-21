@@ -1,4 +1,4 @@
-import { SaleDB, ClientDB, TypePaymentDB, UserDB, SaleDetailDB } from "../config";
+import { SaleDB, ClientDB, TypePaymentDB, UserDB, SaleDetailDB } from "../models";
 import { SaleInterface } from "../interfaces";
 
 class SaleService {

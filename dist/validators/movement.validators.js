@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.movementValidators = exports.MovementValidator = void 0;
 const express_validator_1 = require("express-validator");
-const config_1 = require("../config");
+const models_1 = require("../models");
 class MovementValidator {
     constructor() {
         this.validateCreateFields = [
@@ -69,7 +69,7 @@ class MovementValidator {
                         message: `El ID del almacén proporcionado "${rawId}" no es válido.`,
                     });
                 }
-                const exitingDepot = await config_1.DepotDB.findByPk(depot_id);
+                const exitingDepot = await models_1.DepotDB.findByPk(depot_id);
                 if (!exitingDepot) {
                     return res.status(404).json({
                         message: `Almacén con ID proporcionado "${depot_id}" no encontrado.`,
@@ -101,7 +101,7 @@ class MovementValidator {
                     });
                 }
                 // consulta DB
-                const existingProduct = await config_1.ProductDB.findByPk(product_id);
+                const existingProduct = await models_1.ProductDB.findByPk(product_id);
                 if (!existingProduct) {
                     return res.status(404).json({
                         message: `Producto con ID "${product_id}" no encontrado.`
@@ -126,7 +126,7 @@ class MovementValidator {
                     message: `El ID del movimiento proporcionado "${rawId}" no es válido.`,
                 });
             }
-            const existingMoviment = await config_1.MovementDB.findByPk(movement_id);
+            const existingMoviment = await models_1.MovementDB.findByPk(movement_id);
             if (!existingMoviment) {
                 return res.status(404).json({
                     message: `Movimiento con ID "${movement_id}" no encontrado.`

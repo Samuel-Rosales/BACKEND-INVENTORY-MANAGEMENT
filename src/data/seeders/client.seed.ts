@@ -1,4 +1,4 @@
-import { ClientDB } from "src/config";
+import { ClientDB } from "src/models";
 
 export const clientSeed = async () => {
     try {

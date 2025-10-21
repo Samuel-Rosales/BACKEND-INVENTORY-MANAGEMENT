@@ -1,4 +1,4 @@
-import { ProductDB } from "src/config";
+import { ProductDB } from "src/models";
 
 export const productSeed = async () => {
     try {

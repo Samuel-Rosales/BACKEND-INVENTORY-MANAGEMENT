@@ -1,6 +1,6 @@
 import { check } from "express-validator"; 
 import type { NextFunction, Request, Response } from "express";
-import { RolDB } from "../config";
+import { RolDB } from "../models";
 
 export class RolValidator {
 

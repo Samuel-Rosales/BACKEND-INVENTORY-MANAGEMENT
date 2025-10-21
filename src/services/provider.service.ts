@@ -1,4 +1,4 @@
-import { ProviderDB} from "../config";
+import { ProviderDB} from "../models";
 import { ProviderInterface } from "../interfaces";
 
 class ProviderService {

@@ -1,4 +1,4 @@
-import { ClientDB} from "../config";
+import { ClientDB} from "../models";
 import { ClientInterface } from "../interfaces";
 
 class ClientService {

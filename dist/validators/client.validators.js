@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.clientValidators = exports.ClientValidators = void 0;
 const express_validator_1 = require("express-validator");
-const config_1 = require("../config");
+const models_1 = require("../models");
 class ClientValidators {
     constructor() {
         this.validateCreateFields = [
@@ -54,7 +54,7 @@ class ClientValidators {
                         message: `La cédula proporcionada '${client_ci}' no es válida. Debe ser un número entre 6 y 10 dígitos.`,
                     });
                 }
-                const existingClient = await config_1.ClientDB.findByPk(client_ci);
+                const existingClient = await models_1.ClientDB.findByPk(client_ci);
                 if (!existingClient) {
                     return res.status(404).json({ message: `Cliente con la cédula '${client_ci}' no encontrado.` });
                 }

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.productValidators = exports.ProductValidators = void 0;
 const express_validator_1 = require("express-validator");
-const config_1 = require("../config");
+const models_1 = require("../models");
 class ProductValidators {
     constructor() {
         this.validateFields = [
@@ -31,7 +31,7 @@ class ProductValidators {
                     });
                 }
                 //verificar si la categoría existe
-                const category = await config_1.CategoryDB.findByPk(category_id);
+                const category = await models_1.CategoryDB.findByPk(category_id);
                 if (!category) {
                     return res.status(400).json({
                         message: `La categoría con ID ${category_id} no existe.`
@@ -59,7 +59,7 @@ class ProductValidators {
                     return res.status(400).json({ message: `El ID "${rawId}" no puede ser un numero negativo.` });
                 }
                 // consulta DB
-                const existingProduct = await config_1.ProductDB.findByPk(product_id);
+                const existingProduct = await models_1.ProductDB.findByPk(product_id);
                 if (!existingProduct) {
                     return res.status(404).json({ message: `Producto con ID "${product_id}" no encontrado.` });
                 }

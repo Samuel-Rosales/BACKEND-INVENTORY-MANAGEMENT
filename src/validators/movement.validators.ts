@@ -1,6 +1,6 @@
 import { check } from "express-validator"; 
 import type { NextFunction, Request, Response } from "express";
-import { DepotDB, MovementDB, ProductDB } from "../config";
+import { DepotDB, MovementDB, ProductDB } from "../models";
 
 export class MovementValidator {
 

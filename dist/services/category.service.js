@@ -12,11 +12,11 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryServices = void 0;
-const config_1 = require("../config");
+const models_1 = require("../models");
 class CategoryService {
     async getAll() {
         try {
-            const categories = await config_1.CategoryDB.findAll();
+            const categories = await models_1.CategoryDB.findAll();
             return {
                 status: 200,
                 message: "Categories obtained correctly",
@@ -34,7 +34,7 @@ class CategoryService {
     }
     async getOne(category_id) {
         try {
-            const category = await config_1.CategoryDB.findByPk(category_id);
+            const category = await models_1.CategoryDB.findByPk(category_id);
             if (!category) {
                 return {
                     status: 404,
@@ -60,7 +60,7 @@ class CategoryService {
     async create(category) {
         try {
             const { createdAt, updatedAt, category_id } = category, categoryData = __rest(category, ["createdAt", "updatedAt", "category_id"]);
-            const newCategory = await config_1.CategoryDB.create(categoryData);
+            const newCategory = await models_1.CategoryDB.create(categoryData);
             return {
                 status: 201,
                 message: "Category created correctly",
@@ -79,8 +79,8 @@ class CategoryService {
     async update(category_id, category) {
         try {
             const { createdAt, updatedAt, category_id: _ } = category, categorytData = __rest(category, ["createdAt", "updatedAt", "category_id"]);
-            await config_1.CategoryDB.update(categorytData, { where: { category_id } });
-            const updatedCategory = await config_1.CategoryDB.findByPk(category_id);
+            await models_1.CategoryDB.update(categorytData, { where: { category_id } });
+            const updatedCategory = await models_1.CategoryDB.findByPk(category_id);
             return {
                 status: 200,
                 message: "Category update correctly",
@@ -98,7 +98,7 @@ class CategoryService {
     }
     async delete(category_id) {
         try {
-            const category = await config_1.CategoryDB.destroy({ where: { category_id } });
+            const category = await models_1.CategoryDB.destroy({ where: { category_id } });
             return {
                 status: 200,
                 message: "Category deleted successfully"

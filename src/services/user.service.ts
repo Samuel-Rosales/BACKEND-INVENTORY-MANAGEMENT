@@ -1,4 +1,4 @@
-import { UserDB, RolDB  } from "../config";
+import { UserDB, RolDB  } from "../models";
 import { UserInterface } from "../interfaces";
 
 class UserService {

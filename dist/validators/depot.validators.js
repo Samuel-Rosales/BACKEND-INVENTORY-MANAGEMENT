@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.depotValidators = exports.DepotValidator = void 0;
 const express_validator_1 = require("express-validator");
-const config_1 = require("../config");
+const models_1 = require("../models");
 class DepotValidator {
     constructor() {
         this.validateFields = [
@@ -49,7 +49,7 @@ class DepotValidator {
                         message: `El ID de Almacén "${rawId}" no es válido.`,
                     });
                 }
-                const existingDepot = await config_1.DepotDB.findByPk(depot_id);
+                const existingDepot = await models_1.DepotDB.findByPk(depot_id);
                 if (!existingDepot) {
                     return res.status(404).json({
                         message: `Almacén con ID "${depot_id}" no encontrado.`,

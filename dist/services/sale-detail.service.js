@@ -12,14 +12,14 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SaleDetailServices = void 0;
-const config_1 = require("../config");
+const models_1 = require("../models");
 class SaleDetailService {
     async getAll() {
         try {
-            const SalesDetails = await config_1.SaleDetailDB.findAll({
+            const SalesDetails = await models_1.SaleDetailDB.findAll({
                 include: [
-                    { model: config_1.SaleDB, as: "sale" },
-                    { model: config_1.ProductDB, as: "product" },
+                    { model: models_1.SaleDB, as: "sale" },
+                    { model: models_1.ProductDB, as: "product" },
                 ],
             });
             return {
@@ -39,10 +39,10 @@ class SaleDetailService {
     }
     async getOne(sale_detail_id) {
         try {
-            const saleDetail = await config_1.SaleDetailDB.findByPk(sale_detail_id, {
+            const saleDetail = await models_1.SaleDetailDB.findByPk(sale_detail_id, {
                 include: [
-                    { model: config_1.SaleDB, as: "sale" },
-                    { model: config_1.ProductDB, as: "product" },
+                    { model: models_1.SaleDB, as: "sale" },
+                    { model: models_1.ProductDB, as: "product" },
                 ]
             });
             return {
@@ -63,7 +63,7 @@ class SaleDetailService {
     async create(saleDetail) {
         try {
             const { createdAt, updatedAt, status } = saleDetail, saleDetailData = __rest(saleDetail, ["createdAt", "updatedAt", "status"]);
-            const newSaleDetail = await config_1.SaleDetailDB.create(saleDetailData);
+            const newSaleDetail = await models_1.SaleDetailDB.create(saleDetailData);
             return {
                 status: 201,
                 message: "Sale detail created successfully",
@@ -82,8 +82,8 @@ class SaleDetailService {
     async update(sale_detail_id, saleDetail) {
         try {
             const { createdAt, updatedAt, sale_detail_id: _ } = saleDetail, saleDetailData = __rest(saleDetail, ["createdAt", "updatedAt", "sale_detail_id"]);
-            await config_1.SaleDetailDB.update(saleDetailData, { where: { sale_detail_id } });
-            const updatedSaleDetail = await config_1.SaleDetailDB.findByPk(sale_detail_id);
+            await models_1.SaleDetailDB.update(saleDetailData, { where: { sale_detail_id } });
+            const updatedSaleDetail = await models_1.SaleDetailDB.findByPk(sale_detail_id);
             return {
                 status: 200,
                 message: "Sale detail update correctly",
@@ -101,7 +101,7 @@ class SaleDetailService {
     }
     async delete(sale_detail_id) {
         try {
-            await config_1.SaleDetailDB.destroy({ where: { sale_detail_id } });
+            await models_1.SaleDetailDB.destroy({ where: { sale_detail_id } });
             return {
                 status: 200,
                 message: "Sale detail deleted successfully",

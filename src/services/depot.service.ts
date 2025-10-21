@@ -1,4 +1,4 @@
-import { DepotDB } from "../config";
+import { DepotDB } from "../models";
 import { DepotInterface } from "../interfaces";
 
 class DepotService {

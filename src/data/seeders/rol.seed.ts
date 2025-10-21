@@ -1,4 +1,4 @@
-import { RolDB } from "src/config"; 
+import { RolDB } from "src/models"; 
 
 export const rolSeed = async () => {
     try {

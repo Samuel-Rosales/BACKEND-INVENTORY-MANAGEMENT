@@ -1,4 +1,4 @@
-import { PurchaseDB, ProviderDB, TypePaymentDB, UserDB, PurchaseDetailDB } from "../config";
+import { PurchaseDB, ProviderDB, TypePaymentDB, UserDB, PurchaseDetailDB } from "../models";
 import { PurchaseInterface } from "../interfaces";
 
 class PurchaseService {

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.clientSeed = void 0;
-const config_1 = require("src/config");
+const models_1 = require("src/models");
 const clientSeed = async () => {
     try {
         console.log("Iniciando seed de Clientes...");
@@ -37,7 +37,7 @@ const clientSeed = async () => {
         ];
         // 1. Obtener las cédulas de los clientes ya existentes en la DB
         // Usamos el casting para que TypeScript reconozca la propiedad 'client_ci'
-        const existingClients = await config_1.ClientDB.findAll({
+        const existingClients = await models_1.ClientDB.findAll({
             attributes: ['client_ci']
         });
         const existingCIs = existingClients.map(client => client.client_ci);
@@ -47,7 +47,7 @@ const clientSeed = async () => {
         const finalClients = uniqueClientsToCreate.map(client => (Object.assign(Object.assign({}, client), { createdAt: new Date(), updatedAt: new Date() })));
         if (finalClients.length > 0) {
             // 4. Insertar SOLO los nuevos clientes
-            const createdClients = await config_1.ClientDB.bulkCreate(finalClients);
+            const createdClients = await models_1.ClientDB.bulkCreate(finalClients);
             console.log(`Seed de Clientes ejecutado correctamente. Insertados: ${createdClients.length}`);
         }
         else {

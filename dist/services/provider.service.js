@@ -12,11 +12,11 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProviderServices = void 0;
-const config_1 = require("../config");
+const models_1 = require("../models");
 class ProviderService {
     async getAll() {
         try {
-            const providers = await config_1.ProviderDB.findAll();
+            const providers = await models_1.ProviderDB.findAll();
             return {
                 status: 200,
                 message: "Providers obtained correctly",
@@ -34,7 +34,7 @@ class ProviderService {
     }
     async getOne(provider_id) {
         try {
-            const provider = await config_1.ProviderDB.findByPk(provider_id);
+            const provider = await models_1.ProviderDB.findByPk(provider_id);
             return {
                 status: 200,
                 message: "Provider obtained correctly",
@@ -53,7 +53,7 @@ class ProviderService {
     async create(provider) {
         try {
             const { createdAt, updatedAt } = provider, providerData = __rest(provider, ["createdAt", "updatedAt"]);
-            const newProvider = await config_1.ProviderDB.create(providerData);
+            const newProvider = await models_1.ProviderDB.create(providerData);
             return {
                 status: 201,
                 message: "Provider created successfully",
@@ -72,8 +72,8 @@ class ProviderService {
     async update(provider_id, provider) {
         try {
             const { createdAt, updatedAt, provider_id: _ } = provider, providerData = __rest(provider, ["createdAt", "updatedAt", "provider_id"]);
-            await config_1.ProviderDB.update(providerData, { where: { provider_id } });
-            const updatedProvider = await config_1.ProviderDB.findByPk(provider_id);
+            await models_1.ProviderDB.update(providerData, { where: { provider_id } });
+            const updatedProvider = await models_1.ProviderDB.findByPk(provider_id);
             return {
                 status: 200,
                 message: "Provider update correctly",
@@ -91,7 +91,7 @@ class ProviderService {
     }
     async delete(provider_id) {
         try {
-            await config_1.ProviderDB.destroy({ where: { provider_id } });
+            await models_1.ProviderDB.destroy({ where: { provider_id } });
             return {
                 status: 200,
                 message: "Provider deleted successfully",

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userSeed = void 0;
-const config_1 = require("src/config");
+const models_1 = require("src/models");
 const userSeed = async () => {
     try {
         console.log("Iniciando seed de Usuarios...");
@@ -38,7 +38,7 @@ const userSeed = async () => {
             },
         ];
         // 1. Obtener las CIs de los usuarios ya existentes en la DB
-        const existingUsers = await config_1.UserDB.findAll({
+        const existingUsers = await models_1.UserDB.findAll({
             attributes: ['ci']
         });
         const existingCIs = existingUsers.map(user => user.ci);
@@ -48,7 +48,7 @@ const userSeed = async () => {
         const finalUsers = uniqueUsersToCreate.map(user => (Object.assign(Object.assign({}, user), { createdAt: new Date(), updatedAt: new Date() })));
         if (finalUsers.length > 0) {
             // 4. Insertar SOLO los nuevos usuarios
-            const createdUsers = await config_1.UserDB.bulkCreate(finalUsers);
+            const createdUsers = await models_1.UserDB.bulkCreate(finalUsers);
             console.log(`Seed de Usuarios ejecutado correctamente. Insertados: ${createdUsers.length}`);
         }
         else {

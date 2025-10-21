@@ -1,4 +1,4 @@
-import { CategoryDB } from "src/config";
+import { CategoryDB } from "src/models";
 
 export const categorySeed = async () => {
     try {

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.purchaseDetailValidators = exports.PurchaseDetailValidators = void 0;
 const express_validator_1 = require("express-validator");
-const config_1 = require("../config");
+const models_1 = require("../models");
 class PurchaseDetailValidators {
     constructor() {
         this.validateCreateFields = [
@@ -59,7 +59,7 @@ class PurchaseDetailValidators {
                     });
                 }
                 // consulta DB
-                const existingProduct = await config_1.ProductDB.findByPk(product_id);
+                const existingProduct = await models_1.ProductDB.findByPk(product_id);
                 if (!existingProduct) {
                     return res.status(404).json({
                         message: `Producto con ID '${product_id}' no encontrado.`
@@ -87,7 +87,7 @@ class PurchaseDetailValidators {
                     return res.status(400).json({ message: `El ID '${rawId}' no puede ser un numero negativo.` });
                 }
                 // consulta DB
-                const existingPruchase = await config_1.PurchaseDB.findByPk(pruchase_id);
+                const existingPruchase = await models_1.PurchaseDB.findByPk(pruchase_id);
                 if (!existingPruchase) {
                     return res.status(404).json({ message: `Compra con ID '${pruchase_id}' no encontrado.` });
                 }
@@ -113,7 +113,7 @@ class PurchaseDetailValidators {
                     return res.status(400).json({ message: `El ID '${rawId}' no puede ser un numero negativo.` });
                 }
                 // consulta DB
-                const existingSale = await config_1.SaleDetailDB.findByPk(purchase_id);
+                const existingSale = await models_1.SaleDetailDB.findByPk(purchase_id);
                 if (!existingSale) {
                     return res.status(404).json({ message: `Detalle de compra con ID '${purchase_id}' no encontrado.` });
                 }

@@ -1,4 +1,4 @@
-import { CategoryDB } from "../config";
+import { CategoryDB } from "../models";
 import { CategoryInterface } from "../interfaces";
 
 class CategoryService {

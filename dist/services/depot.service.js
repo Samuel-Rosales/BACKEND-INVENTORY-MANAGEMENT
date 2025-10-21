@@ -12,11 +12,11 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DepotServices = void 0;
-const config_1 = require("../config");
+const models_1 = require("../models");
 class DepotService {
     async getAll() {
         try {
-            const depots = await config_1.DepotDB.findAll();
+            const depots = await models_1.DepotDB.findAll();
             return {
                 status: 200,
                 message: "Depots obtained correctly",
@@ -34,7 +34,7 @@ class DepotService {
     }
     async getOne(depot_id) {
         try {
-            const depot = await config_1.DepotDB.findByPk(depot_id);
+            const depot = await models_1.DepotDB.findByPk(depot_id);
             return {
                 status: 200,
                 message: "Depot obtained correctly",
@@ -53,7 +53,7 @@ class DepotService {
     async create(depot) {
         try {
             const { createdAt, updatedAt, depot_id } = depot, depotData = __rest(depot, ["createdAt", "updatedAt", "depot_id"]);
-            const newDepot = await config_1.DepotDB.create(depotData);
+            const newDepot = await models_1.DepotDB.create(depotData);
             return {
                 status: 201,
                 message: "Depot created correctly",
@@ -72,8 +72,8 @@ class DepotService {
     async update(depot_id, depot) {
         try {
             const { createdAt, updatedAt, depot_id: _ } = depot, depotData = __rest(depot, ["createdAt", "updatedAt", "depot_id"]);
-            await config_1.DepotDB.update(depotData, { where: { depot_id } });
-            const updatedDepot = await config_1.DepotDB.findByPk(depot_id);
+            await models_1.DepotDB.update(depotData, { where: { depot_id } });
+            const updatedDepot = await models_1.DepotDB.findByPk(depot_id);
             return {
                 status: 200,
                 message: "Depot updated correctly",
@@ -92,7 +92,7 @@ class DepotService {
     //funcion mejorada para verfificar que si lo eliminó
     async delete(depot_id) {
         try {
-            const deletedCount = await config_1.DepotDB.destroy({ where: { depot_id } });
+            const deletedCount = await models_1.DepotDB.destroy({ where: { depot_id } });
             if (deletedCount === 0) {
                 return {
                     status: 404,

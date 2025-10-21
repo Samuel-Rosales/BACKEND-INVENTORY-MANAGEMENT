@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.categorySeed = void 0;
-const config_1 = require("src/config");
+const models_1 = require("src/models");
 const categorySeed = async () => {
     try {
         console.log("Iniciando seed de Categorías...");
@@ -34,7 +34,7 @@ const categorySeed = async () => {
         ];
         // 1. Obtener los nombres de las categorías ya existentes en la DB
         // Usamos el casting para que TypeScript reconozca la propiedad 'name'
-        const existingCategories = await config_1.CategoryDB.findAll({
+        const existingCategories = await models_1.CategoryDB.findAll({
             attributes: ['name']
         });
         const existingNames = existingCategories.map(category => category.name);
@@ -44,7 +44,7 @@ const categorySeed = async () => {
         const finalCategories = uniqueCategoriesToCreate.map(category => (Object.assign(Object.assign({}, category), { createdAt: new Date(), updatedAt: new Date() })));
         if (finalCategories.length > 0) {
             // 4. Insertar SOLO las nuevas categorías
-            const createdCategories = await config_1.CategoryDB.bulkCreate(finalCategories);
+            const createdCategories = await models_1.CategoryDB.bulkCreate(finalCategories);
             console.log(`Seed de Categorías ejecutado correctamente. Insertadas: ${createdCategories.length}`);
         }
         else {

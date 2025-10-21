@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.productSeed = void 0;
-const config_1 = require("src/config");
+const models_1 = require("src/models");
 const productSeed = async () => {
     try {
         console.log("Iniciando seed de Productos...");
@@ -94,7 +94,7 @@ const productSeed = async () => {
             },
         ];
         // 1. Obtener los nombres de los productos ya existentes en la DB
-        const existingProducts = await config_1.ProductDB.findAll({
+        const existingProducts = await models_1.ProductDB.findAll({
             attributes: ['name']
         });
         const existingNames = existingProducts.map(product => product.name);
@@ -104,7 +104,7 @@ const productSeed = async () => {
         const finalProducts = uniqueProductsToCreate.map(product => (Object.assign(Object.assign({}, product), { createdAt: new Date(), updatedAt: new Date() })));
         if (finalProducts.length > 0) {
             // 4. Insertar SOLO los nuevos productos
-            const createdProducts = await config_1.ProductDB.bulkCreate(finalProducts);
+            const createdProducts = await models_1.ProductDB.bulkCreate(finalProducts);
             console.log(`Seed de Productos ejecutado correctamente. Insertados: ${createdProducts.length}`);
         }
         else {

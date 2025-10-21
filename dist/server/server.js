@@ -10,6 +10,8 @@ const morgan_1 = __importDefault(require("morgan"));
 const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const config_1 = require("../config");
+// --- CAMBIO CLAVE 1: Importar desde el nuevo índice de modelos ---
+const models_1 = require("../models");
 const index_route_1 = require("../routes/index.route");
 class Server {
     constructor() {
@@ -18,6 +20,7 @@ class Server {
         this.port = process.env.PORT || "3000";
         this.apiurl = process.env.API_URL || `http://localhost:${this.port}`;
         this.paths = {
+            // ...tus paths se quedan igual
             categories: this.pre + "/category",
             clients: this.pre + "/client",
             depots: this.pre + "/depot",
@@ -36,9 +39,21 @@ class Server {
         this.routes();
         this.swaggerSetup();
     }
+    // --- CAMBIO CLAVE 2: Nuevo método para conectar y sincronizar la DB ---
+    async dbConnect() {
+        try {
+            // La opción 'alter: true' es ideal para desarrollo
+            await (0, models_1.syncDatabase)({ alter: true });
+            console.log("Database successfully synchronized");
+        }
+        catch (error) {
+            console.error("Unable to connect to the database:", error);
+            throw new Error("Unable to connect to the database");
+        }
+    }
     middlewares() {
         this.app.use((0, cors_1.default)({
-            origin: "*", // o una lista segura de dominios
+            origin: "*",
             methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
         }));
         this.app.use(express_1.default.json());
@@ -46,6 +61,7 @@ class Server {
         this.app.use((0, morgan_1.default)("dev"));
     }
     routes() {
+        // ...tus rutas se quedan igual
         this.app.use(this.paths.categories, index_route_1.CategoryRoute);
         this.app.use(this.paths.clients, index_route_1.ClientRoute);
         this.app.use(this.paths.depots, index_route_1.DepotRoute);
@@ -60,10 +76,14 @@ class Server {
         this.app.use(this.paths.sales_details, index_route_1.SaleDetailRoute);
         this.app.use(this.paths.users, index_route_1.UserRoute);
     }
-    listen() {
+    // --- CAMBIO CLAVE 3: El método listen ahora es asíncrono ---
+    async listen() {
+        // Primero, espera a que la base de datos esté lista
+        await this.dbConnect();
+        // Luego, inicia el servidor
         this.app.listen(this.port, () => {
             const URL = `${this.apiurl}/swagger/#`;
-            console.log(`Server running in ${URL}`);
+            console.log(`🚀 Server running in ${URL}`);
         });
     }
     swaggerSetup() {

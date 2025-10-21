@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.rolValidators = exports.RolValidator = void 0;
 const express_validator_1 = require("express-validator");
-const config_1 = require("../config");
+const models_1 = require("../models");
 class RolValidator {
     constructor() {
         this.validateFields = [
@@ -19,7 +19,7 @@ class RolValidator {
                         message: `El ID de rol "${rawId}" no es válido.`,
                     });
                 }
-                const existingRol = await config_1.RolDB.findByPk(rol_id);
+                const existingRol = await models_1.RolDB.findByPk(rol_id);
                 if (!existingRol) {
                     return res.status(404).json({
                         message: `Categoría con ID "${rol_id}" no encontrado.`,

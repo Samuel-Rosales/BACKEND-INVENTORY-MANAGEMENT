@@ -12,11 +12,11 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RolServices = void 0;
-const config_1 = require("../config");
+const models_1 = require("../models");
 class RolService {
     async getAll() {
         try {
-            const rols = await config_1.RolDB.findAll();
+            const rols = await models_1.RolDB.findAll();
             return {
                 status: 200,
                 message: "Rols obtained correctly",
@@ -34,7 +34,7 @@ class RolService {
     }
     async getOne(rol_id) {
         try {
-            const rol = await config_1.RolDB.findByPk(rol_id);
+            const rol = await models_1.RolDB.findByPk(rol_id);
             if (!rol) {
                 return {
                     status: 404,
@@ -60,7 +60,7 @@ class RolService {
     async create(rol) {
         try {
             const { createdAt, updatedAt } = rol, rolData = __rest(rol, ["createdAt", "updatedAt"]);
-            const newRol = await config_1.RolDB.create(rolData);
+            const newRol = await models_1.RolDB.create(rolData);
             return {
                 status: 201,
                 message: "Rol created successfully",
@@ -79,8 +79,8 @@ class RolService {
     async update(rol_id, rol) {
         try {
             const { createdAt, updatedAt, rol_id: _ } = rol, rolData = __rest(rol, ["createdAt", "updatedAt", "rol_id"]);
-            await config_1.RolDB.update(rolData, { where: { rol_id } });
-            const updatedRol = await config_1.RolDB.findByPk(rol_id);
+            await models_1.RolDB.update(rolData, { where: { rol_id } });
+            const updatedRol = await models_1.RolDB.findByPk(rol_id);
             return {
                 status: 200,
                 message: "Rol updated correctly",
@@ -98,7 +98,7 @@ class RolService {
     }
     async delete(rol_id) {
         try {
-            const deletedCount = await config_1.RolDB.destroy({ where: { rol_id } });
+            const deletedCount = await models_1.RolDB.destroy({ where: { rol_id } });
             if (deletedCount === 0) {
                 return {
                     status: 404,

@@ -1,5 +1,4 @@
-import { run } from "node:test";
-import { RolDB } from "../config";
+import { RolDB } from "../models";
 import { RolInterface } from "../interfaces/rol.interface";
 
 class RolService {

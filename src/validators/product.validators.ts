@@ -1,6 +1,6 @@
 import { check } from "express-validator";
 import type { NextFunction, Request, Response } from "express";
-import { ProductDB, CategoryDB } from "../config";
+import { ProductDB, CategoryDB } from "../models";
 
 export class ProductValidators {
     

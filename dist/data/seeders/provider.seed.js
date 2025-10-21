@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.providerSeed = void 0;
-const config_1 = require("src/config");
+const models_1 = require("src/models");
 const providerSeed = async () => {
     try {
         console.log("Iniciando seed de Proveedores...");
@@ -25,7 +25,7 @@ const providerSeed = async () => {
         ];
         // 1. Obtener los nombres de los proveedores ya existentes en la DB
         // Usamos el casting para que TypeScript reconozca la propiedad 'name'
-        const existingProviders = await config_1.ProviderDB.findAll({
+        const existingProviders = await models_1.ProviderDB.findAll({
             attributes: ['name']
         });
         const existingNames = existingProviders.map(provider => provider.name);
@@ -35,7 +35,7 @@ const providerSeed = async () => {
         const finalProviders = uniqueProvidersToCreate.map(provider => (Object.assign(Object.assign({}, provider), { createdAt: new Date(), updatedAt: new Date() })));
         if (finalProviders.length > 0) {
             // 4. Insertar SOLO los nuevos proveedores
-            const createdProviders = await config_1.ProviderDB.bulkCreate(finalProviders);
+            const createdProviders = await models_1.ProviderDB.bulkCreate(finalProviders);
             console.log(`Seed de Proveedores ejecutado correctamente. Insertados: ${createdProviders.length}`);
         }
         else {

@@ -1,6 +1,6 @@
 import { check } from "express-validator"; 
 import type { NextFunction, Request, Response } from "express";
-import { DepotDB } from "../config";
+import { DepotDB } from "../models";
 
 export class DepotValidator {
 

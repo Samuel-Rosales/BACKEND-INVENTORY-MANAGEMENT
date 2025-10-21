@@ -12,13 +12,13 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductServices = void 0;
-const config_1 = require("../config");
+const models_1 = require("../models");
 class ProductService {
     async getAll() {
         try {
-            const products = await config_1.ProductDB.findAll({
+            const products = await models_1.ProductDB.findAll({
                 include: [{
-                        model: config_1.CategoryDB, as: "category"
+                        model: models_1.CategoryDB, as: "category"
                     }]
             });
             return {
@@ -38,9 +38,9 @@ class ProductService {
     }
     async getOne(product_id) {
         try {
-            const product = await config_1.ProductDB.findByPk(product_id, {
+            const product = await models_1.ProductDB.findByPk(product_id, {
                 include: [{
-                        model: config_1.CategoryDB, as: "category"
+                        model: models_1.CategoryDB, as: "category"
                     }]
             });
             return {
@@ -61,7 +61,7 @@ class ProductService {
     async create(product) {
         try {
             const { createdAt, updatedAt } = product, productData = __rest(product, ["createdAt", "updatedAt"]);
-            const newProduct = await config_1.ProductDB.create(productData);
+            const newProduct = await models_1.ProductDB.create(productData);
             return {
                 status: 201,
                 message: "Product created successfully",
@@ -80,8 +80,8 @@ class ProductService {
     async update(product_id, product) {
         try {
             const { createdAt, updatedAt, product_id: _ } = product, productData = __rest(product, ["createdAt", "updatedAt", "product_id"]);
-            await config_1.ProductDB.update(productData, { where: { product_id } });
-            const updatedProduct = await config_1.ProductDB.findByPk(product_id);
+            await models_1.ProductDB.update(productData, { where: { product_id } });
+            const updatedProduct = await models_1.ProductDB.findByPk(product_id);
             return {
                 status: 200,
                 message: "Product update correctly",
@@ -99,7 +99,7 @@ class ProductService {
     }
     async delete(product_id) {
         try {
-            await config_1.ProductDB.destroy({ where: { product_id } });
+            await models_1.ProductDB.destroy({ where: { product_id } });
             return {
                 status: 200,
                 message: "Product deleted successfully",

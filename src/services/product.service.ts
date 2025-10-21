@@ -1,4 +1,4 @@
-import { ProductDB, CategoryDB  } from "../config";
+import { ProductDB, CategoryDB  } from "../models";
 import { ProductInterface } from "../interfaces";
 
 class ProductService {

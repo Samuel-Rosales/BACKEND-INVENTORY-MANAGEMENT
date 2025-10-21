@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.depotSeed = void 0;
-const config_1 = require("src/config");
+const models_1 = require("src/models");
 const depotSeed = async () => {
     try {
         console.log("Starting depot seeds...");
@@ -33,7 +33,7 @@ const depotSeed = async () => {
             },
         ];
         // 1. Obtener los nombres de los depósitos ya existentes en la DB
-        const existingDepots = await config_1.DepotDB.findAll({
+        const existingDepots = await models_1.DepotDB.findAll({
             attributes: ['name']
         });
         const existingNames = existingDepots.map(depot => depot.name);
@@ -43,7 +43,7 @@ const depotSeed = async () => {
         const finalDepots = uniqueDepotsToCreate.map(depot => (Object.assign(Object.assign({}, depot), { createdAt: new Date(), updatedAt: new Date() })));
         if (finalDepots.length > 0) {
             // 4. Insertar SOLO los nuevos depósitos
-            const createdDepots = await config_1.DepotDB.bulkCreate(finalDepots);
+            const createdDepots = await models_1.DepotDB.bulkCreate(finalDepots);
             console.log(`Seed de Depósitos ejecutado correctamente. Insertados: ${createdDepots.length}`);
         }
         else {

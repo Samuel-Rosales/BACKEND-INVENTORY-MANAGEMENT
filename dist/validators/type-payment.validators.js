@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.typePaymentValidators = exports.TypePaymentValidators = void 0;
 const express_validator_1 = require("express-validator");
-const config_1 = require("../config");
+const models_1 = require("../models");
 class TypePaymentValidators {
     constructor() {
         this.validateFields = [
@@ -24,7 +24,7 @@ class TypePaymentValidators {
                     return res.status(400).json({ message: `El ID "${rawId}" no puede ser un numero negativo.` });
                 }
                 // consulta DB
-                const existingTypePayment = await config_1.TypePaymentDB.findByPk(type_payment_id);
+                const existingTypePayment = await models_1.TypePaymentDB.findByPk(type_payment_id);
                 if (!existingTypePayment) {
                     return res.status(404).json({ message: `Tipo de pago con ID "${type_payment_id}" no encontrado.` });
                 }

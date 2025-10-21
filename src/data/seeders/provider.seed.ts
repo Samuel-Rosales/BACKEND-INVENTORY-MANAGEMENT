@@ -1,4 +1,4 @@
-import { ProviderDB } from "src/config";
+import { ProviderDB } from "src/models";
 
 export const providerSeed = async () => {
     try {

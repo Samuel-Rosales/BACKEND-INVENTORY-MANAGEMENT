@@ -1,4 +1,4 @@
-import { TypePaymentDB } from "src/config";
+import { TypePaymentDB } from "src/models";
 
 export const typePaymentSeed = async () => {
     try {

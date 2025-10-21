@@ -1,4 +1,4 @@
-import { MovementDB, ProductDB, DepotDB } from "../config";
+import { MovementDB, ProductDB, DepotDB } from "../models";
 import { MovementInterface } from "../interfaces";
 
 class MovementService {

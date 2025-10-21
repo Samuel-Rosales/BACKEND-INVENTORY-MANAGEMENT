@@ -1,51 +1,44 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MovementModel = void 0;
+exports.MovementFactory = void 0;
 const sequelize_1 = require("sequelize");
-exports.MovementModel = {
-    movement_id: {
-        type: sequelize_1.DataTypes.INTEGER(),
-        primaryKey: true,
-        autoIncrement: true,
-    },
-    depot_id: {
-        type: sequelize_1.DataTypes.INTEGER(),
-        allowNull: false,
-    },
-    product_id: {
-        type: sequelize_1.DataTypes.INTEGER(),
-        allowNull: false,
-    },
-    type: {
-        type: sequelize_1.DataTypes.ENUM('Entrada', 'Salida'),
-        allowNull: false,
-    },
-    amount: {
-        type: sequelize_1.DataTypes.INTEGER(),
-        allowNull: false,
-    },
-    observation: {
-        type: sequelize_1.DataTypes.STRING(255),
-        allowNull: false,
-    },
-    moved_at: {
-        type: sequelize_1.DataTypes.DATE,
-        allowNull: false,
-        defaultValue: sequelize_1.DataTypes.NOW,
-    },
-    status: {
-        type: sequelize_1.DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true
-    },
-    createdAt: {
-        type: sequelize_1.DataTypes.DATE,
-        allowNull: false,
-        defaultValue: sequelize_1.DataTypes.NOW,
-    },
-    updatedAt: {
-        type: sequelize_1.DataTypes.DATE,
-        allowNull: false,
-        defaultValue: sequelize_1.DataTypes.NOW,
-    },
+const MovementFactory = (sequelize) => {
+    return sequelize.define("Movement", {
+        movement_id: {
+            type: sequelize_1.DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        depot_id: {
+            type: sequelize_1.DataTypes.INTEGER,
+            allowNull: false,
+        },
+        product_id: {
+            type: sequelize_1.DataTypes.INTEGER,
+            allowNull: false,
+        },
+        type: {
+            type: sequelize_1.DataTypes.ENUM('Entrada', 'Salida'),
+            allowNull: false,
+        },
+        amount: {
+            type: sequelize_1.DataTypes.INTEGER,
+            allowNull: false,
+        },
+        observation: {
+            type: sequelize_1.DataTypes.STRING(255),
+            allowNull: false,
+        },
+        moved_at: {
+            type: sequelize_1.DataTypes.DATE,
+            allowNull: false,
+            defaultValue: sequelize_1.DataTypes.NOW,
+        },
+        status: {
+            type: sequelize_1.DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true
+        },
+    }, { tableName: "movements", timestamps: true });
 };
+exports.MovementFactory = MovementFactory;
