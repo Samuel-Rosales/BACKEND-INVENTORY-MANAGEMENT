@@ -12,8 +12,10 @@ import {
   MovementRoute,
   ProductRoute,
   ProviderRoute,
+  PurchaseDetailRoute,
   PurchaseRoute,
   RolRoute,
+  SaleDetailRoute,
   SaleRoute,
   TypePaymentRoute,
   UserRoute,
@@ -37,10 +39,12 @@ export class Server {
       movements: this.pre + "/movement",
       products: this.pre + "/product",
       providers: this.pre + "/provider",
-      purchase: this.pre + "/purchase",
+      purchases: this.pre + "/purchase",
+      purchases_details: this.pre + "/purchase_detail",
       rols: this.pre + "/rol",
       types_payments: this.pre + "/type_payment",
       sales: this.pre + "/sale",
+      sales_details: this.pre + "/sale_detail",
       users: this.pre + "/user",
     }
     
@@ -67,10 +71,12 @@ export class Server {
     this.app.use(this.paths.movements, MovementRoute);
     this.app.use(this.paths.products, ProductRoute);
     this.app.use(this.paths.providers, ProviderRoute);
-    this.app.use(this.paths.purchase, PurchaseRoute);
+    this.app.use(this.paths.purchases, PurchaseRoute);
+    this.app.use(this.paths.purchases_details, PurchaseDetailRoute);
     this.app.use(this.paths.rols, RolRoute);
     this.app.use(this.paths.types_payments, TypePaymentRoute);
     this.app.use(this.paths.sales, SaleRoute);
+    this.app.use(this.paths.sales_details, SaleDetailRoute);
     this.app.use(this.paths.users, UserRoute);
   }
 

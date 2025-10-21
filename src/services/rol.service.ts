@@ -75,7 +75,7 @@ class RolService {
 
     async update(rol_id: number, rol: Partial<RolInterface>) {
         try {
-            const { createdAt, updatedAt, rol_id,  ...rolData } = rol;
+            const { createdAt, updatedAt, rol_id: _,  ...rolData } = rol;
 
             await RolDB.update(rolData, { where: { rol_id } });
 

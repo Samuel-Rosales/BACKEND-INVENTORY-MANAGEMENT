@@ -78,7 +78,7 @@ class RolService {
     }
     async update(rol_id, rol) {
         try {
-            const { createdAt, updatedAt, rol_id } = rol, rolData = __rest(rol, ["createdAt", "updatedAt", "rol_id"]);
+            const { createdAt, updatedAt, rol_id: _ } = rol, rolData = __rest(rol, ["createdAt", "updatedAt", "rol_id"]);
             await config_1.RolDB.update(rolData, { where: { rol_id } });
             const updatedRol = await config_1.RolDB.findByPk(rol_id);
             return {

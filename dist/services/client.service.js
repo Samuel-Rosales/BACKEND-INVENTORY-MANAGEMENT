@@ -71,7 +71,7 @@ class ClientService {
     }
     async update(client_ci, client) {
         try {
-            const { createdAt, updatedAt } = client, clientData = __rest(client, ["createdAt", "updatedAt"]);
+            const { createdAt, updatedAt, client_ci: _ } = client, clientData = __rest(client, ["createdAt", "updatedAt", "client_ci"]);
             await config_1.ClientDB.update(clientData, { where: { client_ci } });
             const updatedClient = await config_1.ClientDB.findByPk(client_ci);
             return {

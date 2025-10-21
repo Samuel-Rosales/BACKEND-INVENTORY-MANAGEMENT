@@ -76,7 +76,7 @@ class MovementService {
 
     async update(movement_id: number, movement: Partial<MovementInterface>) {
         try {
-            const { createdAt, updatedAt, ... movementData} = movement;
+            const { createdAt, updatedAt, movement_id: _, ... movementData} = movement;
 
             await MovementDB.update(movementData, { where: { movement_id } });
 

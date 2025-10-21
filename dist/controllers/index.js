@@ -22,6 +22,8 @@ __exportStar(require("./rol.controller"), exports);
 __exportStar(require("./product.controller"), exports);
 __exportStar(require("./provider.controller"), exports);
 __exportStar(require("./purchase.controller"), exports);
+__exportStar(require("./purchase-detail.controller"), exports);
 __exportStar(require("./type-payment.controller"), exports);
 __exportStar(require("./sale.controller"), exports);
+__exportStar(require("./sale-detail.controller"), exports);
 __exportStar(require("./user.controller"), exports);

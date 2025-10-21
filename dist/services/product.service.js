@@ -79,7 +79,7 @@ class ProductService {
     }
     async update(product_id, product) {
         try {
-            const { createdAt, updatedAt } = product, productData = __rest(product, ["createdAt", "updatedAt"]);
+            const { createdAt, updatedAt, product_id: _ } = product, productData = __rest(product, ["createdAt", "updatedAt", "product_id"]);
             await config_1.ProductDB.update(productData, { where: { product_id } });
             const updatedProduct = await config_1.ProductDB.findByPk(product_id);
             return {

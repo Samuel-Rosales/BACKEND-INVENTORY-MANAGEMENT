@@ -6,6 +6,8 @@ export * from "./rol.controller";
 export * from "./product.controller";
 export * from "./provider.controller";
 export * from "./purchase.controller";
+export * from "./purchase-detail.controller";
 export * from "./type-payment.controller";
 export * from "./sale.controller";
+export * from "./sale-detail.controller";
 export * from "./user.controller";

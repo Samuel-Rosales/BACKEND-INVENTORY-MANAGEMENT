@@ -71,7 +71,7 @@ class ProviderService {
     }
     async update(provider_id, provider) {
         try {
-            const { createdAt, updatedAt } = provider, providerData = __rest(provider, ["createdAt", "updatedAt"]);
+            const { createdAt, updatedAt, provider_id: _ } = provider, providerData = __rest(provider, ["createdAt", "updatedAt", "provider_id"]);
             await config_1.ProviderDB.update(providerData, { where: { provider_id } });
             const updatedProvider = await config_1.ProviderDB.findByPk(provider_id);
             return {

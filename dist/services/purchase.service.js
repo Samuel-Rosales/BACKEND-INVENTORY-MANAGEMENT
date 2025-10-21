@@ -21,6 +21,7 @@ class PurchaseService {
                     { model: config_1.ProviderDB, as: "provider" },
                     { model: config_1.UserDB, as: "user" },
                     { model: config_1.TypePaymentDB, as: "type_payment" },
+                    { model: config_1.PurchaseDetailDB, as: "purchase_details" },
                 ],
             });
             return {
@@ -64,7 +65,7 @@ class PurchaseService {
     }
     async create(purchase) {
         try {
-            const { createdAt, updatedAt } = purchase, purchaseData = __rest(purchase, ["createdAt", "updatedAt"]);
+            const { createdAt, updatedAt, purchase_id } = purchase, purchaseData = __rest(purchase, ["createdAt", "updatedAt", "purchase_id"]);
             const newPurchase = await config_1.PurchaseDB.create(purchaseData);
             return {
                 status: 201,
@@ -83,7 +84,7 @@ class PurchaseService {
     }
     async update(purchase_id, purchase) {
         try {
-            const { createdAt, updatedAt } = purchase, purchaseData = __rest(purchase, ["createdAt", "updatedAt"]);
+            const { createdAt, updatedAt, purchase_id: _ } = purchase, purchaseData = __rest(purchase, ["createdAt", "updatedAt", "purchase_id"]);
             await config_1.PurchaseDB.update(purchaseData, { where: { purchase_id } });
             const updatedPurchase = await config_1.PurchaseDB.findByPk(purchase_id);
             return {

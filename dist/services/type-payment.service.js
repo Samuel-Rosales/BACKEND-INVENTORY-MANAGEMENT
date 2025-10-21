@@ -71,7 +71,7 @@ class TypePaymentService {
     }
     async update(type_payment_id, typePayment) {
         try {
-            const { createdAt, updatedAt } = typePayment, typePaymentData = __rest(typePayment, ["createdAt", "updatedAt"]);
+            const { createdAt, updatedAt, type_payment_id: _ } = typePayment, typePaymentData = __rest(typePayment, ["createdAt", "updatedAt", "type_payment_id"]);
             await config_1.TypePaymentDB.update(typePaymentData, { where: { type_payment_id } });
             const updatedTypePayment = await config_1.TypePaymentDB.findByPk(type_payment_id);
             return {

@@ -74,7 +74,7 @@ class ProductService {
     
     async update(product_id: number, product: Partial<ProductInterface>) {
         try {
-            const { createdAt, updatedAt, ... productData} = product;
+            const { createdAt, updatedAt, product_id: _, ... productData} = product;
 
             await ProductDB.update(productData, { where: { product_id } });
 

@@ -9,8 +9,10 @@ import {
     MovementModel,
     ProductModel,
     ProviderModel,
+    PurchaseDetailModel,
     PurchaseModel,
     RolModel,
+    SaleDetailModel,
     SaleModel,
     TypePaymentModel,
     UserModel,
@@ -81,6 +83,11 @@ export const PurchaseDB = db.define("purchases", PurchaseModel, {
     tableName: "purchases",
 });
 
+export const PurchaseDetailDB = db.define("purchases_details", PurchaseDetailModel, {
+    timestamps: true,
+    tableName: "purchases_details",
+});
+
 export const RolDB = db.define("rols", RolModel, {
     timestamps: true,
     tableName: "rols",
@@ -89,6 +96,11 @@ export const RolDB = db.define("rols", RolModel, {
 export const SaleDB = db.define("sales", SaleModel, {
     timestamps: true,
     tableName: "sales",
+});
+
+export const SaleDetailDB = db.define("sales_details", SaleDetailModel, {
+    timestamps: true,
+    tableName: "sales_details",
 }); 
 
 export const TypePaymentDB = db.define("types_payments", TypePaymentModel, {
@@ -132,6 +144,18 @@ ClientDB.hasMany(SaleDB, { foreignKey: "client_ci", as: "sales" });
 
 SaleDB.belongsTo(UserDB, { foreignKey: "user_ci", as: "user" });
 UserDB.hasMany(SaleDB, { foreignKey: "user_ci", as: "sales" });
+
+PurchaseDetailDB.belongsTo(PurchaseDB, { foreignKey: "purchase_id", as: "purchase" });
+PurchaseDB.hasMany(PurchaseDetailDB, { foreignKey: "purchase_id", as: "purchase_details" });
+
+PurchaseDetailDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
+ProductDB.hasMany(PurchaseDetailDB, { foreignKey: "product_id", as: "purchase_details" });
+
+SaleDetailDB.belongsTo(SaleDB, { foreignKey: "sale_id", as: "sale" });
+SaleDB.hasMany(SaleDetailDB, { foreignKey: "sale_id", as: "sale_details" });
+
+SaleDetailDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
+ProductDB.hasMany(SaleDetailDB, { foreignKey: "product_id", as: "sale_details" });
 
 // Sync
 

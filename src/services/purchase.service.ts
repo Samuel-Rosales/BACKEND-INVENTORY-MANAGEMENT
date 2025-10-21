@@ -1,4 +1,4 @@
-import { PurchaseDB, ProviderDB, TypePaymentDB, UserDB } from "../config";
+import { PurchaseDB, ProviderDB, TypePaymentDB, UserDB, PurchaseDetailDB } from "../config";
 import { PurchaseInterface } from "../interfaces";
 
 class PurchaseService {
@@ -9,6 +9,7 @@ class PurchaseService {
                     { model: ProviderDB, as: "provider" },
                     { model: UserDB, as: "user" },
                     { model: TypePaymentDB, as: "type_payment" },
+                    { model: PurchaseDetailDB, as: "purchase_details" },
                 ],
             });
 
@@ -56,7 +57,7 @@ class PurchaseService {
 
     async create(purchase: PurchaseInterface) {
         try {
-            const { createdAt, updatedAt, ...purchaseData  } = purchase;
+            const { createdAt, updatedAt, purchase_id, ...purchaseData  } = purchase;
 
             const newPurchase = await PurchaseDB.create(purchaseData);
 
@@ -78,7 +79,7 @@ class PurchaseService {
 
     async update(purchase_id: number, purchase: Partial<PurchaseInterface>) {
         try {
-            const { createdAt, updatedAt, ... purchaseData} = purchase;
+            const { createdAt, updatedAt, purchase_id: _, ... purchaseData} = purchase;
 
             await PurchaseDB.update(purchaseData, { where: { purchase_id } });
 

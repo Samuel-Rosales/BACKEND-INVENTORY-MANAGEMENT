@@ -71,7 +71,7 @@ class DepotService {
     }
     async update(depot_id, depot) {
         try {
-            const { createdAt, updatedAt } = depot, depotData = __rest(depot, ["createdAt", "updatedAt"]);
+            const { createdAt, updatedAt, depot_id: _ } = depot, depotData = __rest(depot, ["createdAt", "updatedAt", "depot_id"]);
             await config_1.DepotDB.update(depotData, { where: { depot_id } });
             const updatedDepot = await config_1.DepotDB.findByPk(depot_id);
             return {

@@ -22,6 +22,8 @@ __exportStar(require("./movement.validators"), exports);
 __exportStar(require("./product.validators"), exports);
 __exportStar(require("./provider.validators"), exports);
 __exportStar(require("./purchase.validators"), exports);
+__exportStar(require("./purchase-detail.validators"), exports);
 __exportStar(require("./type-payment.validators"), exports);
 __exportStar(require("./sale.validators"), exports);
+__exportStar(require("./sale-detail.validators"), exports);
 __exportStar(require("./user.validators"), exports);

@@ -11,25 +11,25 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MovementServices = void 0;
+exports.SaleDetailServices = void 0;
 const config_1 = require("../config");
-class MovementService {
+class SaleDetailService {
     async getAll() {
         try {
-            const movements = await config_1.MovementDB.findAll({
+            const SalesDetails = await config_1.SaleDetailDB.findAll({
                 include: [
+                    { model: config_1.SaleDB, as: "sale" },
                     { model: config_1.ProductDB, as: "product" },
-                    { model: config_1.DepotDB, as: "depot" }
-                ]
+                ],
             });
             return {
                 status: 200,
-                message: "Movements obtained correctly",
-                data: movements,
+                message: "Sales details obtained correctly",
+                data: SalesDetails,
             };
         }
         catch (error) {
-            console.error("Error fetchig movements: ", error);
+            console.error("Error fetching sales details: ", error);
             return {
                 status: 500,
                 message: "Internal server error",
@@ -37,41 +37,41 @@ class MovementService {
             };
         }
     }
-    async getOne(movement_id) {
+    async getOne(sale_detail_id) {
         try {
-            const movement = await config_1.MovementDB.findByPk(movement_id, {
+            const saleDetail = await config_1.SaleDetailDB.findByPk(sale_detail_id, {
                 include: [
+                    { model: config_1.SaleDB, as: "sale" },
                     { model: config_1.ProductDB, as: "product" },
-                    { model: config_1.DepotDB, as: "depot" }
                 ]
             });
             return {
                 status: 200,
-                message: "Movement obtained correctly",
-                data: movement,
+                message: "Sale detail obtained correctly",
+                data: saleDetail,
             };
         }
         catch (error) {
-            console.error("Error fetching movement: ", error);
+            console.error("Error fetching sale detail: ", error);
             return {
                 status: 500,
                 message: "Internal server error",
-                data: null
+                data: null,
             };
         }
     }
-    async create(movement) {
+    async create(saleDetail) {
         try {
-            const { createdAt, updatedAt, movement_id } = movement, movementData = __rest(movement, ["createdAt", "updatedAt", "movement_id"]);
-            const newMovement = await config_1.MovementDB.create(movementData);
+            const { createdAt, updatedAt, status } = saleDetail, saleDetailData = __rest(saleDetail, ["createdAt", "updatedAt", "status"]);
+            const newSaleDetail = await config_1.SaleDetailDB.create(saleDetailData);
             return {
                 status: 201,
-                message: "Movement created correctly",
-                data: newMovement,
+                message: "Sale detail created successfully",
+                data: newSaleDetail,
             };
         }
         catch (error) {
-            console.error("Error creating movement: ", error);
+            console.error("Error creating sale detail: ", error);
             return {
                 status: 500,
                 message: "Internal server error",
@@ -79,19 +79,19 @@ class MovementService {
             };
         }
     }
-    async update(movement_id, movement) {
+    async update(sale_detail_id, saleDetail) {
         try {
-            const { createdAt, updatedAt, movement_id: _ } = movement, movementData = __rest(movement, ["createdAt", "updatedAt", "movement_id"]);
-            await config_1.MovementDB.update(movementData, { where: { movement_id } });
-            const updatedMovement = await config_1.MovementDB.findByPk(movement_id);
+            const { createdAt, updatedAt, sale_detail_id: _ } = saleDetail, saleDetailData = __rest(saleDetail, ["createdAt", "updatedAt", "sale_detail_id"]);
+            await config_1.SaleDetailDB.update(saleDetailData, { where: { sale_detail_id } });
+            const updatedSaleDetail = await config_1.SaleDetailDB.findByPk(sale_detail_id);
             return {
                 status: 200,
-                message: "Movement update correctly",
-                data: updatedMovement,
+                message: "Sale detail update correctly",
+                data: updatedSaleDetail,
             };
         }
         catch (error) {
-            console.error("Error updating movement: ", error);
+            console.error("Error updating sale detail: ", error);
             return {
                 status: 500,
                 message: "Internal server error",
@@ -99,24 +99,16 @@ class MovementService {
             };
         }
     }
-    async delete(movement_id) {
+    async delete(sale_detail_id) {
         try {
-            const deletedCount = await config_1.MovementDB.destroy({ where: { movement_id } });
-            if (deletedCount === 0) {
-                return {
-                    status: 404,
-                    message: "Movement not found",
-                    data: null,
-                };
-            }
+            await config_1.SaleDetailDB.destroy({ where: { sale_detail_id } });
             return {
                 status: 200,
-                message: "Movement deleted successfully",
-                data: null,
+                message: "Sale detail deleted successfully",
             };
         }
         catch (error) {
-            console.error("Error deleting Movement: ", error);
+            console.error("Error deleting sale detail: ", error);
             return {
                 status: 500,
                 message: "Internal server error",
@@ -125,4 +117,4 @@ class MovementService {
         }
     }
 }
-exports.MovementServices = new MovementService();
+exports.SaleDetailServices = new SaleDetailService();

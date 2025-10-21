@@ -21,6 +21,7 @@ class SaleService {
                     { model: config_1.ClientDB, as: "client" },
                     { model: config_1.UserDB, as: "user" },
                     { model: config_1.TypePaymentDB, as: "type_payment" },
+                    { model: config_1.SaleDetailDB, as: "sale_details" },
                 ],
             });
             return {
@@ -83,7 +84,7 @@ class SaleService {
     }
     async update(sale_id, sale) {
         try {
-            const { createdAt, updatedAt } = sale, saleData = __rest(sale, ["createdAt", "updatedAt"]);
+            const { createdAt, updatedAt, sale_id: _ } = sale, saleData = __rest(sale, ["createdAt", "updatedAt", "sale_id"]);
             await config_1.SaleDB.update(saleData, { where: { sale_id } });
             const updatedSale = await config_1.SaleDB.findByPk(sale_id);
             return {

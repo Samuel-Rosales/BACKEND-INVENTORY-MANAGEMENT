@@ -67,7 +67,7 @@ class ProviderService {
 
     async update (provider_id: number, provider: Partial<ProviderInterface> ) {
         try {
-            const { createdAt, updatedAt, ... providerData} = provider;
+            const { createdAt, updatedAt, provider_id: _, ... providerData} = provider;
 
             await ProviderDB.update(providerData, { where: { provider_id } });
 

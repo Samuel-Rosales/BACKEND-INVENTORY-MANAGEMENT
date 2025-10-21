@@ -1,4 +1,4 @@
-import { SaleDB, ClientDB, TypePaymentDB, UserDB } from "../config";
+import { SaleDB, ClientDB, TypePaymentDB, UserDB, SaleDetailDB } from "../config";
 import { SaleInterface } from "../interfaces";
 
 class SaleService {
@@ -9,6 +9,7 @@ class SaleService {
                     { model: ClientDB, as: "client" },
                     { model: UserDB, as: "user" },
                     { model: TypePaymentDB, as: "type_payment" },
+                    { model: SaleDetailDB, as: "sale_details" },
                 ],
             });
 
@@ -78,7 +79,7 @@ class SaleService {
 
     async update(sale_id: number, sale: Partial<SaleInterface>) {
         try {
-            const { createdAt, updatedAt, ... saleData} = sale;
+            const { createdAt, updatedAt, sale_id: _, ... saleData} = sale;
 
             await SaleDB.update(saleData, { where: { sale_id } });
 

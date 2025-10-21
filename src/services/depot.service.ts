@@ -66,7 +66,7 @@ class DepotService {
 
     async update(depot_id: number, depot: Partial<DepotInterface>) {
         try {
-            const { createdAt, updatedAt, ...depotData } = depot;
+            const { createdAt, updatedAt, depot_id: _, ...depotData } = depot;
 
             await DepotDB.update(depotData, { where: { depot_id } });
 

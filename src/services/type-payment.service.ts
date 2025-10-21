@@ -66,7 +66,7 @@ class TypePaymentService {
 
     async update (type_payment_id: number, typePayment: Partial<TypePaymentInterface>) {
         try {
-            const { createdAt, updatedAt, ... typePaymentData} = typePayment;
+            const { createdAt, updatedAt, type_payment_id: _, ... typePaymentData} = typePayment;
 
             await TypePaymentDB.update(typePaymentData, { where: { type_payment_id } });
 

@@ -76,15 +76,15 @@ class CategoryService {
             };
         }
     }
-    async update(movement_id, movement) {
+    async update(category_id, category) {
         try {
-            const { createdAt, updatedAt } = movement, movementData = __rest(movement, ["createdAt", "updatedAt"]);
-            await config_1.CategoryDB.update(movementData, { where: { movement_id } });
-            const updatedMovement = await config_1.CategoryDB.findByPk(movement_id);
+            const { createdAt, updatedAt, category_id: _ } = category, categorytData = __rest(category, ["createdAt", "updatedAt", "category_id"]);
+            await config_1.CategoryDB.update(categorytData, { where: { category_id } });
+            const updatedCategory = await config_1.CategoryDB.findByPk(category_id);
             return {
                 status: 200,
                 message: "Category update correctly",
-                data: updatedMovement,
+                data: updatedCategory,
             };
         }
         catch (error) {
@@ -101,7 +101,7 @@ class CategoryService {
             const category = await config_1.CategoryDB.destroy({ where: { category_id } });
             return {
                 status: 200,
-                message: "Product deleted successfully"
+                message: "Category deleted successfully"
             };
         }
         catch (error) {

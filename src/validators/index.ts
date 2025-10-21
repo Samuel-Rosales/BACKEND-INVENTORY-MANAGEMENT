@@ -6,6 +6,8 @@ export * from "./movement.validators";
 export * from "./product.validators";
 export * from "./provider.validators";
 export * from "./purchase.validators";
+export * from "./purchase-detail.validators";
 export * from "./type-payment.validators";
 export * from "./sale.validators";
+export * from "./sale-detail.validators";
 export * from "./user.validators";

@@ -72,18 +72,18 @@ class CategoryService {
         }
     }
 
-    async update(movement_id: number, movement: Partial<CategoryInterface>) {
+    async update(category_id: number, category: Partial<CategoryInterface>) {
             try {
-                const { createdAt, updatedAt, ... movementData} = movement;
+                const { createdAt, updatedAt, category_id: _, ... categorytData} = category;
     
-                await CategoryDB.update(movementData, { where: { movement_id } });
+                await CategoryDB.update(categorytData, { where: { category_id } });
     
-                const updatedMovement = await CategoryDB.findByPk(movement_id);
+                const updatedCategory = await CategoryDB.findByPk(category_id);
     
                 return {
                     status: 200,
                     message: "Category update correctly",
-                    data: updatedMovement,
+                    data: updatedCategory,
                 };
             } catch (error) {
                 console.error("Error updating category: ", error);
@@ -102,7 +102,7 @@ class CategoryService {
 
             return {
                 status: 200,
-                message: "Product deleted successfully"
+                message: "Category deleted successfully"
             };
         } catch (error) { 
             console.error("Error deleting category: ", error);

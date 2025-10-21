@@ -67,7 +67,7 @@ class ClientService {
 
     async update (client_ci: number, client: Partial<ClientInterface> ) {
         try {
-            const { createdAt, updatedAt, ... clientData} = client;
+            const { createdAt, updatedAt, client_ci: _, ... clientData} = client;
 
             await ClientDB.update(clientData, { where: { client_ci } });
 
