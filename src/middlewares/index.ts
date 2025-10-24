@@ -1,3 +1,2 @@
-import { validateFields } from "./validate-fields.middlewares"
-
-export { validateFields }
+export * from "./validate-fields.middlewares";
+export * from "./upload.middleware";

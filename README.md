@@ -42,6 +42,7 @@ npm install
 Crea un archivo `.env` con el siguiente contenido:
 
 ```env
+# DATABASE
 DATABASE_PORT=3000
 API_URL=
 DATABASE_DIALECT=postgres
@@ -50,6 +51,11 @@ DATABASE_USER=postgres
 DATABASE_PASSWORD=[inserta tu contraseña aquí]
 DATABASE_NAME=db_inventario
 DEV=true
+
+# CLOUDINARY
+CLOUDINARY_CLOUD_NAME="tu-cloud-name"
+CLOUDINARY_API_KEY="tu-api-key"
+CLOUDINARY_API_SECRET="tu-api-secret"
 ```
 
 ### Ejecutar el Servidor

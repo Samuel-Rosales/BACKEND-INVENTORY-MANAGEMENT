@@ -31,6 +31,10 @@ export const ProductFactory = (sequelize: Sequelize) => {
                 min: 0,
             },
         },
+        image_url: {
+            type: DataTypes.STRING(255),
+            allowNull: true,
+        },
         min_stock: {
             type: DataTypes.INTEGER,
             allowNull: false,

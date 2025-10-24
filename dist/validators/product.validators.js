@@ -5,20 +5,51 @@ const express_validator_1 = require("express-validator");
 const models_1 = require("../models");
 class ProductValidators {
     constructor() {
-        this.validateFields = [
-            (0, express_validator_1.check)("name", "El nombre del producto es obligatorio.").not().isEmpty(),
-            (0, express_validator_1.check)("name", "El nombre del producto debe ser una cadena de texto.").isString(),
-            (0, express_validator_1.check)("description", "La descripción del producto es obligatoria.").not().isEmpty(),
-            (0, express_validator_1.check)("description", "La descripción del producto debe ser una cadena de texto.").isString(),
-            (0, express_validator_1.check)("category_id", "El ID de la categoría es obligatorio.").not().isEmpty(),
-            (0, express_validator_1.check)("category_id", "El ID de la categoría debe ser un número entero.").isNumeric(),
-            (0, express_validator_1.check)("base_price", "El precio base del producto es obligatorio.").not().isEmpty(),
-            (0, express_validator_1.check)("base_price", "El precio base del produce debe ser un número decimal.").isDecimal(),
-            (0, express_validator_1.check)("amount")
-                .notEmpty().withMessage("La cantidad del producto en existencia es obligatorio.")
-                .isInt().withMessage("La cantidad del producto en existencia debe ser un número entero."),
-            (0, express_validator_1.check)("min_stock", "El stock mínimo del producto es obligatorio.").not().isEmpty(),
-            (0, express_validator_1.check)("min_stock", "El precio mínimo del producto debe ser un número entero.").isNumeric(),
+        this.validateCreateFields = [
+            (0, express_validator_1.check)("name")
+                .notEmpty().withMessage("El nombre del producto es obligatorio.")
+                .isString().withMessage("El nombre del producto debe ser una cadena de texto."),
+            (0, express_validator_1.check)("description")
+                .notEmpty().withMessage("La descripción del producto es obligatoria.")
+                .isString().withMessage("La descripción del producto debe ser una cadena de texto."),
+            (0, express_validator_1.check)("category_id")
+                .notEmpty().withMessage("El ID de la categoría es obligatorio.")
+                .isInt().withMessage("El ID de la categoría debe ser un número entero."),
+            (0, express_validator_1.check)("base_price")
+                .notEmpty().withMessage("El precio base del producto es obligatorio.")
+                .isDecimal().withMessage("El precio base del producto debe ser un número decimal."),
+            (0, express_validator_1.check)("stock")
+                .notEmpty().withMessage("El stock del producto es obligatorio.")
+                .isInt({ min: 0 }).withMessage("El stock debe ser un número entero igual o mayor a 0."),
+            (0, express_validator_1.check)("min_stock")
+                .notEmpty().withMessage("El stock mínimo del producto es obligatorio.")
+                .isInt({ min: 0 }).withMessage("El stock mínimo debe ser un número entero igual o mayor a 0."),
+        ];
+        this.validateUpdateFields = [
+            (0, express_validator_1.check)("name")
+                .optional()
+                .notEmpty().withMessage("El nombre no puede ser una cadena vacía.")
+                .isString().withMessage("El nombre debe ser una cadena de texto."),
+            (0, express_validator_1.check)("description")
+                .optional()
+                .notEmpty().withMessage("La descripción no puede ser una cadena vacía.")
+                .isString().withMessage("La descripción debe ser una cadena de texto."),
+            (0, express_validator_1.check)("category_id")
+                .optional()
+                .notEmpty().withMessage("El ID de la categoría no puede estar vacío.")
+                .isInt().withMessage("El ID de la categoría debe ser un número entero."),
+            (0, express_validator_1.check)("base_price")
+                .optional()
+                .notEmpty().withMessage("El precio base no puede estar vacío.")
+                .isDecimal().withMessage("El precio base debe ser un número decimal."),
+            (0, express_validator_1.check)("stock")
+                .optional()
+                .notEmpty().withMessage("El stock no puede estar vacío.")
+                .isInt({ min: 0 }).withMessage("El stock debe ser un número entero igual o mayor a 0."),
+            (0, express_validator_1.check)("min_stock")
+                .optional()
+                .notEmpty().withMessage("El stock mínimo no puede estar vacío.")
+                .isInt({ min: 0 }).withMessage("El stock mínimo debe ser un número entero igual o mayor a 0."),
         ];
         this.validateCatgegoryIdExists = async (req, res, next) => {
             var _a;
