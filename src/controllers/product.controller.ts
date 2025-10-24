@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { ProductServices } from "../services";
-import cloudinary from "@/config/cloudinary.config";
+import cloudinary from '../config/cloudinary.config';
 
 export class ProductController {
     constructor() {}
