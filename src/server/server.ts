@@ -15,11 +15,14 @@ import {
     MovementRoute,
     ProductRoute,
     ProviderRoute,
-    PurchaseDetailRoute,
+    PurchaseGeneralItemRoute,
+    PurchaseLotItemRoute,
     PurchaseRoute,
     RolRoute,
     SaleDetailRoute,
     SaleRoute,
+    StockGeneralRoute,
+    StockLotRoute,
     TypePaymentRoute,
     UserRoute,
 } from "../routes/index.route";
@@ -43,11 +46,14 @@ export class Server {
             products: this.pre + "/product",
             providers: this.pre + "/provider",
             purchases: this.pre + "/purchase",
-            purchases_details: this.pre + "/purchase_detail",
+            purchase_general_items: this.pre + "/purchase_general_item",
+            purchase_lot_items: this.pre + "/purchase_lot_item",
             rols: this.pre + "/rol",
-            types_payments: this.pre + "/type_payment",
             sales: this.pre + "/sale",
             sales_details: this.pre + "/sale_detail",
+            stock_generals: this.pre + "/stock_general",
+            stock_lots: this.pre + "/stock_lot",
+            types_payments: this.pre + "/type_payment",
             users: this.pre + "/user",
         }
 
@@ -88,11 +94,14 @@ export class Server {
         this.app.use(this.paths.products, ProductRoute);
         this.app.use(this.paths.providers, ProviderRoute);
         this.app.use(this.paths.purchases, PurchaseRoute);
-        this.app.use(this.paths.purchases_details, PurchaseDetailRoute);
+        this.app.use(this.paths.purchase_general_items, PurchaseGeneralItemRoute);
+        this.app.use(this.paths.purchase_lot_items , PurchaseLotItemRoute);
         this.app.use(this.paths.rols, RolRoute);
-        this.app.use(this.paths.types_payments, TypePaymentRoute);
         this.app.use(this.paths.sales, SaleRoute);
         this.app.use(this.paths.sales_details, SaleDetailRoute);
+        this.app.use(this.paths.stock_generals , StockGeneralRoute);
+        this.app.use(this.paths.stock_lots , StockLotRoute);
+        this.app.use(this.paths.types_payments, TypePaymentRoute);
         this.app.use(this.paths.users, UserRoute);
     }
 
