@@ -1,8 +1,8 @@
 import { check } from "express-validator";
 import type { NextFunction, Request, Response } from "express";
-import { SaleDetailDB, PurchaseDB, ProductDB } from "../models";
+import { PurchaseDB, ProductDB, PurchaseGeneralItemDB } from "../models";
 
-export class PurchaseDetailValidators {
+export class PurchaseGeneralItemValidators {
     
     validateCreateFields = [
         check("product_id")
@@ -28,10 +28,10 @@ export class PurchaseDetailValidators {
             .notEmpty().withMessage("El ID del producto es obligatorio.")
             .isInt().withMessage("El ID del producto debe ser un número entero."),
 
-        check("sale_id")
+        check("purchase_id")
             .optional()
-            .notEmpty().withMessage("El ID de la venta es obligatorio.")
-            .isInt().withMessage("El ID de la venta debe ser un número entero."),
+            .notEmpty().withMessage("El ID de la compra es obligatorio.")
+            .isInt().withMessage("El ID de la compra debe ser un número entero."),
 
         check("unit_cost")
             .optional()
@@ -114,34 +114,34 @@ export class PurchaseDetailValidators {
         }
     };
 
-    validatePurchaseDetailParamIdExists = async (req: Request, res: Response, next: NextFunction) => {
+    validatePurchaseGeneralItemParamIdExists = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const rawId = (req.params.id ?? "").toString().trim();
             if (!rawId) return next();
 
-            const purchase_id = Number.parseInt(rawId, 10);
+            const purchase_item_id = Number.parseInt(rawId, 10);
 
-            if (Number.isNaN(purchase_id) || !Number.isInteger(purchase_id)) {
+            if (Number.isNaN(purchase_item_id) || !Number.isInteger(purchase_item_id)) {
                 return res.status(400).json({ message: `El ID proporcionado '${rawId}' no es un número entero válido.` });
             }
 
-            if (purchase_id <= 0) {
+            if (purchase_item_id <= 0) {
                 return res.status(400).json({ message: `El ID '${rawId}' no puede ser un numero negativo.` });
             }
 
             // consulta DB
-            const existingSale = await SaleDetailDB.findByPk(purchase_id);
-            if (!existingSale) {
-                return res.status(404).json({ message: `Detalle de compra con ID '${purchase_id}' no encontrado.` });
+            const existingPurchaseItem = await PurchaseGeneralItemDB.findByPk(purchase_item_id);
+            if (!existingPurchaseItem) {
+                return res.status(404).json({ message: `Item de compra con ID '${purchase_item_id}' no encontrado.` });
             }
 
             next();
         } catch (error) {
             return res.status(500).json({
-                message: "Internal server error in validatePurchaseDetailParamIdExists.",
+                message: "Internal server error in validatePurchaseGeneralItemParamIdExists.",
             });
         }
     };
 }
 
-export const purchaseDetailValidators = new PurchaseDetailValidators();
+export const purchaseGeneralItemValidators = new PurchaseGeneralItemValidators();
