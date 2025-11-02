@@ -18,9 +18,6 @@ class ProductValidators {
             (0, express_validator_1.check)("base_price")
                 .notEmpty().withMessage("El precio base del producto es obligatorio.")
                 .isDecimal().withMessage("El precio base del producto debe ser un número decimal."),
-            (0, express_validator_1.check)("stock")
-                .notEmpty().withMessage("El stock del producto es obligatorio.")
-                .isInt({ min: 0 }).withMessage("El stock debe ser un número entero igual o mayor a 0."),
             (0, express_validator_1.check)("min_stock")
                 .notEmpty().withMessage("El stock mínimo del producto es obligatorio.")
                 .isInt({ min: 0 }).withMessage("El stock mínimo debe ser un número entero igual o mayor a 0."),
@@ -42,10 +39,6 @@ class ProductValidators {
                 .optional()
                 .notEmpty().withMessage("El precio base no puede estar vacío.")
                 .isDecimal().withMessage("El precio base debe ser un número decimal."),
-            (0, express_validator_1.check)("stock")
-                .optional()
-                .notEmpty().withMessage("El stock no puede estar vacío.")
-                .isInt({ min: 0 }).withMessage("El stock debe ser un número entero igual o mayor a 0."),
             (0, express_validator_1.check)("min_stock")
                 .optional()
                 .notEmpty().withMessage("El stock mínimo no puede estar vacío.")

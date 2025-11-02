@@ -1,5 +1,5 @@
-export interface PurchaseDetailInterface {
-    purchase_detail_id: number;
+export interface PurchaseLotItemInterface {
+    purchase_lot_id: number;
     product_id: number;
     purchase_id: number;
     unit_cost: number;

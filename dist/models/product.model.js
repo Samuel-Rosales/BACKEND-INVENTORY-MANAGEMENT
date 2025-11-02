@@ -26,13 +26,6 @@ const ProductFactory = (sequelize) => {
             type: sequelize_1.DataTypes.DECIMAL(10, 2),
             allowNull: false,
         },
-        stock: {
-            type: sequelize_1.DataTypes.INTEGER,
-            allowNull: false,
-            validate: {
-                min: 0,
-            },
-        },
         image_url: {
             type: sequelize_1.DataTypes.STRING(255),
             allowNull: true,
@@ -40,6 +33,10 @@ const ProductFactory = (sequelize) => {
         min_stock: {
             type: sequelize_1.DataTypes.INTEGER,
             allowNull: false,
+        },
+        perishable: {
+            type: sequelize_1.DataTypes.BOOLEAN,
+            allowNull: false
         },
         status: {
             type: sequelize_1.DataTypes.BOOLEAN,

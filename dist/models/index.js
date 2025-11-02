@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.syncDatabase = exports.SaleDetailDB = exports.PurchaseDetailDB = exports.MovementDB = exports.SaleDB = exports.PurchaseDB = exports.UserDB = exports.ProductDB = exports.TypePaymentDB = exports.RolDB = exports.ProviderDB = exports.DepotDB = exports.ClientDB = exports.CategoryDB = void 0;
+exports.syncDatabase = exports.SaleDetailDB = exports.PurchaseLotItemDB = exports.PurchaseGeneralItemDB = exports.StockLotDB = exports.StockGeneralDB = exports.SaleDB = exports.MovementDB = exports.PurchaseDB = exports.UserDB = exports.ProductDB = exports.TypePaymentDB = exports.RolDB = exports.ProviderDB = exports.DepotDB = exports.ClientDB = exports.CategoryDB = void 0;
 const sequelize_config_1 = require("../config/sequelize.config");
 // --- 1. IMPORTA TODAS LAS "FACTORIES" DE TUS MODELOS ---
 const category_model_1 = require("./category.model");
@@ -10,10 +10,13 @@ const movement_model_1 = require("./movement.model");
 const product_model_1 = require("./product.model");
 const provider_model_1 = require("./provider.model");
 const purchase_model_1 = require("./purchase.model");
-const purchase_detail_model_1 = require("./purchase-detail.model");
+const purchase_general_item_model_1 = require("./purchase-general-item.model");
+const purchase_lot_item_model_1 = require("./purchase-lot-item.model");
 const rol_model_1 = require("./rol.model");
 const sale_model_1 = require("./sale.model");
-const sale_detail_model_1 = require("./sale-detail.model");
+const sale_item_model_1 = require("./sale-item.model");
+const stock_general_model_1 = require("./stock-general.model");
+const stock_lot_model_1 = require("./stock-lot.model");
 const type_payment_model_1 = require("./type-payment.model");
 const user_model_1 = require("./user.model");
 // --- 2. INICIALIZA LOS MODELOS EN ORDEN DE DEPENDENCIA ---
@@ -29,11 +32,14 @@ exports.ProductDB = (0, product_model_1.ProductFactory)(sequelize_config_1.db); 
 exports.UserDB = (0, user_model_1.UserFactory)(sequelize_config_1.db); // Depende de Rol
 // Nivel 3: Modelos de Transacciones que dependen de Nivel 1 y 2
 exports.PurchaseDB = (0, purchase_model_1.PurchaseFactory)(sequelize_config_1.db); // Depende de Provider, User, TypePayment
-exports.SaleDB = (0, sale_model_1.SaleFactory)(sequelize_config_1.db); // Depende de Client, User, TypePayment
 exports.MovementDB = (0, movement_model_1.MovementFactory)(sequelize_config_1.db); // Depende de Depot, Product
+exports.SaleDB = (0, sale_model_1.SaleFactory)(sequelize_config_1.db); // Depende de Client, User, TypePayment
+exports.StockGeneralDB = (0, stock_general_model_1.StockGeneralFactory)(sequelize_config_1.db); // Depende de Product, Depot
+exports.StockLotDB = (0, stock_lot_model_1.StockLotFactory)(sequelize_config_1.db); // Depende de Product, Depot
 // Nivel 4: Modelos de Detalle que dependen de Nivel 3
-exports.PurchaseDetailDB = (0, purchase_detail_model_1.PurchaseDetailFactory)(sequelize_config_1.db); // Depende de Purchase, Product
-exports.SaleDetailDB = (0, sale_detail_model_1.SaleDetailFactory)(sequelize_config_1.db); // Depende de Sale, Product
+exports.PurchaseGeneralItemDB = (0, purchase_general_item_model_1.PurchaseGeneralItemFactory)(sequelize_config_1.db); // Depende de Purchase, Product
+exports.PurchaseLotItemDB = (0, purchase_lot_item_model_1.PurchaseLotItemFactory)(sequelize_config_1.db); // Depende de Purchase, Product
+exports.SaleDetailDB = (0, sale_item_model_1.SaleDetailFactory)(sequelize_config_1.db); // Depende de Sale, Product
 // --- 3. DEFINE TODAS LAS RELACIONES ---
 console.log("Defining model relationships...");
 exports.ProductDB.belongsTo(exports.CategoryDB, { foreignKey: "category_id", as: "category" });
@@ -56,10 +62,46 @@ exports.SaleDB.belongsTo(exports.ClientDB, { foreignKey: "client_ci", as: "clien
 exports.ClientDB.hasMany(exports.SaleDB, { foreignKey: "client_ci", as: "sales" });
 exports.SaleDB.belongsTo(exports.UserDB, { foreignKey: "user_ci", as: "user" });
 exports.UserDB.hasMany(exports.SaleDB, { foreignKey: "user_ci", as: "sales" });
-exports.PurchaseDetailDB.belongsTo(exports.PurchaseDB, { foreignKey: "purchase_id", as: "purchase" });
-exports.PurchaseDB.hasMany(exports.PurchaseDetailDB, { foreignKey: "purchase_id", as: "purchase_details" });
-exports.PurchaseDetailDB.belongsTo(exports.ProductDB, { foreignKey: "product_id", as: "product" });
-exports.ProductDB.hasMany(exports.PurchaseDetailDB, { foreignKey: "product_id", as: "purchase_details" });
+// Un registro de StockGeneral pertenece a un Producto
+exports.StockGeneralDB.belongsTo(exports.ProductDB, { foreignKey: "product_id", as: "product" });
+// Un Producto puede tener múltiples registros de stock (uno por almacén)
+exports.ProductDB.hasMany(exports.StockGeneralDB, { foreignKey: "product_id", as: "stock_generals" });
+// Un registro de StockGeneral pertenece a un Almacén (Depot)
+exports.StockGeneralDB.belongsTo(exports.DepotDB, { foreignKey: "depot_id", as: "depot" });
+// Un Almacén (Depot) puede tener múltiples registros de stock (uno por producto)
+exports.DepotDB.hasMany(exports.StockGeneralDB, { foreignKey: "depot_id", as: "stock_generals" });
+// Un Lote de Stock pertenece a un Producto
+exports.StockLotDB.belongsTo(exports.ProductDB, { foreignKey: "product_id", as: "product" });
+// Un Producto puede tener múltiples Lotes
+exports.ProductDB.hasMany(exports.StockLotDB, { foreignKey: "product_id", as: "stock_lots" });
+// Un Lote de Stock pertenece a un Almacén (Depot)
+exports.StockLotDB.belongsTo(exports.DepotDB, { foreignKey: "depot_id", as: "depot" });
+// Un Almacén (Depot) puede tener múltiples Lotes
+exports.DepotDB.hasMany(exports.StockLotDB, { foreignKey: "depot_id", as: "stock_lots" });
+// Un item de compra general pertenece a una Compra
+exports.PurchaseGeneralItemDB.belongsTo(exports.PurchaseDB, { foreignKey: "purchase_id", as: "purchase" });
+// Una Compra puede tener múltiples items generales
+exports.PurchaseDB.hasMany(exports.PurchaseGeneralItemDB, { foreignKey: "purchase_id", as: "purchase_general_items" });
+// Un item de compra general pertenece a un Producto
+exports.PurchaseGeneralItemDB.belongsTo(exports.ProductDB, { foreignKey: "product_id", as: "product" });
+// Un Producto puede estar en múltiples items de compras generales
+exports.ProductDB.hasMany(exports.PurchaseGeneralItemDB, { foreignKey: "product_id", as: "purchase_general_items" });
+// Un item de compra por lote pertenece a una Compra
+exports.PurchaseLotItemDB.belongsTo(exports.PurchaseDB, { foreignKey: "purchase_id", as: "purchase" });
+// Una Compra puede tener múltiples items por lote
+exports.PurchaseDB.hasMany(exports.PurchaseLotItemDB, { foreignKey: "purchase_id", as: "purchase_lot_items" });
+// Un item de compra por lote pertenece a un Producto
+exports.PurchaseLotItemDB.belongsTo(exports.ProductDB, { foreignKey: "product_id", as: "product" });
+// Un Producto puede estar en múltiples items de compras por lote
+exports.ProductDB.hasMany(exports.PurchaseLotItemDB, { foreignKey: "product_id", as: "purchase_lot_items" });
+// Un item de compra por lote pertenece a una Compra
+exports.PurchaseLotItemDB.belongsTo(exports.PurchaseDB, { foreignKey: "purchase_id", as: "purchase" });
+// Una Compra puede tener múltiples items por lote
+exports.PurchaseDB.hasMany(exports.PurchaseLotItemDB, { foreignKey: "purchase_id", as: "purchase_lot_items" });
+// Un item de compra por lote pertenece a un Producto
+exports.PurchaseLotItemDB.belongsTo(exports.ProductDB, { foreignKey: "product_id", as: "product" });
+// Un Producto puede estar en múltiples items de compras por lote
+exports.ProductDB.hasMany(exports.PurchaseLotItemDB, { foreignKey: "product_id", as: "purchase_lot_items" });
 exports.SaleDetailDB.belongsTo(exports.SaleDB, { foreignKey: "sale_id", as: "sale" });
 exports.SaleDB.hasMany(exports.SaleDetailDB, { foreignKey: "sale_id", as: "sale_details" });
 exports.SaleDetailDB.belongsTo(exports.ProductDB, { foreignKey: "product_id", as: "product" });
