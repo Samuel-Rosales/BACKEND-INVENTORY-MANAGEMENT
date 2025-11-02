@@ -10,12 +10,10 @@ export const StockLotFactory = (sequelize: Sequelize) => {
         product_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            primaryKey: true,
         },
         depot_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            primaryKey: true,
         },
         expiration_date: {
             type: DataTypes.DATE,

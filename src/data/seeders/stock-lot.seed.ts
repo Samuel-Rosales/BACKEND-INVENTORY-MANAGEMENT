@@ -1,11 +1,9 @@
-// src/seeds/stockLot.seed.ts
 import { StockLotDB, ProductDB, DepotDB } from "src/models";
 
 export const stockLotSeed = async () => {
     try {
         console.log("Iniciando seed de Stock por Lotes (Perecederos)...");
 
-        // Lotes para el producto "Baterías AAA (Paquete 4)"
         const lotsToCreate = [
             {
                 productName: "Baterías AAA (Paquete 4)",
@@ -33,18 +31,22 @@ export const stockLotSeed = async () => {
             },
         ];
 
-        // 1. Obtener IDs de Productos y Almacenes
-        const products = await ProductDB.findAll({ attributes: ['id', 'name', 'es_perecedero'] });
-        const depots = await DepotDB.findAll({ attributes: ['id', 'name'] });
+        // --- 1. Obtener IDs (CORREGIDO) ---
+        const products = await ProductDB.findAll({ 
+            attributes: ['product_id', 'name', 'perishable'] // <--- CAMBIO AQUÍ
+        });
+        const depots = await DepotDB.findAll({ 
+            attributes: ['depot_id', 'name'] // <--- CAMBIO AQUÍ
+        });
 
-        const productMap = new Map(products.map(p => [(p as any).name, (p as any).id]));
-        const productIsPerishable = new Map(products.map(p => [(p as any).name, (p as any).es_perecedero]));
-        const depotMap = new Map(depots.map(d => [(d as any).name, (d as any).id]));
+        // --- 2. Mapear IDs (CORREGIDO) ---
+        const productMap = new Map(products.map(p => [(p as any).name, (p as any).product_id])); // <--- CAMBIO AQUÍ
+        const productIsPerishable = new Map(products.map(p => [(p as any).name, (p as any).perishable])); // <--- CAMBIO AQUÍ
+        const depotMap = new Map(depots.map(d => [(d as any).name, (d as any).depot_id])); // <--- CAMBIO AQUÍ
         
-        // 2. Mapear y filtrar
+        // 3. Mapear y filtrar
         const finalLotsToCreate = [];
         for (const item of lotsToCreate) {
-            // Validar que el producto sea SÍ perecedero
             if (productIsPerishable.get(item.productName) === false) {
                 console.warn(`Producto '${item.productName}' NO es perecedero. No se debe añadir a StockLot. Saltando...`);
                 continue;
@@ -70,7 +72,7 @@ export const stockLotSeed = async () => {
             });
         }
 
-        // 3. Insertar
+        // 4. Insertar
         if (finalLotsToCreate.length > 0) {
             const createdLots = await StockLotDB.bulkCreate(finalLotsToCreate);
             console.log(`Seed de Stock por Lotes ejecutado. Insertados: ${createdLots.length}`);

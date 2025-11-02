@@ -1,4 +1,4 @@
-import { PurchaseDB, ProviderDB, TypePaymentDB, UserDB, PurchaseGeneralItemDB, PurchaseLotItemDB } from "../models";
+import { PurchaseDB, ProviderDB, TypePaymentDB, UserDB, PurchaseGeneralItemDB, PurchaseLotItemDB, ProductDB } from "../models";
 import { PurchaseInterface } from "../interfaces";
 
 class PurchaseService {
@@ -9,8 +9,22 @@ class PurchaseService {
                     { model: ProviderDB, as: "provider" },
                     { model: UserDB, as: "user" },
                     { model: TypePaymentDB, as: "type_payment" },
-                    { model: PurchaseGeneralItemDB, as: "purchase_general_item" }, 
-                    { model: PurchaseLotItemDB, as: "purchase_lot_item" },
+                    { model: PurchaseGeneralItemDB, as: "purchase_general_items",
+                        include: [ 
+                            { 
+                                model: ProductDB, 
+                                as: "product" 
+                            }
+                        ]
+                    }, 
+                    { model: PurchaseLotItemDB, as: "purchase_lot_items",
+                        include: [ 
+                            { 
+                                model: ProductDB, 
+                                as: "product" 
+                            }
+                        ]
+                     },
                 ],
             });
 
@@ -37,6 +51,22 @@ class PurchaseService {
                     { model: ProviderDB, as: "provider" },
                     { model: UserDB, as: "user" },
                     { model: TypePaymentDB, as: "type_payment" },
+                    { model: PurchaseGeneralItemDB, as: "purchase_general_items", 
+                        include: [ 
+                            { 
+                                model: ProductDB, 
+                                as: "product" 
+                            }
+                        ]
+                    }, 
+                    { model: PurchaseLotItemDB, as: "purchase_lot_items", 
+                         include: [ 
+                            { 
+                                model: ProductDB, 
+                                as: "product" 
+                            }
+                        ]
+                    },
                 ]
             });
 

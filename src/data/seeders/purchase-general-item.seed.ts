@@ -8,81 +8,73 @@ export const purchaseGeneralItemSeed = async () => {
     try {
         console.log("Iniciando seed de Detalles de Compra (General)...");
 
-        // --- 1. Definir los detalles a crear ---
-        // Usamos una 'purchaseKey' (provider_id + bought_at) y 'productName' para buscar los IDs
+        // --- 1. Definir los detalles a crear (CORREGIDO) ---
         const detailsToCreate = [
-            // --- Compra 1 (provider_id: 1, bought_at: 2025-10-14T10:00:00) ---
             {
                 purchaseKey: `1-${new Date("2025-10-14T10:00:00").toISOString()}`,
                 productName: "Laptop HP ProBook",
                 amount: 5,
-                cost: 840.00
+                unit_cost: 840.00 // <-- CAMBIO AQUÍ
             },
             {
                 purchaseKey: `1-${new Date("2025-10-14T10:00:00").toISOString()}`,
                 productName: "Monitor LED 24 pulgadas",
                 amount: 10,
-                cost: 185.00
+                unit_cost: 185.00 // <-- CAMBIO AQUÍ
             },
-
-            // --- Compra 2 (provider_id: 2, bought_at: 2025-10-18T15:30:00) ---
             {
                 purchaseKey: `2-${new Date("2025-10-18T15:30:00").toISOString()}`,
                 productName: "Martillo de Uña 20oz",
                 amount: 20,
-                cost: 14.50
+                unit_cost: 14.50 // <-- CAMBIO AQUÍ
             },
             {
                 purchaseKey: `2-${new Date("2025-10-18T15:30:00").toISOString()}`,
                 productName: "Resma de Papel Carta",
                 amount: 50,
-                cost: 5.00
+                unit_cost: 5.00 // <-- CAMBIO AQUÍ
             },
-
-            // --- Compra 3 (provider_id: 3, bought_at: 2025-10-16T11:00:00) ---
             {
                 purchaseKey: `3-${new Date("2025-10-16T11:00:00").toISOString()}`,
                 productName: "Silla Ergonómica Ejecutiva",
                 amount: 8,
-                cost: 145.00
+                unit_cost: 145.00 // <-- CAMBIO AQUÍ
             },
             {
                 purchaseKey: `3-${new Date("2025-10-16T11:00:00").toISOString()}`,
                 productName: "Guantes de Seguridad Nitrilo",
                 amount: 30,
-                cost: 17.50
+                unit_cost: 17.50 // <-- CAMBIO AQUÍ
             },
-
-            // --- Compra 4 (provider_id: 4, bought_at: 2025-10-19T09:45:00) ---
             {
                 purchaseKey: `4-${new Date("2025-10-19T09:45:00").toISOString()}`,
                 productName: "Destornillador Phillips N°2",
                 amount: 40,
-                cost: 12.00
+                unit_cost: 12.00 // <-- CAMBIO AQUÍ
             },
             {
                 purchaseKey: `4-${new Date("2025-10-19T09:45:00").toISOString()}`,
                 productName: "Toner Negro LaserJet",
                 amount: 15,
-                cost: 44.00
+                unit_cost: 44.00 // <-- CAMBIO AQUÍ
             },
         ];
 
         // --- 2. Obtener IDs de la DB ---
-        const products = await ProductDB.findAll({ attributes: ['id', 'name'] });
-        const productMap = new Map(products.map(p => [(p as any).name, (p as any).id]));
+        const products = await ProductDB.findAll({ attributes: ['product_id', 'name'] });
+        const productMap = new Map(products.map(p => [(p as any).name, (p as any).product_id]));
 
-        const purchases = await PurchaseDB.findAll({ attributes: ['id', 'provider_id', 'bought_at'] });
+        const purchases = await PurchaseDB.findAll({ attributes: ['purchase_id', 'provider_id', 'bought_at'] });
         const purchaseMap = new Map(purchases.map(p => {
             const key = `${(p as any).provider_id}-${(p as any).bought_at.toISOString()}`;
-            return [key, (p as any).id];
+            return [key, (p as any).purchase_id];
         }));
 
-        // 3. Obtener detalles existentes para no duplicar
+        // 3. Obtener detalles existentes
         const existingDetails = await PurchaseGeneralItemDB.findAll({ attributes: ['purchase_id', 'product_id'] });
         const existingPairs = new Set(existingDetails.map(d => `${(d as any).purchase_id}-${(d as any).product_id}`));
 
-        // --- 4. Mapear y filtrar ---
+        // --- 4. Mapear y filtrar (CORREGIDO) ---
         const finalDetailsToCreate = [];
         for (const detail of detailsToCreate) {
             const product_id = productMap.get(detail.productName);
@@ -103,7 +95,7 @@ export const purchaseGeneralItemSeed = async () => {
                 purchase_id,
                 product_id,
                 amount: detail.amount,
-                cost: detail.cost,
+                unit_cost: detail.unit_cost, // <-- CAMBIO AQUÍ
                 status: true,
                 createdAt: new Date(),
                 updatedAt: new Date(),
