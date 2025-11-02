@@ -40,6 +40,6 @@ router.delete("/:product_id/:depot_id",
     stockGeneralController.delete
 ); // http://localhost:3000/api/general_stock/:product_id/:depot_id
 
-export  const StockLotRoute = router;
+export  const StockGeneralRoute = router;
 
 export default router;
