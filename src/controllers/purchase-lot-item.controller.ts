@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
-import { PurchaseDetailServices } from "../services";
+import { PurchaseLotItemServices } from "../services";
 
-export class PurchaseDetailController {
+export class PurchaseLotItemController {
     constructor() {}
 
     all = async (req: Request, res: Response) => {
-        const { status, message, data } = await PurchaseDetailServices.getAll();
+        const { status, message, data } = await PurchaseLotItemServices.getAll();
 
         return res.status(status).json({
             message,
@@ -15,7 +15,7 @@ export class PurchaseDetailController {
 
     one = async (req: Request, res: Response) => { 
         const { id } = req.params;
-        const { status, message, data } = await PurchaseDetailServices.getOne(Number(id));
+        const { status, message, data } = await PurchaseLotItemServices.getOne(Number(id));
         
         return res.status(status).json({ 
             message,
@@ -24,7 +24,7 @@ export class PurchaseDetailController {
     };  
 
     create = async (req: Request,  res: Response  ) => {
-        const { status, message, data } = await PurchaseDetailServices.create(req.body);
+        const { status, message, data } = await PurchaseLotItemServices.create(req.body);
 
         return res.status(status).json({
             message,
@@ -34,7 +34,7 @@ export class PurchaseDetailController {
 
     update = async (req: Request, res: Response) => {
         const { id } = req.params; 
-        const { status, message, data } = await PurchaseDetailServices.update(Number(id), req.body);
+        const { status, message, data } = await PurchaseLotItemServices.update(Number(id), req.body);
 
         return res.status(status).json({
             message,
@@ -44,7 +44,7 @@ export class PurchaseDetailController {
 
     delete = async (req: Request, res: Response) => {
         const { id } = req.params;
-        const { status, message } = await PurchaseDetailServices.delete(Number(id));
+        const { status, message } = await PurchaseLotItemServices.delete(Number(id));
         
         return res.status(status).json({
             message,

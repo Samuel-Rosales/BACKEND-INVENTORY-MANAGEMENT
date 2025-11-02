@@ -79,7 +79,7 @@ class StockGeneralService {
 
     async update(product_id: number, depot_id: number, stockGeneral: Partial<StockGeneralInterface>) {
         try {
-            const { createdAt, updatedAt, product_id: _, depot_id: _, ... stockGeneralData} = stockGeneral;
+            const { createdAt, updatedAt, product_id: a, depot_id: b, ... stockGeneralData} = stockGeneral;
 
             await StockGeneralDB.update(stockGeneralData, { where: { product_id, depot_id } });
 
