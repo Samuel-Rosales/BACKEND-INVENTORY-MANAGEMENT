@@ -27,11 +27,14 @@ class Server {
             products: this.pre + "/product",
             providers: this.pre + "/provider",
             purchases: this.pre + "/purchase",
-            purchases_details: this.pre + "/purchase_detail",
+            purchase_general_items: this.pre + "/purchase_general_item",
+            purchase_lot_items: this.pre + "/purchase_lot_item",
             rols: this.pre + "/rol",
-            types_payments: this.pre + "/type_payment",
             sales: this.pre + "/sale",
             sales_details: this.pre + "/sale_detail",
+            stock_generals: this.pre + "/stock_general",
+            stock_lots: this.pre + "/stock_lot",
+            types_payments: this.pre + "/type_payment",
             users: this.pre + "/user",
         };
         this.middlewares();
@@ -68,11 +71,14 @@ class Server {
         this.app.use(this.paths.products, index_route_1.ProductRoute);
         this.app.use(this.paths.providers, index_route_1.ProviderRoute);
         this.app.use(this.paths.purchases, index_route_1.PurchaseRoute);
-        this.app.use(this.paths.purchases_details, index_route_1.PurchaseDetailRoute);
+        this.app.use(this.paths.purchase_general_items, index_route_1.PurchaseGeneralItemRoute);
+        this.app.use(this.paths.purchase_lot_items, index_route_1.PurchaseLotItemRoute);
         this.app.use(this.paths.rols, index_route_1.RolRoute);
-        this.app.use(this.paths.types_payments, index_route_1.TypePaymentRoute);
         this.app.use(this.paths.sales, index_route_1.SaleRoute);
         this.app.use(this.paths.sales_details, index_route_1.SaleDetailRoute);
+        this.app.use(this.paths.stock_generals, index_route_1.StockGeneralRoute);
+        this.app.use(this.paths.stock_lots, index_route_1.StockLotRoute);
+        this.app.use(this.paths.types_payments, index_route_1.TypePaymentRoute);
         this.app.use(this.paths.users, index_route_1.UserRoute);
     }
     // --- CAMBIO CLAVE 3: El método listen ahora es asíncrono ---

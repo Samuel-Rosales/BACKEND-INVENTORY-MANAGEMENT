@@ -26,5 +26,7 @@ __exportStar(require("./purchase-lot-item.service"), exports);
 __exportStar(require("./rol.service"), exports);
 __exportStar(require("./sale.service"), exports);
 __exportStar(require("./sale-detail.service"), exports);
+__exportStar(require("./stock-general.service"), exports);
+__exportStar(require("./stock-lot.service"), exports);
 __exportStar(require("./type-payment.service"), exports);
 __exportStar(require("./user.service"), exports);

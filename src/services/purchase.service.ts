@@ -1,4 +1,4 @@
-import { PurchaseDB, ProviderDB, TypePaymentDB, UserDB, PurchaseDetailDB } from "../models";
+import { PurchaseDB, ProviderDB, TypePaymentDB, UserDB, PurchaseGeneralItemDB, PurchaseLotItemDB } from "../models";
 import { PurchaseInterface } from "../interfaces";
 
 class PurchaseService {
@@ -9,7 +9,8 @@ class PurchaseService {
                     { model: ProviderDB, as: "provider" },
                     { model: UserDB, as: "user" },
                     { model: TypePaymentDB, as: "type_payment" },
-                    { model: PurchaseDetailDB, as: "purchase_details" },
+                    { model: PurchaseGeneralItemDB, as: "purchase_general_item" }, 
+                    { model: PurchaseLotItemDB, as: "purchase_lot_item" },
                 ],
             });
 

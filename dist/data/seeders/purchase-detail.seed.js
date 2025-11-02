@@ -22,7 +22,7 @@ const purchaseDetailSeed = async () => {
         ];
         // --- Lógica de inserción ---
         const finalDetails = detailsToCreate.map(detail => (Object.assign(Object.assign({}, detail), { createdAt: new Date(), updatedAt: new Date() })));
-        const createdDetails = await models_1.PurchaseDetailDB.bulkCreate(finalDetails);
+        const createdDetails = await models_1.PurchaseGeneralItemDB.bulkCreate(finalDetails);
         console.log(`Seed de Detalles de Compra ejecutado correctamente. Insertados: ${createdDetails.length} detalles.`);
     }
     catch (error) {
