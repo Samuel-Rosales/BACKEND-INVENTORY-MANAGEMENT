@@ -22,10 +22,13 @@ import { MovementFactory } from "./movement.model";
 import { ProductFactory } from "./product.model";
 import { ProviderFactory } from "./provider.model";
 import { PurchaseFactory } from "./purchase.model";
-import { PurchaseDetailFactory } from "./purchase-detail.model";
+import { PurchaseGeneralItemFactory } from "./purchase-general-item.model";
+import { PurchaseLotItemFactory } from "./purchase-lot-item.model";
 import { RolFactory } from "./rol.model";
 import { SaleFactory } from "./sale.model";
-import { SaleDetailFactory } from "./sale-detail.model";
+import { SaleDetailFactory } from "./sale-item.model";
+import { StockGeneralFactory } from "./stock-general.model";
+import { StockLotFactory } from "./stock-lot.model";
 import { TypePaymentFactory } from "./type-payment.model";
 import { UserFactory } from "./user.model";
 
@@ -45,11 +48,14 @@ export const UserDB = UserFactory(db);         // Depende de Rol
 
 // Nivel 3: Modelos de Transacciones que dependen de Nivel 1 y 2
 export const PurchaseDB = PurchaseFactory(db); // Depende de Provider, User, TypePayment
-export const SaleDB = SaleFactory(db);         // Depende de Client, User, TypePayment
 export const MovementDB = MovementFactory(db); // Depende de Depot, Product
+export const SaleDB = SaleFactory(db);         // Depende de Client, User, TypePayment
+export const StockGeneralDB = StockGeneralFactory(db); // Depende de Product, Depot
+export const StockLotDB = StockLotFactory(db); // Depende de Product, Depot
 
 // Nivel 4: Modelos de Detalle que dependen de Nivel 3
-export const PurchaseDetailDB = PurchaseDetailFactory(db); // Depende de Purchase, Product
+export const PurchaseGeneralItemDB = PurchaseGeneralItemFactory(db); // Depende de Purchase, Product
+export const PurchaseLotItemDB = PurchaseLotItemFactory(db); // Depende de Purchase, Product
 export const SaleDetailDB = SaleDetailFactory(db);         // Depende de Sale, Product
 
 
@@ -86,11 +92,55 @@ ClientDB.hasMany(SaleDB, { foreignKey: "client_ci", as: "sales" });
 SaleDB.belongsTo(UserDB, { foreignKey: "user_ci", as: "user" });
 UserDB.hasMany(SaleDB, { foreignKey: "user_ci", as: "sales" });
 
-PurchaseDetailDB.belongsTo(PurchaseDB, { foreignKey: "purchase_id", as: "purchase" });
-PurchaseDB.hasMany(PurchaseDetailDB, { foreignKey: "purchase_id", as: "purchase_details" });
+// Un registro de StockGeneral pertenece a un Producto
+StockGeneralDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
+// Un Producto puede tener múltiples registros de stock (uno por almacén)
+ProductDB.hasMany(StockGeneralDB, { foreignKey: "product_id", as: "stock_generals" });
 
-PurchaseDetailDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
-ProductDB.hasMany(PurchaseDetailDB, { foreignKey: "product_id", as: "purchase_details" });
+// Un registro de StockGeneral pertenece a un Almacén (Depot)
+StockGeneralDB.belongsTo(DepotDB, { foreignKey: "depot_id", as: "depot" });
+// Un Almacén (Depot) puede tener múltiples registros de stock (uno por producto)
+DepotDB.hasMany(StockGeneralDB, { foreignKey: "depot_id", as: "stock_generals" });
+
+// Un Lote de Stock pertenece a un Producto
+StockLotDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
+// Un Producto puede tener múltiples Lotes
+ProductDB.hasMany(StockLotDB, { foreignKey: "product_id", as: "stock_lots" });
+
+// Un Lote de Stock pertenece a un Almacén (Depot)
+StockLotDB.belongsTo(DepotDB, { foreignKey: "depot_id", as: "depot" });
+// Un Almacén (Depot) puede tener múltiples Lotes
+DepotDB.hasMany(StockLotDB, { foreignKey: "depot_id", as: "stock_lots" });
+
+// Un item de compra general pertenece a una Compra
+PurchaseGeneralItemDB.belongsTo(PurchaseDB, { foreignKey: "purchase_id", as: "purchase" });
+// Una Compra puede tener múltiples items generales
+PurchaseDB.hasMany(PurchaseGeneralItemDB, { foreignKey: "purchase_id", as: "purchase_general_items" });
+
+// Un item de compra general pertenece a un Producto
+PurchaseGeneralItemDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
+// Un Producto puede estar en múltiples items de compras generales
+ProductDB.hasMany(PurchaseGeneralItemDB, { foreignKey: "product_id", as: "purchase_general_items" });
+
+// Un item de compra por lote pertenece a una Compra
+PurchaseLotItemDB.belongsTo(PurchaseDB, { foreignKey: "purchase_id", as: "purchase" });
+// Una Compra puede tener múltiples items por lote
+PurchaseDB.hasMany(PurchaseLotItemDB, { foreignKey: "purchase_id", as: "purchase_lot_items" });
+
+// Un item de compra por lote pertenece a un Producto
+PurchaseLotItemDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
+// Un Producto puede estar en múltiples items de compras por lote
+ProductDB.hasMany(PurchaseLotItemDB, { foreignKey: "product_id", as: "purchase_lot_items" });
+
+// Un item de compra por lote pertenece a una Compra
+PurchaseLotItemDB.belongsTo(PurchaseDB, { foreignKey: "purchase_id", as: "purchase" });
+// Una Compra puede tener múltiples items por lote
+PurchaseDB.hasMany(PurchaseLotItemDB, { foreignKey: "purchase_id", as: "purchase_lot_items" });
+
+// Un item de compra por lote pertenece a un Producto
+PurchaseLotItemDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
+// Un Producto puede estar en múltiples items de compras por lote
+ProductDB.hasMany(PurchaseLotItemDB, { foreignKey: "product_id", as: "purchase_lot_items" });
 
 SaleDetailDB.belongsTo(SaleDB, { foreignKey: "sale_id", as: "sale" });
 SaleDB.hasMany(SaleDetailDB, { foreignKey: "sale_id", as: "sale_details" });

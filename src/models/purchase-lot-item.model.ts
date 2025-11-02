@@ -1,11 +1,12 @@
 import { DataTypes, Sequelize } from "sequelize";
 
-export const PurchaseDetailFactory = (sequelize: Sequelize) => {
-    return sequelize.define("PurchaseDetail", {
-        purchase_detail_id: {
+export const PurchaseLotItemFactory = (sequelize: Sequelize) => {
+    return sequelize.define("PurchaseLotItem", {
+        purchase_lot_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
+            unique: true,
         },
         product_id: {
             type: DataTypes.INTEGER,
@@ -29,9 +30,13 @@ export const PurchaseDetailFactory = (sequelize: Sequelize) => {
                 min: 1
             }
         },
+        expiration_date: {
+            type: DataTypes.DATE,
+            allowNull: false,
+        },
         status: {
             type: DataTypes.BOOLEAN,
             defaultValue: true,
         },
-    }, { tableName: "purchases_details", timestamps: true });
+    }, { tableName: "purchase_lot_items", timestamps: true });
 };

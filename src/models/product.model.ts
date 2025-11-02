@@ -24,13 +24,6 @@ export const ProductFactory = (sequelize: Sequelize) => {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false,
         },
-        stock: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            validate: {
-                min: 0,
-            },
-        },
         image_url: {
             type: DataTypes.STRING(255),
             allowNull: true,
@@ -38,6 +31,10 @@ export const ProductFactory = (sequelize: Sequelize) => {
         min_stock: {
             type: DataTypes.INTEGER,
             allowNull: false,
+        },
+        perishable: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
         },
         status: {
             type: DataTypes.BOOLEAN,
