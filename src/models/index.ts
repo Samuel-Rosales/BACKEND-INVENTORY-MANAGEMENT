@@ -118,19 +118,9 @@ PurchaseGeneralItemDB.belongsTo(PurchaseDB, { foreignKey: "purchase_id", as: "pu
 PurchaseDB.hasMany(PurchaseGeneralItemDB, { foreignKey: "purchase_id", as: "purchase_general_items" });
 
 // Un item de compra general pertenece a un Producto
-PurchaseGeneralItemDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
+PurchaseGeneralItemDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product"});
 // Un Producto puede estar en múltiples items de compras generales
 ProductDB.hasMany(PurchaseGeneralItemDB, { foreignKey: "product_id", as: "purchase_general_items" });
-
-// Un item de compra por lote pertenece a una Compra
-PurchaseLotItemDB.belongsTo(PurchaseDB, { foreignKey: "purchase_id", as: "purchase" });
-// Una Compra puede tener múltiples items por lote
-PurchaseDB.hasMany(PurchaseLotItemDB, { foreignKey: "purchase_id", as: "purchase_lot_items" });
-
-// Un item de compra por lote pertenece a un Producto
-PurchaseLotItemDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
-// Un Producto puede estar en múltiples items de compras por lote
-ProductDB.hasMany(PurchaseLotItemDB, { foreignKey: "product_id", as: "purchase_lot_items" });
 
 // Un item de compra por lote pertenece a una Compra
 PurchaseLotItemDB.belongsTo(PurchaseDB, { foreignKey: "purchase_id", as: "purchase" });

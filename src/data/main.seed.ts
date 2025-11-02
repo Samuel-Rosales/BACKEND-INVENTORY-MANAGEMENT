@@ -10,9 +10,12 @@ import {
     userSeed,
     productSeed,
     purchaseSeed,
-    purchaseDetailSeed,
+    purchaseGeneralItemSeed,
+    purchaseLotItemSeed,
     saleSeed,
     saleDetailSeed,
+    stockGeneralSeed,
+    stockLotSeed,
     movementSeed
 } from './seeders';
 
@@ -39,10 +42,13 @@ export const mainSeed = async () => {
         await purchaseSeed();  // Depends on 'providerSeed', 'userSeed', 'typePaymentSeed'
         await saleSeed();      // Depends on 'clientSeed', 'userSeed', 'typePaymentSeed'
         await movementSeed();  // Depends on 'depotSeed', 'productSeed'
+        await stockGeneralSeed(); // Depends on 'productSeed' and 'depotSeed'
+        await stockLotSeed();     // Depends on 'productSeed' and 'depotSeed'
 
         // --- LEVEL 4: Transaction Detail Models ---
         console.log("\n--- Running Level 4: Transaction Details ---");
-        await purchaseDetailSeed(); // Depends on 'purchaseSeed' and 'productSeed'
+        await purchaseGeneralItemSeed(); // Depends on 'purchaseSeed' and 'productSeed'
+        await purchaseLotItemSeed();     // Depends on 'purchaseSeed' and 'productSeed'
         await saleDetailSeed();     // Depends on 'saleSeed' and 'productSeed'
 
         console.log("\n✅ Seeding process completed successfully.");
