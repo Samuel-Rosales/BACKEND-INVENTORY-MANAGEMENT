@@ -1,4 +1,4 @@
-import { PurchaseDetailDB } from "src/models";
+import { PurchaseGeneralItemDB } from "src/models";
 
 export const purchaseDetailSeed = async () => {
     try {
@@ -31,7 +31,7 @@ export const purchaseDetailSeed = async () => {
             updatedAt: new Date(),
         }));
 
-        const createdDetails = await PurchaseDetailDB.bulkCreate(finalDetails);
+        const createdDetails = await PurchaseGeneralItemDB.bulkCreate(finalDetails);
         console.log(`Seed de Detalles de Compra ejecutado correctamente. Insertados: ${createdDetails.length} detalles.`);
 
     } catch (error) {
