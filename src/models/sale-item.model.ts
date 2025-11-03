@@ -1,8 +1,8 @@
 import { DataTypes, Sequelize } from "sequelize";
 
-export const SaleDetailFactory = (sequelize: Sequelize) => {
-    return sequelize.define("SaleDetail", {
-        sale_detail_id: {
+export const SaleItemFactory = (sequelize: Sequelize) => {
+    return sequelize.define("SaleItem", {
+        sale_item_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
@@ -15,6 +15,10 @@ export const SaleDetailFactory = (sequelize: Sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        depot_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
         unit_cost: {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false,
@@ -33,5 +37,5 @@ export const SaleDetailFactory = (sequelize: Sequelize) => {
             type: DataTypes.BOOLEAN,
             defaultValue: true,
         },
-    }, { tableName: "sales_details", timestamps: true });
+    }, { tableName: "sales_items", timestamps: true });
 };

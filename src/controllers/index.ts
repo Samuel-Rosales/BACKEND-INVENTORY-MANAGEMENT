@@ -10,7 +10,7 @@ export * from "./purchase-general-item.controller";
 export * from "./purchase-lot-item.controller";
 export * from "./type-payment.controller";
 export * from "./sale.controller";
-export * from "./sale-detail.controller";
+export * from "./sale-item.controller";
 export * from "./stock-general.controller";
 export * from "./stock-lot.controller";
 export * from "./user.controller";

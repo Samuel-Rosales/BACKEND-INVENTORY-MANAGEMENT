@@ -10,7 +10,7 @@ export * from "./purchase-general-item.validators";
 export * from "./purchase-lot-item.validators";
 export * from "./type-payment.validators";
 export * from "./sale.validators";
-export * from "./sale-detail.validators";
+export * from "./sale-item.validators";
 export * from "./stock-general.validators";
 export * from "./stock-lot.validators";
 export * from "./user.validators";

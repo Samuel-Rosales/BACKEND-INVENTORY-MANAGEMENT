@@ -26,7 +26,7 @@ import { PurchaseGeneralItemFactory } from "./purchase-general-item.model";
 import { PurchaseLotItemFactory } from "./purchase-lot-item.model";
 import { RolFactory } from "./rol.model";
 import { SaleFactory } from "./sale.model";
-import { SaleDetailFactory } from "./sale-item.model";
+import { SaleItemFactory } from "./sale-item.model";
 import { StockGeneralFactory } from "./stock-general.model";
 import { StockLotFactory } from "./stock-lot.model";
 import { TypePaymentFactory } from "./type-payment.model";
@@ -56,7 +56,7 @@ export const StockLotDB = StockLotFactory(db); // Depende de Product, Depot
 // Nivel 4: Modelos de Detalle que dependen de Nivel 3
 export const PurchaseGeneralItemDB = PurchaseGeneralItemFactory(db); // Depende de Purchase, Product
 export const PurchaseLotItemDB = PurchaseLotItemFactory(db); // Depende de Purchase, Product
-export const SaleDetailDB = SaleDetailFactory(db);         // Depende de Sale, Product
+export const SaleItemDB = SaleItemFactory(db);         // Depende de Sale, Product
 
 
 // --- 3. DEFINE TODAS LAS RELACIONES ---
@@ -132,11 +132,11 @@ PurchaseLotItemDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product"
 // Un Producto puede estar en múltiples items de compras por lote
 ProductDB.hasMany(PurchaseLotItemDB, { foreignKey: "product_id", as: "purchase_lot_items" });
 
-SaleDetailDB.belongsTo(SaleDB, { foreignKey: "sale_id", as: "sale" });
-SaleDB.hasMany(SaleDetailDB, { foreignKey: "sale_id", as: "sale_details" });
+SaleItemDB.belongsTo(SaleDB, { foreignKey: "sale_id", as: "sale" });
+SaleDB.hasMany(SaleItemDB, { foreignKey: "sale_id", as: "sale_items" });
 
-SaleDetailDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
-ProductDB.hasMany(SaleDetailDB, { foreignKey: "product_id", as: "sale_details" });
+SaleItemDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
+ProductDB.hasMany(SaleItemDB, { foreignKey: "product_id", as: "sale_items" });
 
 // Un item de compra general (no perecedero) pertenece a un Almacén (Depot)
 PurchaseGeneralItemDB.belongsTo(DepotDB, { 
@@ -163,6 +163,8 @@ DepotDB.hasMany(PurchaseLotItemDB, {
     as: "purchase_lot_items" 
 });
 
+SaleItemDB.belongsTo(DepotDB, { foreignKey: "depot_id", as: "depot" });
+DepotDB.hasMany(SaleItemDB, { foreignKey: "depot_id", as: "sale_items" });
 
 // --- 4. EXPORTA LA FUNCIÓN DE SINCRONIZACIÓN ---
 export const syncDatabase = async (options?: SyncOptions) => {

@@ -9,7 +9,7 @@ export * from "./purchase-general-item.service";
 export * from "./purchase-lot-item.service";
 export * from "./rol.service";
 export * from "./sale.service"; 
-export * from "./sale-detail.service"; 
+export * from "./sale-item.service"; 
 export * from "./stock-general.service"; 
 export * from "./stock-lot.service"; 
 export * from "./type-payment.service";

@@ -10,7 +10,7 @@ export * from "./purchase-lot-item.routes";
 export * from "./rol.routes";
 export * from "./type-payment.routes";
 export * from "./sale.routes";
-export * from "./sale-detail.routes";
+export * from "./sale-item.routes";
 export * from "./stock-general.routes";
 export * from "./stock-lot.routes";
 export * from "./user.routes";

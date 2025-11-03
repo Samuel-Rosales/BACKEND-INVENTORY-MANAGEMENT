@@ -1,10 +1,10 @@
-import { SaleDetailDB, SaleDB, ProductDB } from "../models";
-import { SaleDetailInterface } from "../interfaces";
+import { SaleItemDB, SaleDB, ProductDB } from "../models";
+import { SaleItemInterface } from "../interfaces";
 
-class SaleDetailService {
+class SaleItemService {
     async getAll() {
         try {
-            const SalesDetails = await SaleDetailDB.findAll({
+            const SalesDetails = await SaleItemDB.findAll({
                 include: [
                     { model: SaleDB, as: "sale" },
                     { model: ProductDB, as: "product" },
@@ -13,11 +13,11 @@ class SaleDetailService {
 
             return { 
                 status: 200,
-                message: "Sales details obtained correctly", 
+                message: "Sales items obtained correctly", 
                 data: SalesDetails,   
             };
         } catch (error) {
-            console.error("Error fetching sales details: ", error);
+            console.error("Error fetching sales items: ", error);
 
             return {
                 status: 500,
@@ -27,9 +27,9 @@ class SaleDetailService {
         }
     }
 
-    async getOne(sale_detail_id: number) {
+    async getOne(sale_item_id: number) {
         try {
-            const saleDetail = await SaleDetailDB.findByPk(sale_detail_id, {
+            const saleDetail = await SaleItemDB.findByPk(sale_item_id, {
                 include: [
                     { model: SaleDB, as: "sale" },
                     { model: ProductDB, as: "product" },
@@ -38,11 +38,11 @@ class SaleDetailService {
 
             return {
                 status: 200,
-                message: "Sale detail obtained correctly",
+                message: "Sale item obtained correctly",
                 data: saleDetail,
             };
         } catch (error) {
-            console.error("Error fetching sale detail: ", error);
+            console.error("Error fetching sale item: ", error);
 
             return {
                 status: 500,
@@ -52,19 +52,19 @@ class SaleDetailService {
         }
     }
 
-    async create(saleDetail: SaleDetailInterface) {
+    async create(saleDetail: SaleItemInterface) {
         try {
             const { createdAt, updatedAt, status, ...saleDetailData } = saleDetail;
 
-            const newSaleDetail = await SaleDetailDB.create(saleDetailData);
+            const newSaleDetail = await SaleItemDB.create(saleDetailData);
 
             return {
                 status: 201,
-                message: "Sale detail created successfully",
+                message: "Sale item created successfully",
                 data: newSaleDetail,
             };
             } catch (error) { 
-            console.error("Error creating sale detail: ", error);
+            console.error("Error creating sale item: ", error);
 
             return {
                 status: 500,
@@ -74,21 +74,21 @@ class SaleDetailService {
         }
     }
 
-    async update(sale_detail_id: number, saleDetail: Partial<SaleDetailInterface>) {
+    async update(sale_item_id: number, saleDetail: Partial<SaleItemInterface>) {
         try {
-            const { createdAt, updatedAt, sale_detail_id: _, ... saleDetailData} = saleDetail;
+            const { createdAt, updatedAt, sale_item_id: _, ... saleDetailData} = saleDetail;
 
-            await SaleDetailDB.update(saleDetailData, { where: { sale_detail_id } });
+            await SaleItemDB.update(saleDetailData, { where: { sale_item_id } });
 
-            const updatedSaleDetail = await SaleDetailDB.findByPk(sale_detail_id);
+            const updatedSaleDetail = await SaleItemDB.findByPk(sale_item_id);
 
             return {
                 status: 200,
-                message: "Sale detail update correctly",
+                message: "Sale item update correctly",
                 data: updatedSaleDetail,
             };
         } catch (error) {
-            console.error("Error updating sale detail: ", error);
+            console.error("Error updating sale item: ", error);
 
             return {
                 status: 500,
@@ -98,16 +98,16 @@ class SaleDetailService {
         }
     }
 
-    async delete (sale_detail_id: number) {
+    async delete (sale_item_id: number) {
         try {
-            await SaleDetailDB.destroy({ where: {sale_detail_id} });
+            await SaleItemDB.destroy({ where: {sale_item_id} });
 
             return { 
                 status: 200,
-                message: "Sale detail deleted successfully",
+                message: "Sale item deleted successfully",
             };
         } catch (error) {
-            console.error("Error deleting sale detail: ", error);
+            console.error("Error deleting sale item: ", error);
 
             return {
                 status: 500,
@@ -117,7 +117,7 @@ class SaleDetailService {
         }
     }
 
-    /*const purchases = await SaleDetailDB.findAll({
+    /*const purchases = await SaleItemDB.findAll({
   where: {
         purchase_date: {
         [Op.between]: ['2025-06-01', '2025-06-30']
@@ -129,4 +129,4 @@ class SaleDetailService {
 
 }
 
-export const SaleDetailServices = new SaleDetailService();
+export const SaleItemServices = new SaleItemService();

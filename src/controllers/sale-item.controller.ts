@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
-import { SaleDetailServices } from "../services";
+import { SaleItemServices } from "../services";
 
-export class SaleDetailController {
+export class SaleItemController {
     constructor() {}
 
     all = async (req: Request, res: Response) => {
-        const { status, message, data } = await SaleDetailServices.getAll();
+        const { status, message, data } = await SaleItemServices.getAll();
 
         return res.status(status).json({
             message,
@@ -15,7 +15,7 @@ export class SaleDetailController {
 
     one = async (req: Request, res: Response) => { 
         const { id } = req.params;
-        const { status, message, data } = await SaleDetailServices.getOne(Number(id));
+        const { status, message, data } = await SaleItemServices.getOne(Number(id));
         
         return res.status(status).json({ 
             message,
@@ -24,7 +24,7 @@ export class SaleDetailController {
     };  
 
     create = async (req: Request,  res: Response  ) => {
-        const { status, message, data } = await SaleDetailServices.create(req.body);
+        const { status, message, data } = await SaleItemServices.create(req.body);
 
         return res.status(status).json({
             message,
@@ -34,7 +34,7 @@ export class SaleDetailController {
 
     update = async (req: Request, res: Response) => {
         const { id } = req.params; 
-        const { status, message, data } = await SaleDetailServices.update(Number(id), req.body);
+        const { status, message, data } = await SaleItemServices.update(Number(id), req.body);
 
         return res.status(status).json({
             message,
@@ -44,7 +44,7 @@ export class SaleDetailController {
 
     delete = async (req: Request, res: Response) => {
         const { id } = req.params;
-        const { status, message } = await SaleDetailServices.delete(Number(id));
+        const { status, message } = await SaleItemServices.delete(Number(id));
         
         return res.status(status).json({
             message,

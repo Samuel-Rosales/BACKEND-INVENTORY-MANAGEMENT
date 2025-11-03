@@ -1,8 +1,8 @@
 import { check } from "express-validator";
 import type { NextFunction, Request, Response } from "express";
-import { SaleDetailDB, SaleDB, ProductDB } from "../models";
+import { SaleItemDB, SaleDB, ProductDB } from "../models";
 
-export class SaleDetailValidators {
+export class SaleItemValidators {
     
     validateCreateFields = [
         check("product_id")
@@ -114,7 +114,7 @@ export class SaleDetailValidators {
         }
     };
 
-    validateSaleDetailParamIdExists = async (req: Request, res: Response, next: NextFunction) => {
+    validateSaleItemParamIdExists = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const rawId = (req.params.id ?? "").toString().trim();
             if (!rawId) return next();
@@ -130,18 +130,18 @@ export class SaleDetailValidators {
             }
 
             // consulta DB
-            const existingSale = await SaleDetailDB.findByPk(sale_id);
+            const existingSale = await SaleItemDB.findByPk(sale_id);
             if (!existingSale) {
-                return res.status(404).json({ message: `Detalle de venta con ID '${sale_id}' no encontrado.` });
+                return res.status(404).json({ message: `Item de venta con ID '${sale_id}' no encontrado.` });
             }
 
             next();
         } catch (error) {
             return res.status(500).json({
-                message: "Internal server error in validateSaleDetailParamIdExists.",
+                message: "Internal server error in validateSaleItemParamIdExists.",
             });
         }
     };
 }
 
-export const saleDetailValidators = new SaleDetailValidators();
+export const saleItemValidators = new SaleItemValidators();
