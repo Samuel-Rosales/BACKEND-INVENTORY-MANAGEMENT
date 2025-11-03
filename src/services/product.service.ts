@@ -1,13 +1,15 @@
-import { ProductDB, CategoryDB  } from "../models";
+import { ProductDB, CategoryDB, StockGeneralDB, StockLotDB  } from "../models";
 import { ProductInterface } from "../interfaces";
 
 class ProductService {
     async getAll() {
         try {
             const products = await ProductDB.findAll({
-                include: [{
-                    model: CategoryDB, as: "category"
-                }]
+                include: [
+                    {model: CategoryDB, as: "category"},
+                    {model: StockGeneralDB, as: "stock_generals"},
+                    {model: StockLotDB, as: "stock_lots"},
+                ]
             });
 
             return { 
@@ -29,9 +31,11 @@ class ProductService {
     async getOne(product_id: number) {
         try {
             const product = await ProductDB.findByPk(product_id, {
-                include: [{
-                    model: CategoryDB, as: "category"
-                }]
+                include: [
+                    { model: CategoryDB, as: "category" },
+                    {model: StockGeneralDB, as: "stock_generals"},
+                    {model: StockLotDB, as: "stock_lots"},
+                ]
             });
 
             return {

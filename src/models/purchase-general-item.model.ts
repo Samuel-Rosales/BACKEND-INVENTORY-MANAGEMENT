@@ -16,6 +16,10 @@ export const PurchaseGeneralItemFactory = (sequelize: Sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        depot_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
         unit_cost: {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false,

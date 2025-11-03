@@ -138,6 +138,31 @@ SaleDB.hasMany(SaleDetailDB, { foreignKey: "sale_id", as: "sale_details" });
 SaleDetailDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
 ProductDB.hasMany(SaleDetailDB, { foreignKey: "product_id", as: "sale_details" });
 
+// Un item de compra general (no perecedero) pertenece a un Almacén (Depot)
+PurchaseGeneralItemDB.belongsTo(DepotDB, { 
+    foreignKey: "depot_id", 
+    as: "depot" 
+});
+
+// Un Almacén (Depot) puede tener múltiples items de compra generales
+DepotDB.hasMany(PurchaseGeneralItemDB, { 
+    foreignKey: "depot_id", 
+    as: "purchase_general_items" 
+});
+
+
+// Un item de compra por lote (perecedero) pertenece a un Almacén (Depot)
+PurchaseLotItemDB.belongsTo(DepotDB, { 
+    foreignKey: "depot_id", 
+    as: "depot" 
+});
+
+// Un Almacén (Depot) puede tener múltiples items de compra por lote
+DepotDB.hasMany(PurchaseLotItemDB, { 
+    foreignKey: "depot_id", 
+    as: "purchase_lot_items" 
+});
+
 
 // --- 4. EXPORTA LA FUNCIÓN DE SINCRONIZACIÓN ---
 export const syncDatabase = async (options?: SyncOptions) => {

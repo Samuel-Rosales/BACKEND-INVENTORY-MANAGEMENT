@@ -18,7 +18,7 @@ export class MovementValidator {
         // --- type ---
         check("type")
             .notEmpty().withMessage("El tipo del movimiento es obligatorio.")
-            .isIn(["Entrada", "Salida"]).withMessage("El tipo del movimiento debe ser uno de: Entrada, Salida."),
+            .isIn(["Compra", "Venta", "Ajuste Positivo", "Ajuste Negativo"]).withMessage("El tipo del movimiento debe ser uno de: Entrada, Salida."),
         
         // --- amount ---
         check("amount")
@@ -48,7 +48,7 @@ export class MovementValidator {
         check("type")
             .optional()
             .notEmpty().withMessage("El tipo del movimiento no puede estar vacío.")
-            .isIn(["Entrada", "Salida"]).withMessage("El tipo del movimiento debe ser uno de: Entrada, Salida."),
+            .isIn(["Compra", "Venta", "Ajuste Positivo", "Ajuste Negativo"]).withMessage("El tipo del movimiento debe ser uno de: Entrada, Salida."),
         
         // --- amount ---
         check("amount")

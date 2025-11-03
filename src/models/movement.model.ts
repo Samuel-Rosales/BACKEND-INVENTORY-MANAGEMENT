@@ -16,7 +16,7 @@ export const MovementFactory = (sequelize: Sequelize) => {
             allowNull: false,
         },
         type: {
-            type: DataTypes.ENUM('Entrada', 'Salida'),
+            type: DataTypes.ENUM('Compra', 'Venta', 'Ajuste Negativo', 'Ajuste Positivo'),
             allowNull: false,
         },
         amount: {

@@ -21,6 +21,7 @@ router.post("/",
     purchaseLotItemValidators.validateCreateFields,
     purchaseLotItemValidators.validateProductIdExists,
     purchaseLotItemValidators.validatePurchaseIdExists,
+    purchaseLotItemValidators.validateDepotIdExists,
     validateFields,
     purchaseLotItemController.create
 ); // http://localhost:3000/api/purchase_lot_item
@@ -30,6 +31,7 @@ router.patch("/:id",
     purchaseLotItemValidators.validateUpdateFields,
     purchaseLotItemValidators.validateProductIdExists,
     purchaseLotItemValidators.validatePurchaseIdExists,
+    purchaseLotItemValidators.validateDepotIdExists,
     validateFields,
     purchaseLotItemController.update,
 ); // http://localhost:3000/api/purchase_lot_item/:id

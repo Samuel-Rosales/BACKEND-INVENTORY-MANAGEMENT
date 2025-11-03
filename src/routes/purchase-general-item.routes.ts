@@ -21,6 +21,7 @@ router.post("/",
     purchaseGeneralItemValidators.validateCreateFields,
     purchaseGeneralItemValidators.validateProductIdExists,
     purchaseGeneralItemValidators.validatePurchaseIdExists,
+    purchaseGeneralItemValidators.validateDepotIdExists,
     validateFields,
     purchaseGeneralItemController.create
 ); // http://localhost:3000/api/purchase_general_item
@@ -30,6 +31,7 @@ router.patch("/:id",
     purchaseGeneralItemValidators.validateUpdateFields,
     purchaseGeneralItemValidators.validateProductIdExists,
     purchaseGeneralItemValidators.validatePurchaseIdExists,
+    purchaseGeneralItemValidators.validateDepotIdExists,
     validateFields,
     purchaseGeneralItemController.update,
 ); // http://localhost:3000/api/purchase_general_item/:id

@@ -1,6 +1,6 @@
 import { check } from "express-validator";
 import type { NextFunction, Request, Response } from "express";
-import { PurchaseDB, ProductDB, PurchaseLotItemDB } from "../models";
+import { PurchaseDB, ProductDB, PurchaseLotItemDB, DepotDB } from "../models";
 
 export class PurchaseLotItemValidators {
     
@@ -12,6 +12,10 @@ export class PurchaseLotItemValidators {
         check("purchase_id")
             .notEmpty().withMessage("El ID de la compra es obligatorio.")
             .isInt().withMessage("El ID de la compra debe ser un número entero."),
+
+        check("depot_id")
+            .notEmpty().withMessage("El almacén del movimiento es obligatorio.")
+            .isNumeric().withMessage("El ID del almacén debe ser un número entero."),
 
         check("unit_cost")
             .notEmpty().withMessage("El costo unitario del producto es obligatorio.")
@@ -33,6 +37,11 @@ export class PurchaseLotItemValidators {
             .notEmpty().withMessage("El ID de la compra es obligatorio.")
             .isInt().withMessage("El ID de la compra debe ser un número entero."),
 
+        check("depot_id")
+            .optional()
+            .notEmpty().withMessage("El almacén del movimiento no puede estar vacío.") // Verifica si existe el campo y no está vacío
+            .isNumeric().withMessage("El ID del almacén debe ser un número entero."),
+
         check("unit_cost")
             .optional()
             .notEmpty().withMessage("El costo unitario del producto es obligatorio.")
@@ -48,6 +57,34 @@ export class PurchaseLotItemValidators {
             .notEmpty().withMessage("El estado del detalle de la compra no puede estar vacío.")
             .isBoolean().withMessage("El estado del detalle de la compra debe ser un valor booleano."),
     ];
+
+    validateDepotIdExists = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const rawId = (req.body.depot_id ?? "").toString().trim();
+            const depot_id = Number.parseInt(rawId, 10);
+
+            if (Number.isNaN(depot_id) || !Number.isInteger(depot_id) || depot_id <= 0) {
+                return res.status(400).json({
+                    message: `El ID del almacén proporcionado "${rawId}" no es válido.`, 
+                });
+            }
+
+            const exitingDepot = await DepotDB.findByPk(depot_id);
+
+            if (!exitingDepot) {
+                return res.status(404).json({
+                    message: `Almacén con ID proporcionado "${depot_id}" no encontrado.`,
+                });
+            }
+
+            next();
+        } catch (error) {
+            return res.status(500).json({
+                message: "Internal server error in validateDepotExists.",
+            });
+        }
+    };
+        
 
     validateProductIdExists = async (req: Request, res: Response, next: NextFunction) => {
         try {
