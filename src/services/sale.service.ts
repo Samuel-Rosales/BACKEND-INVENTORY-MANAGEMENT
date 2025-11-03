@@ -60,17 +60,18 @@ class SaleService {
         }
     }
 
-    async create(saleData: any, items: any[]) { // Idealmente: items: SaleDetailInterface[]
+    async create(sale: SaleInterface) { // Idealmente: items: SaleDetailInterface[]
+        
         const t = await db.transaction(); 
 
         try {
+
+            const { createdAt, updatedAt, sale_id, ...saleData  } = sale;
+
             // 1. Crear la cabecera de la Venta (no tiene depot_id)
             const newSale = await SaleDB.create(saleData, { transaction: t });
 
-            // 2. Validar que 'items' exista y sea un array
-            if (!items || !Array.isArray(items) || items.length === 0) {
-                throw new Error("La venta debe contener al menos un ítem.");
-            }
+            const items = (sale as any).sale_items ?? []; // 2. Extraer los ítems de la venta
 
             // 3. Procesar cada ítem
             for (const item of items) {
@@ -99,7 +100,7 @@ class SaleService {
                 
                 // 7. Registrar el movimiento
                 await MovementDB.create({
-                    type: 'Salida por Venta',
+                    type: 'Venta',
                     depot_id: depot_id, 
                     product_id: item.product_id,
                     amount: item.amount,
@@ -110,7 +111,8 @@ class SaleService {
 
             // 8. Confirmar
             await t.commit();
-            return { status: 201, message: "Venta creada", data: newSale };
+
+            return { status: 201, message: "Sale created successfully", data: newSale };
 
         } catch (error) {
             // 9. Revertir
@@ -125,7 +127,7 @@ class SaleService {
             }
             return {
                 status: 500, // Internal Server Error
-                message: "Error interno del servidor",
+                message: "Interal server error",
                 data: null,
             };
         }
