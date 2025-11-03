@@ -8,7 +8,7 @@ export * from "./purchase-general-item.seed";
 export * from "./purchase-lot-item.seed";
 export * from "./purchase.seed";
 export * from "./rol.seed";
-export * from "./sale-detail.seed";
+export * from "./sale-item.seed";
 export * from "./sale.seed";
 export * from "./stock-general.seed";
 export * from "./stock-lot.seed";

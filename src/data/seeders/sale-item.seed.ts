@@ -1,10 +1,10 @@
-import { SaleDetailDB } from "src/models";
+import { SaleItemDB } from "src/models";
 
-export const saleDetailSeed = async () => {
+export const saleItemSeed = async () => {
     try {
         console.log("Iniciando seed de Detalles de Venta...");
 
-        const detailsToCreate = [
+        const itemsToCreate = [
             // --- Detalles para la Venta ID 1 (Cliente: Ana Pérez) ---
             { sale_id: 1, product_id: 1, unit_cost: 999.99, amount: 1, status: true }, // Laptop
             { sale_id: 1, product_id: 2, unit_cost: 219.50, amount: 1, status: true }, // Monitor
@@ -27,17 +27,17 @@ export const saleDetailSeed = async () => {
         ];
 
         // --- Lógica de inserción ---
-        const finalDetails = detailsToCreate.map(detail => ({
-            ...detail,
+        const finalItems = itemsToCreate.map(item => ({
+            ...item,
             createdAt: new Date(),
             updatedAt: new Date(),
         }));
 
-        const createdDetails = await SaleDetailDB.bulkCreate(finalDetails);
-        console.log(`Seed de Detalles de Venta ejecutado correctamente. Insertados: ${createdDetails.length} detalles.`);
+        const createdItems = await SaleItemDB.bulkCreate(finalItems);
+        console.log(`Seed de Items de Venta ejecutado correctamente. Insertados: ${createdItems.length} detalles.`);
 
     } catch (error) {
-        console.error("Error al ejecutar seed de Detalles de Venta:", error);
+        console.error("Error al ejecutar seed de Items de Venta:", error);
         throw error;
     }
 };

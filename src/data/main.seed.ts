@@ -13,7 +13,7 @@ import {
     purchaseGeneralItemSeed,
     purchaseLotItemSeed,
     saleSeed,
-    saleDetailSeed,
+    saleItemSeed,
     stockGeneralSeed,
     stockLotSeed,
     movementSeed
@@ -49,7 +49,7 @@ export const mainSeed = async () => {
         console.log("\n--- Running Level 4: Transaction Details ---");
         await purchaseGeneralItemSeed(); // Depends on 'purchaseSeed' and 'productSeed'
         await purchaseLotItemSeed();     // Depends on 'purchaseSeed' and 'productSeed'
-        await saleDetailSeed();     // Depends on 'saleSeed' and 'productSeed'
+        await saleItemSeed();     // Depends on 'saleSeed' and 'productSeed'
 
         console.log("\n✅ Seeding process completed successfully.");
 
