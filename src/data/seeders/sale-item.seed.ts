@@ -1,43 +1,114 @@
-import { SaleItemDB } from "src/models";
+import { SaleItemDB, ProductDB, DepotDB } from "src/models"; // <-- Importar ProductDB y DepotDB
 
 export const saleItemSeed = async () => {
-    try {
-        console.log("Iniciando seed de Detalles de Venta...");
+    try {
+        console.log("Iniciando seed de Detalles de Venta...");
 
-        const itemsToCreate = [
-            // --- Detalles para la Venta ID 1 (Cliente: Ana Pérez) ---
-            { sale_id: 1, product_id: 1, unit_cost: 999.99, amount: 1, status: true }, // Laptop
-            { sale_id: 1, product_id: 2, unit_cost: 219.50, amount: 1, status: true }, // Monitor
-            { sale_id: 1, product_id: 8, unit_cost: 49.99, amount: 2, status: true }, // Toner (agregado)
-            
-            // --- Detalles para la Venta ID 2 (Cliente: Roberto Gómez) ---
-            { sale_id: 2, product_id: 5, unit_cost: 179.99, amount: 2, status: true }, // Silla Ergonómica
+        // --- 1. Obtener IDs para mapear ---
+        const products = await ProductDB.findAll({ attributes: ['product_id', 'name'] });
+        const depots = await DepotDB.findAll({ attributes: ['depot_id', 'name'] });
 
-            // --- Detalles para la Venta ID 3 (Cliente: Sofía Hernández) ---
-            { sale_id: 3, product_id: 3, unit_cost: 18.25, amount: 3, status: true }, // Martillo
-            { sale_id: 3, product_id: 4, unit_cost: 14.99, amount: 2, status: true }, // Destornillador (agregado)
-            { sale_id: 3, product_id: 9, unit_cost: 19.50, amount: 1, status: true }, // Guantes (agregado)
+        // --- 2. Mapear IDs ---
+        const productMap = new Map(products.map(p => [(p as any).name, (p as any).product_id]));
+        const depotMap = new Map(depots.map(d => [(d as any).name, (d as any).depot_id]));
 
-            // --- NUEVOS DETALLES ---
-            // --- Detalles para la Venta ID 4 (Cliente recurrente: Ana Pérez) ---
-            { sale_id: 4, product_id: 7, unit_cost: 5.99, amount: 10, status: true }, // Resma de Papel
+        // --- 3. Definir items a vender (con nombres) ---
+        const itemsToSell = [
+            // Venta 1 (Almacén Central Norte)
+            { 
+                sale_id: 1, 
+                productName: "Laptop HP ProBook", 
+                depotName: "Almacén Central Norte", 
+                unit_cost: 999.99, amount: 1 
+            },
+            { 
+                sale_id: 1, 
+                productName: "Monitor LED 24 pulgadas", 
+                depotName: "Almacén Central Norte", 
+                unit_cost: 219.50, amount: 1 
+            },
+            { 
+                sale_id: 1, 
+                productName: "Toner Negro LaserJet", 
+                depotName: "Taller y Stock de Repuestos", 
+                unit_cost: 49.99, 
+                amount: 2 
+            },
+            
+            // Venta 2 (Sillas de dos depósitos distintos)
+            { 
+                sale_id: 2, 
+                productName: "Silla Ergonómica Ejecutiva", 
+                depotName: "Almacén Central Norte", 
+                unit_cost: 179.99, 
+                amount: 1 
+            },
+            { 
+                sale_id: 2, 
+                productName: "Silla Ergonómica Ejecutiva", 
+                depotName: "Mini-Hub de Distribución Este", 
+                unit_cost: 179.99, 
+                amount: 1 
+            },
 
-            // --- Detalles para la Venta ID 5 (Cliente: Elsa Martínez) ---
-            { sale_id: 5, product_id: 6, unit_cost: 110.00, amount: 4, status: true }, // Archivador
-        ];
+            // Venta 3 (Depósito Regional Sur)
+            { 
+                sale_id: 3, 
+                productName: "Martillo de Uña 20oz", 
+                depotName: "Depósito Regional Sur", 
+                unit_cost: 18.25, amount: 3 
+            },
+            { 
+                sale_id: 3, 
+                productName: "Destornillador Phillips N°2", 
+                depotName: "Depósito Regional Sur", 
+                unit_cost: 14.99, 
+                amount: 2 
+            },
+            { 
+                sale_id: 3, 
+                productName: "Guantes de Seguridad Nitrilo",
+                depotName: "Depósito Regional Sur", 
+                unit_cost: 19.50, 
+                amount: 1 
+            },
 
-        // --- Lógica de inserción ---
-        const finalItems = itemsToCreate.map(item => ({
-            ...item,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        }));
+            // Venta 4 (Taller)
+            { sale_id: 4, productName: "Resma de Papel Carta", depotName: "Taller y Stock de Repuestos", unit_cost: 5.99, amount: 10 },
 
-        const createdItems = await SaleItemDB.bulkCreate(finalItems);
-        console.log(`Seed de Items de Venta ejecutado correctamente. Insertados: ${createdItems.length} detalles.`);
+            // Venta 5 (Almacén Central Norte)
+            { sale_id: 5, productName: "Archivador de Metal 3 Gavetas", depotName: "Almacén Central Norte", unit_cost: 110.00, amount: 4 },
+        ];
 
-    } catch (error) {
-        console.error("Error al ejecutar seed de Items de Venta:", error);
-        throw error;
-    }
+        // --- 4. Mapear y filtrar ---
+        const finalItems = [];
+        for (const item of itemsToSell) {
+            const product_id = productMap.get(item.productName);
+            const depot_id = depotMap.get(item.depotName);
+
+            if (!product_id || !depot_id) {
+                console.warn(`Producto o Depósito no encontrado para ${item.productName}/${item.depotName}. Saltando...`);
+                continue;
+            }
+
+            finalItems.push({
+                sale_id: item.sale_id,
+                product_id,
+                depot_id, // <-- ¡AHORA SÍ ESTÁ!
+                unit_cost: item.unit_cost,
+                amount: item.amount,
+                status: true,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            });
+        }
+
+        // --- 5. Lógica de inserción ---
+        const createdItems = await SaleItemDB.bulkCreate(finalItems);
+        console.log(`Seed de Items de Venta ejecutado correctamente. Insertados: ${createdItems.length} detalles.`);
+
+    } catch (error) {
+        console.error("Error al ejecutar seed de Items de Venta:", error);
+        throw error;
+    }
 };

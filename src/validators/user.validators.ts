@@ -5,7 +5,7 @@ import { RolDB, UserDB } from "../models";
 export class UserValidators {
 
     validateCreateFields = [
-        check("ci")
+        check("user_ci")
             .notEmpty().withMessage("La cédula del usuario es obligatoria.")
             .isLength({ min: 7, max: 8 }).withMessage("La cédula debe tener entre 7 y 8 caracteres.")
             .isString().withMessage("La cédula debe ser una cadena de texto."),

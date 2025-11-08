@@ -1,3 +1,4 @@
+export * from "./auth.validators";
 export * from "./category.validators";
 export * from "./client.validators";
 export * from "./depot.validators";

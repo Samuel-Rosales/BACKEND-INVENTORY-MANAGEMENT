@@ -3,12 +3,14 @@ import { validateFields } from "../middlewares";
 import { ProductController } from "../controllers";
 import { productValidators } from "../validators";
 import { upload } from "../middlewares";
+import { validateJWT } from "../middlewares/validateJWT";
 
 const router = Router();
 const productController = new ProductController();
 
 //  METHOD GET
 router.get("/", 
+    validateJWT,
     productController.all
 ); // http://localhost:3000/api/product
 

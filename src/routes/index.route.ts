@@ -1,3 +1,4 @@
+export * from "./auth.routes";
 export * from "./category.routes";
 export * from "./client.routes";
 export * from "./depot.routes";

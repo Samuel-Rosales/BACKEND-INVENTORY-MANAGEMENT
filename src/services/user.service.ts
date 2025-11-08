@@ -33,6 +33,14 @@ class UserService {
                 }]
             });
 
+            if (!user) {
+                return {
+                    status: 404,
+                    message: "User not found",
+                    data: null,
+                };
+            }
+
             return {
                 status: 200,
                 message: "User obtained correctly",
@@ -71,13 +79,13 @@ class UserService {
         }
     }
 
-    async update(ci: string, user: Partial<UserInterface>) {
+    async update(user_ci: string, user: Partial<UserInterface>) {
         try {
-            const { createdAt, updatedAt, ci: _, ... userData} = user;
+            const { createdAt, updatedAt, user_ci: _, ... userData} = user;
             
-            await UserDB.update(userData, { where: { ci } });
+            await UserDB.update(userData, { where: { user_ci } });
 
-            const updatedUser = await UserDB.findByPk(ci);
+            const updatedUser = await UserDB.findByPk(user_ci);
 
             return {
                 status: 200,

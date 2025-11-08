@@ -9,6 +9,7 @@ import { swaggerOptions } from "../config";
 import { syncDatabase } from "../models";
 
 import {
+    AuthRoute,
     CategoryRoute,
     ClientRoute,
     DepotRoute,
@@ -39,6 +40,7 @@ export class Server {
         this.port = process.env.PORT || "3000"
         this.apiurl = process.env.API_URL || `http://localhost:${this.port}`
         this.paths = {
+            auths: this.pre + "/auth",
             categories: this.pre + "/category",
             clients: this.pre + "/client",
             depots: this.pre + "/depot",
@@ -87,6 +89,7 @@ export class Server {
 
     routes() {
         // ...tus rutas se quedan igual
+        this.app.use(this.paths.auths, AuthRoute);
         this.app.use(this.paths.categories, CategoryRoute);
         this.app.use(this.paths.clients, ClientRoute);
         this.app.use(this.paths.depots, DepotRoute);

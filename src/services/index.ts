@@ -1,3 +1,4 @@
+export * from "./auth.service";
 export * from "./category.service";
 export * from "./client.service";
 export * from "./depot.service";

@@ -1,5 +1,5 @@
 export interface UserInterface {
-    ci: string;
+    user_ci: string;
     name: string;
     password: string;
     rol_id: number;

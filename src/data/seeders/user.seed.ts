@@ -6,32 +6,37 @@ export const userSeed = async () => {
 
         const usersToCreate = [
             {
-                ci: "31350493",
+                user_ci: "31350493",
                 name: "Samuel Rosales",
+                password: "defaultPassword1", // Cambia esto por una contraseña segura o hasheada
                 rol_id: 1, // ID del Rol: Administrador
                 status: true,
             },
             {
-                ci: "31366298",
+                user_ci: "31366298",
                 name: "Edgar Briceño",
+                password: "defaultPassword2",
                 rol_id: 3, // ID del Rol: Operador de Almacén
                 status: true,
             },
             {
-                ci: "31111417",
+                user_ci: "31111417",
                 name: "Marcos Castellanos",
+                password: "defaultPassword3",
                 rol_id: 4, // ID del Rol: Visualizador
                 status: true,
             },
             {
-                ci: "29778174",
+                user_ci: "29778174",
                 name: "Jesús Ramos",
+                password: "defaultPassword4",
                 rol_id: 2, // ID del Rol: Gerente
                 status: true,
             },
             {
-                ci: "30665034",
+                user_ci: "30665034",
                 name: "Anthony Wu Zhang",
+                password: "defaultPassword5",
                 rol_id: 5, // ID del Rol: Visualizador
                 status: true,
             },
@@ -39,14 +44,14 @@ export const userSeed = async () => {
 
         // 1. Obtener las CIs de los usuarios ya existentes en la DB
         const existingUsers = await UserDB.findAll({ 
-            attributes: ['ci'] 
+            attributes: ['user_ci'] 
         }); 
         
         const existingCIs = existingUsers.map(user => (user as any).ci);
 
         // 2. Filtrar el arreglo, manteniendo solo los usuarios cuyas CIs NO existan
         const uniqueUsersToCreate = usersToCreate.filter(user => 
-            !existingCIs.includes(user.ci)
+            !existingCIs.includes(user.user_ci)
         );
 
         // 3. Aplicar las fechas a los usuarios que serán insertados

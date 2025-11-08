@@ -1,6 +1,7 @@
 export * from "./category.interface";
 export * from "./client.interface";
 export * from "./depot.interface";
+export * from "./auth.interface";
 export * from "./movement.interface";
 export * from "./product.interface";
 export * from "./provider.interface";
