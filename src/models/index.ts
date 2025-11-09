@@ -5,6 +5,7 @@ import { db } from "../config/sequelize.config";
 import { CategoryFactory } from "./category.model";
 import { ClientFactory } from "./client.model";
 import { DepotFactory } from "./depot.model";
+import { ExchangeRateFactory } from "./exchange-rate.model";
 import { MovementFactory } from "./movement.model";
 import { PermissionFactory } from "./permission.model";
 import { ProductFactory } from "./product.model";
@@ -25,6 +26,7 @@ import { UserFactory } from "./user.model";
 // Nivel 1: Modelos que no dependen de otros
 export const CategoryDB = CategoryFactory(db);
 export const ClientDB = ClientFactory(db);
+export const ExchangeRateDB = ExchangeRateFactory(db);
 export const DepotDB = DepotFactory(db);
 export const ProviderDB = ProviderFactory(db);
 export const PermissionDB = PermissionFactory(db);

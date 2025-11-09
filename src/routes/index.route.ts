@@ -2,6 +2,7 @@ export * from "./auth.routes";
 export * from "./category.routes";
 export * from "./client.routes";
 export * from "./depot.routes";
+export * from "./exchange-rate.routes";
 export * from "./movement.routes";
 export * from "./permission.routes";
 export * from "./product.routes";

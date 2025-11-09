@@ -19,6 +19,18 @@ export const SaleFactory = (sequelize: Sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        total_usd: {
+            type: DataTypes.DECIMAL(10, 2),
+            allowNull: false
+        },
+        exchange_rate: {
+            type: DataTypes.DECIMAL(10, 4), // La tasa exacta usada en esta venta
+            allowNull: false
+        },
+        total_ves: {
+            type: DataTypes.DECIMAL(10, 2), // El total en Bs. calculado
+            allowNull: false
+        },
         sold_at: {
             type: DataTypes.DATE,
             allowNull: false,

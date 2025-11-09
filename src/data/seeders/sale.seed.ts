@@ -12,6 +12,10 @@ export const saleSeed = async () => {
                 type_payment_id: 3, // Tarjeta de Débito
                 sold_at: new Date("2025-10-18T14:30:00"),
                 status: true,
+                // --- NUEVOS CAMPOS ---
+                total_usd: 50.00,
+                exchange_rate: 36.52, // Tasa simulada para esa fecha
+                total_ves: 50.00 * 36.52, // 1826.00
             },
             {
                 client_ci: "20987654", // Cliente: Roberto Gómez Bolaños
@@ -19,6 +23,10 @@ export const saleSeed = async () => {
                 type_payment_id: 5, // Pago Móvil
                 sold_at: new Date("2025-10-20T11:00:00"),
                 status: true,
+                // --- NUEVOS CAMPOS ---
+                total_usd: 75.50,
+                exchange_rate: 36.58, // Tasa simulada para esa fecha
+                total_ves: 75.50 * 36.58, // 2761.79
             },
             {
                 client_ci: "08765432", // Cliente: Sofía Hernández García
@@ -26,6 +34,10 @@ export const saleSeed = async () => {
                 type_payment_id: 1, // Efectivo
                 sold_at: new Date("2025-10-21T09:15:00"),
                 status: true,
+                // --- NUEVOS CAMPOS ---
+                total_usd: 30.00,
+                exchange_rate: 36.60, // Tasa simulada para esa fecha
+                total_ves: 30.00 * 36.60, // 1098.00
             },
             // --- NUEVAS VENTAS ---
             {
@@ -34,6 +46,10 @@ export const saleSeed = async () => {
                 type_payment_id: 4, // Tarjeta de Crédito
                 sold_at: new Date("2025-10-21T16:00:00"), // Hoy en la tarde
                 status: true,
+                // --- NUEVOS CAMPOS ---
+                total_usd: 110.00,
+                exchange_rate: 36.60, // Tasa simulada (misma que la mañana)
+                total_ves: 110.00 * 36.60, // 4026.00
             },
             {
                 client_ci: "25135790", // Cliente: Elsa Martínez
@@ -41,10 +57,14 @@ export const saleSeed = async () => {
                 type_payment_id: 2, // Transferencia Bancaria
                 sold_at: new Date("2025-10-15T10:00:00"), // La semana pasada
                 status: true,
+                // --- NUEVOS CAMPOS ---
+                total_usd: 45.50,
+                exchange_rate: 36.48, // Tasa simulada para esa fecha
+                total_ves: 45.50 * 36.48, // 1660.04
             },
         ];
 
-        // --- Lógica de inserción ---
+        // --- Lógica de inserción (Sin cambios) ---
         const finalSales = salesToCreate.map(sale => ({
             ...sale,
             createdAt: new Date(),

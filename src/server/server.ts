@@ -5,6 +5,11 @@ import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { swaggerOptions } from "../config";
 
+import cron from 'node-cron'; // --- NUEVO ---
+import axios from 'axios';     // --- NUEVO ---
+
+import { ExchangeRateDB } from "../models"; 
+
 // --- CAMBIO CLAVE 1: Importar desde el nuevo índice de modelos ---
 import { syncDatabase } from "../models";
 
@@ -13,6 +18,7 @@ import {
     CategoryRoute,
     ClientRoute,
     DepotRoute,
+    ExchangeRateRoute,
     MovementRoute,
     PermissionRoute,
     ProductRoute,
@@ -45,6 +51,7 @@ export class Server {
             categories: this.pre + "/category",
             clients: this.pre + "/client",
             depots: this.pre + "/depot",
+            exchange_rates: this.pre + "/exchange_rate",
             movements: this.pre + "/movement",
             permissions: this.pre + "/permission",
             products: this.pre + "/product",
@@ -64,6 +71,8 @@ export class Server {
         this.middlewares()
         this.routes()
         this.swaggerSetup()
+
+        this.setupCronJobs();
     }
 
     // --- CAMBIO CLAVE 2: Nuevo método para conectar y sincronizar la DB ---
@@ -95,6 +104,7 @@ export class Server {
         this.app.use(this.paths.categories, CategoryRoute);
         this.app.use(this.paths.clients, ClientRoute);
         this.app.use(this.paths.depots, DepotRoute);
+        this.app.use(this.paths.exchange_rates, ExchangeRateRoute);
         this.app.use(this.paths.movements, MovementRoute);
         this.app.use(this.paths.permissions, PermissionRoute);
         this.app.use(this.paths.products, ProductRoute);
@@ -126,5 +136,52 @@ export class Server {
     swaggerSetup() {
         const swaggerDocs = swaggerJSDoc(swaggerOptions)
         this.app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+    }
+
+    private async updateRateDaily(): Promise<void> {
+        try {
+            const today = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
+            
+            // Usamos el modelo TasaDeCambio importado
+            const rateExist = await ExchangeRateDB.findOne({ where: { date: today } });
+            
+            if (rateExist) {
+                console.log(`[Cron Job] La tasa para ${today} ya está registrada.`);
+                return;
+            }
+
+            // ¡¡CAMBIA ESTA URL por la de tu proveedor!!
+            const response = await axios.get<any>('https://api-bcv-pi.vercel.app/api/tasa');
+            
+            // Asumo que la respuesta es { "tasa": 36.50 } o similar
+            const rateDate = response.data.tasas.USD.valor_num;
+
+            if (!rateDate || isNaN(rateDate)) {
+                throw new Error('Respuesta de API de tasa inválida');
+            }
+
+            await ExchangeRateDB.create({
+                rate: rateDate,
+                date: today
+            });
+
+            console.log(`[Cron Job] Tasa de cambio actualizada para ${today}: ${rateDate}`);
+
+        } catch (error) {
+            const message = (error instanceof Error) ? error.message : 'Error desconocido';
+            // Es normal que esto falle al primer inicio si la DB se está creando con 'alter: true'
+            console.error('[Cron Job] Error al actualizar la tasa:', message);
+        }
+    }
+
+    // --- NUEVO: Método para configurar todos los cron jobs ---
+    private setupCronJobs(): void {
+        // Ejecutar todos los días a las 8:00 AM, zona horaria de Venezuela
+        cron.schedule('38 11 * * *', () => {
+            console.log('[Cron Job] Ejecutando tarea programada de las 8:00 AM...');
+            this.updateRateDaily();
+        }, {
+            timezone: "America/Caracas" // ¡Importante!
+        });
     }
 }

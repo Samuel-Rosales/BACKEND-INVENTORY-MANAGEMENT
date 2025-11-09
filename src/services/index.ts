@@ -2,6 +2,7 @@ export * from "./auth.service";
 export * from "./category.service";
 export * from "./client.service";
 export * from "./depot.service";
+export * from "./exchange-rate.service";
 export * from "./movement.service";
 export * from "./permission.service";
 export * from "./product.service";
