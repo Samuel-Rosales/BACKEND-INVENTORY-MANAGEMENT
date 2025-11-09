@@ -10,7 +10,7 @@
     "dev": "tsc && node dist/app.js",
     "reset": "ts-node -r tsconfig-paths/register src/data/reset.seed.ts",
     "seeds": "ts-node -r tsconfig-paths/register src/data/main.seed.ts",
-    "seeds-reset": "ts-node -r tsconfig-paths/register src/data/main.seed.ts --reset"
+    "seeds-reset": "ts-node -r tsconfig-paths/register -r dotenv/config src/data/main.seed.ts --reset"
   },
   "keywords": [],
   "author": "Samuel Rosales",
