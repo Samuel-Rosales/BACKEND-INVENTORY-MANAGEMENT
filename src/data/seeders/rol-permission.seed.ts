@@ -1,83 +1,115 @@
 import { RolDB, PermissionDB } from "src/models"; // Ajusta la ruta a tus modelos
 import { Op } from "sequelize"; // Importante: para hacer búsquedas "IN"
+import { Model } from "sequelize"; // Necesario para tipar la función helper
+
+// ---- Helper para tipar el Rol con la función 'setPermissions' ----
+// (Esto es opcional pero mejora la legibilidad y el autocompletado)
+interface RolInstance extends Model {
+    setPermissions: (permissions: Model[]) => Promise<void>;
+}
 
 export const rolePermissionSeed = async () => {
     try {
         console.log("Iniciando seed de Relaciones Rol-Permiso...");
 
+        // --- Función Helper para no repetir código ---
+        const linkPermissionsToRole = async (roleName: string, permissionCodes: string[]) => {
+            const role = await RolDB.findOne({ where: { name: roleName } }) as RolInstance | null;
+            
+            if (!role) {
+                console.warn(`Seed-Relaciones: Rol "${roleName}" no encontrado. Saltando...`);
+                return;
+            }
+
+            const permissions = await PermissionDB.findAll({
+                where: { code: { [Op.in]: permissionCodes } }
+            });
+
+            if (permissions.length !== permissionCodes.length) {
+                console.warn(`Seed-Relaciones: No se encontraron todos los permisos para "${roleName}".`);
+            }
+
+            await role.setPermissions(permissions);
+            console.log(`Permisos asignados a "${roleName}". (${permissions.length} permisos)`);
+        };
+        // ---------------------------------------------
+
+
         // --- 1. ROL: Administrador (Todos los permisos) ---
-        const adminRole = await RolDB.findOne({ where: { name: "Administrador" } });
-        const allPermissions = await PermissionDB.findAll();
-        
-        if (adminRole && allPermissions.length > 0) {
-            // .setPermissions() borra las viejas y pone las nuevas
-            await adminRole.setPermissions(allPermissions); 
-            console.log("Administrador: Todos los permisos asignados.");
+        const adminRole = await RolDB.findOne({ where: { name: "Administrador" } }) as RolInstance | null;
+        if (adminRole) {
+            const allPermissions = await PermissionDB.findAll();
+            await adminRole.setPermissions(allPermissions);
+            console.log(`Administrador: Todos los ${allPermissions.length} permisos asignados.`);
         }
 
-        // --- 2. ROL: Gerente (Gestión, pero no de sistema) ---
-        const managerRole = await RolDB.findOne({ where: { name: "Gerente" } });
+        // --- 2. ROL: Gerente (Gestión completa del negocio) ---
         const managerCodes = [
-            "read:users", // Ver usuarios
-            "create:product", "read:products", "update:product", "delete:product", // CRUD Productos
-            "create:sale", "read:sales", "cancel:sale", // CRUD Ventas
-            "view:reports" // Ver Reportes
+            // Usuarios (No puede gestionar roles, pero sí usuarios)
+            "create:user", "read:users", "update:user", "delete:user",
+            // Productos (CRUD completo)
+            "create:product", "read:products", "update:product", "delete:product",
+            // Inventario (Gestión completa)
+            "read:stock", "adjust:stock", "read:movements",
+            // Ventas (CRUD completo)
+            "create:sale", "read:sales", "cancel:sale",
+            // Compras (CRUD completo)
+            "create:purchase", "read:purchases", "cancel:purchase",
+            // Entidades (CRUD completo)
+            "create:client", "read:clients", "update:client", "delete:client",
+            "create:provider", "read:providers", "update:provider", "delete:provider",
+            // Configuración (Toda)
+            "manage:categories", "manage:depots", "manage:paymenttypes", "read:exchangerate",
+            // Reportes
+            "view:reports"
         ];
-        const managerPermissions = await PermissionDB.findAll({
-            where: { code: { [Op.in]: managerCodes } }
-        });
+        await linkPermissionsToRole("Gerente", managerCodes);
 
-        if (managerRole) {
-            await managerRole.setPermissions(managerPermissions);
-            console.log("Gerente: Permisos de gestión asignados.");
-        }
-
-        // --- 3. ROL: Operador de Almacén (Solo Inventario) ---
-        const warehouseRole = await RolDB.findOne({ where: { name: "Operador de Almacén" } });
+        // --- 3. ROL: Operador de Almacén (Inventario y Compras) ---
         const warehouseCodes = [
-            "create:product", "read:products", "update:product" // Solo CRUD de productos
+            // Productos (Puede crear, ver y actualizar, pero no borrar)
+            "create:product", "read:products", "update:product",
+            // Inventario (Su función principal)
+            "read:stock", "adjust:stock", "read:movements",
+            // Compras (Recepción de mercancía)
+            "create:purchase", "read:purchases",
+            // Entidades (Solo ver proveedores)
+            "read:providers",
+            // Configuración (Ver categorías y almacenes)
+            "manage:categories", "manage:depots",
         ];
-        const warehousePermissions = await PermissionDB.findAll({
-            where: { code: { [Op.in]: warehouseCodes } }
-        });
+        await linkPermissionsToRole("Operador de Almacén", warehouseCodes);
 
-        if (warehouseRole) {
-            await warehouseRole.setPermissions(warehousePermissions);
-            console.log("Operador de Almacén: Permisos de inventario asignados.");
-        }
-
-        // --- 4. ROL: Cajero (Solo Ventas) ---
-        const cashierRole = await RolDB.findOne({ where: { name: "Cajero" } });
+        // --- 4. ROL: Cajero (Punto de venta) ---
         const cashierCodes = [
-            "read:products", // Necesita ver productos para vender
-            "create:sale",   // Registrar venta
-            "read:sales"     // Ver sus ventas del día
+            // Productos (Necesita ver productos y stock)
+            "read:products",
+            "read:stock",
+            // Ventas (Su función principal)
+            "create:sale", 
+            "read:sales", // Ver sus propias ventas
+            // Entidades (Registrar y buscar clientes)
+            "create:client",
+            "read:clients",
+            // Configuración (Ver la tasa del día)
+            "read:exchangerate"
         ];
-        const cashierPermissions = await PermissionDB.findAll({
-            where: { code: { [Op.in]: cashierCodes } }
-        });
-        
-        if (cashierRole) {
-            await cashierRole.setPermissions(cashierPermissions);
-            console.log("Cajero: Permisos de ventas asignados.");
-        }
+        await linkPermissionsToRole("Cajero", cashierCodes);
 
-        // --- 5. ROL: Visualizador (Solo Lectura) ---
-        const viewerRole = await RolDB.findOne({ where: { name: "Visualizador" } });
+        // --- 5. ROL: Visualizador (Solo Lectura de todo) ---
         const viewerCodes = [
             "read:users",
             "read:products",
+            "read:stock",
+            "read:movements",
             "read:sales",
+            "read:purchases",
+            "read:clients",
+            "read:providers",
+            "read:exchangerate",
             "view:reports"
         ];
-        const viewerPermissions = await PermissionDB.findAll({
-            where: { code: { [Op.in]: viewerCodes } }
-        });
-
-        if (viewerRole) {
-            await viewerRole.setPermissions(viewerPermissions);
-            console.log("Visualizador: Permisos de solo lectura asignados.");
-        }
+        await linkPermissionsToRole("Visualizador", viewerCodes);
 
         console.log("✅ Seed de Relaciones Rol-Permiso ejecutado correctamente.");
 

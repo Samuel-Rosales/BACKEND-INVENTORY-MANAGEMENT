@@ -39,7 +39,7 @@ npm install
 
 ### Variables de Entorno
 
-Crea un archivo `.env` con el siguiente contenido:
+Crea un archivo `.env` (EN LA RAIZ DE LA CARPETA) con el siguiente contenido:
 
 ```env
 # DATABASE

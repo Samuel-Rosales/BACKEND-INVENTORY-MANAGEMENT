@@ -6,10 +6,8 @@ export const permissionSeed = async () => {
     try {
         console.log("Iniciando seed de Permisos...");
 
-        // Define la lista de permisos que quieres crear
-        // Usa el 'code' para tu middleware checkPermission('code')
         const permissionsToCreate: Omit<PermissionInterface, 'permission_id'>[] = [
-            // --- Permisos de Usuarios ---
+            // --- 1. Permisos de Administración (Usuarios y Roles) ---
             {
                 code: "create:user",
                 name: "Crear Usuarios",
@@ -34,8 +32,6 @@ export const permissionSeed = async () => {
                 description: "Permite eliminar usuarios del sistema.",
                 status: true
             },
-
-            // --- Permisos de Roles y Permisos ---
             {
                 code: "manage:roles",
                 name: "Gestionar Roles",
@@ -43,7 +39,7 @@ export const permissionSeed = async () => {
                 status: true
             },
 
-            // --- Permisos de Productos (Inventario) ---
+            // --- 2. Permisos de Productos e Inventario ---
             {
                 code: "create:product",
                 name: "Crear Productos",
@@ -53,13 +49,13 @@ export const permissionSeed = async () => {
             {
                 code: "read:products",
                 name: "Ver Productos",
-                description: "Permite ver la lista y el stock de productos.",
+                description: "Permite ver la lista y detalles de productos.",
                 status: true
             },
             {
                 code: "update:product",
                 name: "Actualizar Productos",
-                description: "Permite modificar la información y el stock de productos.",
+                description: "Permite modificar info (nombre, precio, etc) de productos.",
                 status: true
             },
             {
@@ -68,8 +64,26 @@ export const permissionSeed = async () => {
                 description: "Permite eliminar productos del inventario.",
                 status: true
             },
+            {
+                code: "read:stock",
+                name: "Ver Stock",
+                description: "Permite consultar el stock actual en los almacenes.",
+                status: true
+            },
+            {
+                code: "adjust:stock",
+                name: "Ajustar Stock",
+                description: "Permite realizar ajustes manuales de entrada/salida de stock.",
+                status: true
+            },
+            {
+                code: "read:movements",
+                name: "Ver Movimientos",
+                description: "Permite ver el historial de movimientos de inventario (kardex).",
+                status: true
+            },
 
-            // --- Permisos de Ventas ---
+            // --- 3. Permisos de Ventas ---
             {
                 code: "create:sale",
                 name: "Registrar Venta",
@@ -89,7 +103,103 @@ export const permissionSeed = async () => {
                 status: true
             },
 
-            // --- Permisos de Reportes ---
+            // --- 4. Permisos de Compras ---
+            {
+                code: "create:purchase",
+                name: "Registrar Compra",
+                description: "Permite registrar una nueva compra a proveedores.",
+                status: true
+            },
+            {
+                code: "read:purchases",
+                name: "Ver Compras",
+                description: "Permite ver el historial de compras.",
+                status: true
+            },
+            {
+                code: "cancel:purchase",
+                name: "Anular Compra",
+                description: "Permite anular una compra ya registrada.",
+                status: true
+            },
+
+            // --- 5. Permisos de Entidades (Clientes, Proveedores, etc.) ---
+            {
+                code: "create:client",
+                name: "Crear Clientes",
+                description: "Permite registrar nuevos clientes.",
+                status: true
+            },
+            {
+                code: "read:clients",
+                name: "Ver Clientes",
+                description: "Permite ver la lista de clientes.",
+                status: true
+            },
+            {
+                code: "update:client",
+                name: "Actualizar Clientes",
+                description: "Permite modificar datos de clientes.",
+                status: true
+            },
+            {
+                code: "delete:client",
+                name: "Eliminar Clientes",
+                description: "Permite eliminar clientes.",
+                status: true
+            },
+            {
+                code: "create:provider",
+                name: "Crear Proveedores",
+                description: "Permite registrar nuevos proveedores.",
+                status: true
+            },
+            {
+                code: "read:providers",
+                name: "Ver Proveedores",
+                description: "Permite ver la lista de proveedores.",
+                status: true
+            },
+            {
+                code: "update:provider",
+                name: "Actualizar Proveedores",
+                description: "Permite modificar datos de proveedores.",
+                status: true
+            },
+            {
+                code: "delete:provider",
+                name: "Eliminar Proveedores",
+                description: "Permite eliminar proveedores.",
+                status: true
+            },
+
+            // --- 6. Permisos de Configuración (Almacenes, Categorías, etc.) ---
+            {
+                code: "manage:categories",
+                name: "Gestionar Categorías",
+                description: "Permite crear, editar y eliminar categorías de productos.",
+                status: true
+            },
+            {
+                code: "manage:depots",
+                name: "Gestionar Almacenes",
+                description: "Permite crear, editar y eliminar almacenes (depots).",
+                status: true
+            },
+            {
+                code: "manage:paymenttypes",
+                name: "Gestionar Tipos de Pago",
+                description: "Permite crear, editar y eliminar tipos de pago.",
+                status: true
+            },
+            {
+                code: "read:exchangerate",
+                name: "Ver Tasa de Cambio",
+                description: "Permite ver el historial de la tasa de cambio.",
+                status: true
+            },
+
+            // --- 7. Permisos de Reportes ---
             {
                 code: "view:reports",
                 name: "Ver Reportes",
@@ -97,6 +207,8 @@ export const permissionSeed = async () => {
                 status: true
             },
         ];
+
+        // --- Lógica de inserción ---
 
         // 1. Obtener los 'codes' de los permisos ya existentes
         const existingPermissions = await PermissionDB.findAll({ 
@@ -113,7 +225,6 @@ export const permissionSeed = async () => {
 
         // 3. Insertar SOLO los nuevos permisos
         if (uniquePermissionsToCreate.length > 0) {
-            // (Nota: No añadimos timestamps aquí porque tu modelo Permission tiene 'timestamps: false')
             const createdPermissions = await PermissionDB.bulkCreate(uniquePermissionsToCreate);
             console.log(`Seed de Permisos ejecutado correctamente. Insertados: ${createdPermissions.length}`);
         } else {
@@ -122,6 +233,6 @@ export const permissionSeed = async () => {
 
     } catch (error) {
         console.error("Error al ejecutar seed de Permisos:", error);
-        throw error;
+        throw error; // Propaga el error para detener la ejecución del seeder principal
     }
 };
