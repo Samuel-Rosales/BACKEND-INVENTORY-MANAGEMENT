@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { validateFields } from "../middlewares";
+import { validateFields, validateJWT, checkPermission} from "../middlewares";
 import { PurchaseController } from "../controllers";
 import { purchaseValidators } from "../validators";
 
@@ -18,6 +18,8 @@ router.get("/:id",
 
 // METHOD POST
 router.post("/",
+    validateJWT,
+    checkPermission("create:sale"),
     purchaseValidators.validateCreateFields,
     purchaseValidators.validateProviderIdExists,
     purchaseValidators.validateUserCIExists,

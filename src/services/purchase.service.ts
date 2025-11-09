@@ -2,6 +2,7 @@ import { PurchaseDB, ProviderDB, TypePaymentDB, UserDB, PurchaseGeneralItemDB, P
 import { PurchaseInterface } from "../interfaces";
 import { inventoryService } from "./inventory.service";
 import { db } from "../config/sequelize.config";
+import { ExchangeRateServices } from "./exchange-rate.service";
 
 class PurchaseService {
 
@@ -94,15 +95,29 @@ class PurchaseService {
         const t = await db.transaction();
 
         try {
-            
-            const { createdAt, updatedAt, purchase_id, ...purchaseData  } = purchase;
+            const rateResponse = await ExchangeRateServices.getCurrentRate();
+            if (rateResponse.status !== 200) {
+                throw new Error(rateResponse.message); // Lanza error si no hay tasa
+            }
+            const rateModel = rateResponse.data;
+            if (!rateModel) { // Doble chequeo por si acaso
+                throw new Error("Tasa de cambio no disponible.");
+            }
+            const exchange_rate = parseFloat(rateModel.get('rate') as string);
+            if (isNaN(exchange_rate)) {
+                throw new Error('Tasa de cambio inválida (NaN).');
+            }
 
-            const newPurchase = await PurchaseDB.create(purchaseData, { transaction: t });
-
-            // 2. Preparar y procesar cada ítem
             const generalItems = (purchase as any).purchase_general_items ?? [];
             const lotItems = (purchase as any).purchase_lot_items ?? [];
             const items = [...generalItems, ...lotItems];
+ 
+            if (items.length === 0) {
+                throw new Error('La compra debe tener al menos un ítem.');
+            }
+
+            let totalCompraUSD = 0;
+            const itemsProcesados = [];
 
             for (const item of items) {
 
@@ -112,42 +127,88 @@ class PurchaseService {
                     throw new Error(`El item con product_id ${item.product_id} no tiene un almacén de destino (depot_id).`);
                 }
                 
-                // 3. ¡LLAMADA CLAVE!
-                // Llama al InventoryService para que maneje el stock.
-                // Le pasamos el item, el almacén (del item) y la transacción.
-                await inventoryService.addStock(
-                    item, // item contiene { product_id, amount, unit_cost, expiration_date?, depot_id }
-                    depot_id, 
+                // Validar que el producto existe
+                const product = await ProductDB.findByPk(item.product_id, { transaction: t, attributes: ['perishable', 'name'] });
+                if (!product) {
+                    throw new Error(`Producto con id ${item.product_id} no encontrado.`);
+                }
+
+                // Validar costo (¡importante!)
+                if (!item.unit_cost || item.unit_cost <= 0) {
+                    throw new Error(`Costo unitario (unit_cost) inválido para el producto ${item.product_id}.`);
+                }
+
+                // Validar lógica de perecedero
+                const is_perishable = (product as any).perishable;
+                if (is_perishable && !item.expiration_date) {
+                    throw new Error(`Producto perecedero ${(product as any).name} requiere una fecha de vencimiento.`);
+                }
+
+                // --- 5. CALCULAR TOTAL (USD) ---
+                // (Para una COMPRA, confiamos en el unit_cost que nos da el usuario)
+                totalCompraUSD += item.unit_cost * item.amount;
+
+                // Guardar para el Bucle 2
+                itemsProcesados.push({ ...item, is_perishable });
+            }
+
+            // --- 6. CALCULAR TOTAL (VES) ---
+            const totalCompraVES = totalCompraUSD * exchange_rate;
+
+            // --- 7. CREAR LA CABECERA DE COMPRA (AHORA SÍ) ---
+            const { provider_id, user_ci, type_payment_id, bought_at, status } = purchase;
+            const newPurchase = await PurchaseDB.create({
+                provider_id,
+                user_ci,
+                type_payment_id,
+                bought_at: bought_at || new Date(),
+                status: status || 'Pendiente',
+                active: true,
+                // --- TOTALES CONGELADOS ---
+                total_usd: totalCompraUSD,
+                exchange_rate: exchange_rate,
+                total_ves: parseFloat(totalCompraVES.toFixed(2))
+            }, { transaction: t });
+
+            const newPurchaseId = (newPurchase as any).purchase_id;
+
+            for (const item of itemsProcesados) {
+
+                // 8a. Añadir Stock (Tu lógica existente, ¡es correcta!)
+                 await inventoryService.addStock(
+                    item, 
+                    item.depot_id, 
                     t
                 );
 
-                // 4. Crear el detalle de compra (General o Lote)
-                if (item.expiration_date) {
+                // 8b. Crear el detalle de compra (General o Lote)
+                if (item.is_perishable) {
                     await PurchaseLotItemDB.create({
-                        purchase_id: (newPurchase as any).purchase_id,
+                        purchase_id: newPurchaseId,
                         product_id: item.product_id,
-                        depot_id: depot_id, // <-- CAMBIO AÑADIDO (guardamos el destino)
+                        depot_id: item.depot_id,
                         amount: item.amount,
                         unit_cost: item.unit_cost,
                         expiration_date: item.expiration_date
                     }, { transaction: t });
                 } else {
-                     await PurchaseGeneralItemDB.create({
-                        purchase_id: (newPurchase as any).purchase_id,
+                     await PurchaseGeneralItemDB.create({
+                        purchase_id: newPurchaseId,
                         product_id: item.product_id,
-                        depot_id: depot_id, // <-- CAMBIO AÑADIDO (guardamos el destino)
+                        depot_id: item.depot_id,
                         amount: item.amount,
                         unit_cost: item.unit_cost
                     }, { transaction: t });
                 }
-                
-                // 5. Registrar el movimiento (Auditoría)
+
+                // 8c. Registrar el movimiento (Auditoría)
                 await MovementDB.create({
-                    type: 'Compra',        // <-- CORREGIDO
-                    depot_id: depot_id,               // <-- CORREGIDO
-                    product_id: item.product_id,      // <-- CORREGIDO
-                    amount: item.amount,              // <-- CORREGIDO
-                    observation: `Compra ID ${(newPurchase as any).purchase_id}`, // <-- AÑADIDO Y OBLIGATORIO
+                    type: 'Compra',
+                    depot_id: item.depot_id,
+                    product_id: item.product_id,
+                    amount: item.amount,
+                    observation: `Compra ID ${newPurchaseId}`, 
+                    Type: `Compra`,
                     moved_at: new Date(),
                 }, { transaction: t });
             }
