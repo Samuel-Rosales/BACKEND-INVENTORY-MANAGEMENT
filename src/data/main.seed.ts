@@ -16,7 +16,9 @@ import {
     saleItemSeed,
     stockGeneralSeed,
     stockLotSeed,
-    movementSeed
+    movementSeed,
+    permissionSeed,
+    rolePermissionSeed
 } from './seeders';
 
 export const mainSeed = async () => {
@@ -25,6 +27,7 @@ export const mainSeed = async () => {
 
         // --- LEVEL 1: Models without dependencies ---
         console.log("\n--- Running Level 1: Base Data ---");
+        await permissionSeed();
         await rolSeed();
         await typePaymentSeed();
         await categorySeed();
@@ -36,6 +39,7 @@ export const mainSeed = async () => {
         console.log("\n--- Running Level 2: Users and Products ---");
         await userSeed();      // Depends on 'rolSeed'
         await productSeed();   // Depends on 'categorySeed'
+        await rolePermissionSeed();   // Depends on 'categorySeed'
 
         // --- LEVEL 3: Transaction Models (Headers) ---
         console.log("\n--- Running Level 3: Transactions ---");

@@ -1,19 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { UserDB } from '../models'; // Importa tu modelo User
+import { UserDB, RolDB, PermissionDB } from '../models'; // Importa tu modelo User
 import { UserInstance } from '../models/user.model'; // Importa tu tipo
 
 // Augment Express Request to include `user`
-declare global {
+/*declare global {
     namespace Express {
         interface Request {
             user?: UserInstance;
         }
     }
-}
+}*/
 
 // Tu clave secreta (debe ser la MISMA que en auth.service)
-const JWT_SECRET = process.env.JWT_SECRET || 'TU_CLAVE_SECRETA_DE_DESARROLLO';
+const JWT_SECRET = process.env.JWT_SECRET || 'aq1SW2de3FR4gt5HY6ju7kI8Lo9mN0bV_unA-clave-super-secreta';
 
 export const validateJWT = async (req: Request, res: Response, next: NextFunction) => {
     
@@ -50,7 +50,13 @@ export const validateJWT = async (req: Request, res: Response, next: NextFunctio
 
         // 6. Obtener el usuario de la BD basado en el ID del payload
         //    (Usamos 'id' porque es más eficiente para buscar que 'ci')
-        const user: UserInstance | null = await UserDB.findByPk(payload.user_ci);
+        const user: UserInstance | null = await UserDB.findByPk(payload.user_ci, {
+            include: [{
+                model: RolDB, as: 'rol', include: [{
+                        model: PermissionDB, as: 'permissions'
+                }]
+            }]
+        });
 
         // 7. Si el usuario no existe en BD
         if (!user) {

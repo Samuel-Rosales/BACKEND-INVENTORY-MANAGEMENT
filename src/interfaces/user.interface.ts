@@ -1,3 +1,5 @@
+import { RolInterface } from "./rol.interface";
+
 export interface UserInterface {
     user_ci: string;
     name: string;
@@ -6,4 +8,6 @@ export interface UserInterface {
     status: boolean;
     createdAt?: Date;
     updatedAt?: Date;  
+
+    rol?: RolInterface;
 }

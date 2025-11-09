@@ -14,6 +14,7 @@ import {
     ClientRoute,
     DepotRoute,
     MovementRoute,
+    PermissionRoute,
     ProductRoute,
     ProviderRoute,
     PurchaseGeneralItemRoute,
@@ -45,6 +46,7 @@ export class Server {
             clients: this.pre + "/client",
             depots: this.pre + "/depot",
             movements: this.pre + "/movement",
+            permissions: this.pre + "/permission",
             products: this.pre + "/product",
             providers: this.pre + "/provider",
             purchases: this.pre + "/purchase",
@@ -94,6 +96,7 @@ export class Server {
         this.app.use(this.paths.clients, ClientRoute);
         this.app.use(this.paths.depots, DepotRoute);
         this.app.use(this.paths.movements, MovementRoute);
+        this.app.use(this.paths.permissions, PermissionRoute);
         this.app.use(this.paths.products, ProductRoute);
         this.app.use(this.paths.providers, ProviderRoute);
         this.app.use(this.paths.purchases, PurchaseRoute);

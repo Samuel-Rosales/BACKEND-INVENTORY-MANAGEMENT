@@ -3,6 +3,7 @@ export * from "./category.service";
 export * from "./client.service";
 export * from "./depot.service";
 export * from "./movement.service";
+export * from "./permission.service";
 export * from "./product.service";
 export * from "./provider.service";
 export * from "./purchase.service";

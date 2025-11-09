@@ -1,13 +1,19 @@
-import { UserDB, RolDB  } from "../models";
+import { UserDB, RolDB, PermissionDB  } from "../models";
 import { UserInterface } from "../interfaces";
 
 class UserService {
     async getAll() {
         try {
             const users = await UserDB.findAll({
-                include: [{
-                    model: RolDB, as: "rol"
-                }]
+                include: [
+                    {
+                        model: RolDB, as: "rol", include: [
+                            {
+                                model: PermissionDB, as: "permissions"
+                            }
+                        ] 
+                    }
+                ]
             });
             return {
                 status: 200,
@@ -28,9 +34,15 @@ class UserService {
     async getOne(user_ci: string) {
         try {
             const user = await UserDB.findByPk(user_ci, {
-                include: [{
-                    model: RolDB, as: "rol"
-                }]
+                include: [
+                    {
+                        model: RolDB, as: "rol", include: [
+                            {
+                                model: PermissionDB, as: "permissions"
+                            }
+                        ] 
+                    }
+                ]
             });
 
             if (!user) {
@@ -83,7 +95,7 @@ class UserService {
         try {
             const { createdAt, updatedAt, user_ci: _, ... userData} = user;
             
-            await UserDB.update(userData, { where: { user_ci } });
+            await UserDB.update(userData, { where: { user_ci }, individualHooks: true });
 
             const updatedUser = await UserDB.findByPk(user_ci);
 

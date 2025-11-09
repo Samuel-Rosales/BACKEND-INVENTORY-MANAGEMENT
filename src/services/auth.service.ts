@@ -4,21 +4,12 @@ import { UserInstance } from '../models/user.model'; // Tu tipo de instancia
 import { AuthInterface } from '../interfaces'; // Deberías crear esta interfaz
 
 // (Asegúrate de tener JWT_SECRET en tu .env)
-const JWT_SECRET = process.env.JWT_SECRET || 'TU_CLAVE_SECRETA_DE_DESARROLLO';
+const JWT_SECRET = process.env.JWT_SECRET || 'aq1SW2de3FR4gt5HY6ju7kI8Lo9mN0bV_unA-clave-super-secreta';
 
 class AuthService {
 
     async login(loginData: AuthInterface) {
         const { user_ci, password } = loginData;
-
-        // 1. Validar que los campos vengan (aunque el controller también debería)
-        if (!user_ci || !password) {
-            return {
-                status: 400,
-                message: 'Datos incompletos. Se requiere CI y contraseña.',
-                data: null
-            };
-        }
 
         try {
             // 2. Buscar al usuario por su CI

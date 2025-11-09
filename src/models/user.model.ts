@@ -52,6 +52,6 @@ export const UserFactory = (sequelize: Sequelize) => {
     (User as any).prototype.validatePassword = async function(password: string): Promise<boolean> {
         return await bcrypt.compare(password, this.password);
     };
-
+    
     return User;
 };

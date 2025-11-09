@@ -1,16 +1,3 @@
-/*export * from "./category.model";
-export * from "./client.model";
-export * from "./depot.model";
-export * from "./movement.model";
-export * from "./product.model";
-export * from "./provider.model";
-export * from "./purchase.model";
-export * from "./purchase-detail.model";
-export * from "./rol.model";
-export * from "./sale.model";
-export * from "./sale-detail.model";
-export * from "./type-payment.model";
-export * from "./user.model";*/
 import { type SyncOptions } from "sequelize";
 import { db } from "../config/sequelize.config";
 
@@ -19,6 +6,7 @@ import { CategoryFactory } from "./category.model";
 import { ClientFactory } from "./client.model";
 import { DepotFactory } from "./depot.model";
 import { MovementFactory } from "./movement.model";
+import { PermissionFactory } from "./permission.model";
 import { ProductFactory } from "./product.model";
 import { ProviderFactory } from "./provider.model";
 import { PurchaseFactory } from "./purchase.model";
@@ -39,6 +27,7 @@ export const CategoryDB = CategoryFactory(db);
 export const ClientDB = ClientFactory(db);
 export const DepotDB = DepotFactory(db);
 export const ProviderDB = ProviderFactory(db);
+export const PermissionDB = PermissionFactory(db);
 export const RolDB = RolFactory(db);
 export const TypePaymentDB = TypePaymentFactory(db);
 
@@ -139,32 +128,23 @@ SaleItemDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
 ProductDB.hasMany(SaleItemDB, { foreignKey: "product_id", as: "sale_items" });
 
 // Un item de compra general (no perecedero) pertenece a un Almacén (Depot)
-PurchaseGeneralItemDB.belongsTo(DepotDB, { 
-    foreignKey: "depot_id", 
-    as: "depot" 
-});
+PurchaseGeneralItemDB.belongsTo(DepotDB, { foreignKey: "depot_id", as: "depot" });
 
 // Un Almacén (Depot) puede tener múltiples items de compra generales
-DepotDB.hasMany(PurchaseGeneralItemDB, { 
-    foreignKey: "depot_id", 
-    as: "purchase_general_items" 
-});
+DepotDB.hasMany(PurchaseGeneralItemDB, { foreignKey: "depot_id", as: "purchase_general_items" });
 
 
 // Un item de compra por lote (perecedero) pertenece a un Almacén (Depot)
-PurchaseLotItemDB.belongsTo(DepotDB, { 
-    foreignKey: "depot_id", 
-    as: "depot" 
-});
+PurchaseLotItemDB.belongsTo(DepotDB, { foreignKey: "depot_id", as: "depot" });
 
 // Un Almacén (Depot) puede tener múltiples items de compra por lote
-DepotDB.hasMany(PurchaseLotItemDB, { 
-    foreignKey: "depot_id", 
-    as: "purchase_lot_items" 
-});
+DepotDB.hasMany(PurchaseLotItemDB, { foreignKey: "depot_id", as: "purchase_lot_items" });
 
 SaleItemDB.belongsTo(DepotDB, { foreignKey: "depot_id", as: "depot" });
 DepotDB.hasMany(SaleItemDB, { foreignKey: "depot_id", as: "sale_items" });
+
+RolDB.belongsToMany(PermissionDB, { through: 'role_permissions', foreignKey: 'role_id', otherKey: 'permission_id', timestamps: false, as: 'permissions'});
+PermissionDB.belongsToMany(RolDB, { through: 'role_permissions', foreignKey: 'permission_id', otherKey: 'role_id', timestamps: false, as: 'roles'});
 
 // --- 4. EXPORTA LA FUNCIÓN DE SINCRONIZACIÓN ---
 export const syncDatabase = async (options?: SyncOptions) => {

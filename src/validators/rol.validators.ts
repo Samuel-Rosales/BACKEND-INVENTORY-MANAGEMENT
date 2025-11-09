@@ -24,14 +24,14 @@ export class RolValidator {
 
             if (!existingRol) {
                 return res.status(404).json({
-                    message: `Categoría con ID "${rol_id}" no encontrado.`,
+                    message: `Rol con ID "${rol_id}" no encontrado.`,
                 });
             }
 
             next();
         } catch (error) {
             return res.status(500).json({
-                message: "Internal server error in validateCtegoryParamIdExists.",
+                message: "Internal server error in validateRolParamIdExists.",
             });
         }
     };

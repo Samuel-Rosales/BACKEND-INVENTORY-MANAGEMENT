@@ -79,7 +79,7 @@ export class UserValidators {
 
     validateUserParamCIExists = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const user_ci = (req.params.id ?? "").toString().trim();
+            const user_ci = (req.params.user_ci ?? "").toString().trim();
             if (!user_ci) return next();
             
 
@@ -105,7 +105,7 @@ export class UserValidators {
 
     validateUserAlreadyExists = async (req: Request, res: Response, next: NextFunction) => {
         try { 
-            const user_ci = (req.body.ci ?? "").toString().trim();
+            const user_ci = (req.body.user_ci ?? "").toString().trim();
             if (!user_ci) return next();
             
 

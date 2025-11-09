@@ -2,12 +2,16 @@ import { Router  } from "express";
 import { validateFields } from "../middlewares";
 import { MovementController } from "../controllers";
 import { movementValidators } from "../validators";
+import { validateJWT } from "../middlewares/validateJWT";
+import { checkPermission } from "../middlewares/checkPermission";
 
 const router = Router();
 const movementController = new MovementController();
 
 //METHOD GET
 router.get("/",
+    validateJWT,
+    checkPermission("read:movements"),
     movementController.all
 ); // http://localhost:3000/api/movement
 

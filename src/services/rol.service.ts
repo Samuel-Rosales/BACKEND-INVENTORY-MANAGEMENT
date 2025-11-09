@@ -1,10 +1,15 @@
-import { RolDB } from "../models";
+import { RolDB, PermissionDB} from "../models";
 import { RolInterface } from "../interfaces/rol.interface";
 
 class RolService {
     async getAll() {
         try {
-            const rols = await RolDB.findAll();
+            const rols = await RolDB.findAll({
+                include: [{
+                    model: PermissionDB,
+                    as: 'permissions'
+                }]
+            });
 
             return {
                 status: 200,

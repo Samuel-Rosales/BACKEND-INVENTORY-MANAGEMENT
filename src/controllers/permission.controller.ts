@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
-import { UserServices } from "../services";
+import { PermisionServices } from "../services";
 
-export class UserController {
+export class PermissionController {
     constructor() {}
 
     all = async (req: Request, res: Response) => {
-        const { status, message, data } = await UserServices.getAll();
+        const { status, message, data } = await PermisionServices.getAll();
 
         return res.status(status).json({
             message,
@@ -14,17 +14,17 @@ export class UserController {
     };
 
     one = async (req: Request, res: Response) => {
-        const { user_ci } = req.params;
-        const { status, message, data } = await UserServices.getOne(user_ci);
+        const { id } = req.params
+        const { status, message, data } = await PermisionServices.getOne(Number(id));
 
         return res.status(status).json({
             message,
-            data,
+            data
         });
     };
 
     create = async (req: Request, res: Response) => {
-        const { status, message, data } = await UserServices.create(req.body);
+        const { status, message, data } = await PermisionServices.create(req.body);
 
         return res.status(status).json({
             message,
@@ -33,8 +33,8 @@ export class UserController {
     };
 
     update = async (req: Request, res: Response) => {
-        const user_ci = req.params.user_ci;
-        const { status, message, data } = await UserServices.update(user_ci, req.body);
+        const { id } = req.params;
+        const { status, message, data } = await PermisionServices.update(Number(id), req.body);
 
         return res.status(status).json({
             message,
@@ -43,8 +43,8 @@ export class UserController {
     };
 
     delete = async (req: Request, res: Response) => {
-        const { user_ci } = req.params;
-        const { status, message } = await UserServices.delete(user_ci);
+        const { id } = req.params;
+        const { status, message } = await PermisionServices.delete(Number(id));
 
         return res.status(status).json({
             message,

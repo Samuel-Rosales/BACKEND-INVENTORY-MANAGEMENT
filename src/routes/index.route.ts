@@ -3,6 +3,7 @@ export * from "./category.routes";
 export * from "./client.routes";
 export * from "./depot.routes";
 export * from "./movement.routes";
+export * from "./permission.routes";
 export * from "./product.routes";
 export * from "./provider.routes";
 export * from "./purchase.routes";

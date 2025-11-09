@@ -4,6 +4,7 @@ import { ProductController } from "../controllers";
 import { productValidators } from "../validators";
 import { upload } from "../middlewares";
 import { validateJWT } from "../middlewares/validateJWT";
+import { checkPermission } from "../middlewares/checkPermission";
 
 const router = Router();
 const productController = new ProductController();
@@ -11,6 +12,7 @@ const productController = new ProductController();
 //  METHOD GET
 router.get("/", 
     validateJWT,
+    checkPermission("read:products"),
     productController.all
 ); // http://localhost:3000/api/product
 
