@@ -1,10 +1,8 @@
 import { Router } from "express";
-import { validateFields } from "../middlewares";
+import { validateFields, validateJWT, checkPermission } from "../middlewares";
 import { ProductController } from "../controllers";
 import { productValidators } from "../validators";
 import { upload } from "../middlewares";
-import { validateJWT } from "../middlewares/validateJWT";
-import { checkPermission } from "../middlewares/checkPermission";
 
 const router = Router();
 const productController = new ProductController();

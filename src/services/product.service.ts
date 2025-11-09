@@ -16,8 +16,8 @@ class ProductService {
                 };
             }
 
-            const tasaModel = rateResponse.data;
-            if (!tasaModel) {
+            const rateModel = rateResponse.data;
+            if (!rateModel) {
                 console.error("Exchange rate data is null or undefined");
                 return {
                     status: 500,
@@ -26,7 +26,7 @@ class ProductService {
                 };
             }
 
-            const tasa = parseFloat(tasaModel.get('tasa') as string);
+            const tasa = parseFloat(rateModel.get('rate') as string);
 
             const products = await ProductDB.findAll({
                 include: [
@@ -36,20 +36,20 @@ class ProductService {
                 ]
             });
 
-            const productosConBs = products.map(product => {
+            const productsWithBs = products.map(product => {
                 const basePriceUSD = parseFloat(product.get('base_price') as string);
-                const precio_bs = basePriceUSD * tasa;
+                const price_bs = basePriceUSD * tasa;
 
                 return {
                     ...product.toJSON(),
-                    precio_bs: parseFloat(precio_bs.toFixed(2)) // Redondea a 2 decimales
+                    price_bs: parseFloat(price_bs.toFixed(2)) // Redondea a 2 decimales
                 };
             });
 
             return { 
                 status: 200,
                 message: "Products obtained correctly", 
-                data: productosConBs,   
+                data: productsWithBs,   
             };
         } catch (error) {
             console.error("Error fetching products: ", error);

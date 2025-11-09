@@ -5,7 +5,7 @@ class ExchangeRateService {
     async getCurrentRate () {
         try {
             const rate = await ExchangeRateDB.findOne({
-                order: [['fecha', 'DESC']] 
+                order: [['date', 'DESC']] 
             });
             
             if (!rate) {

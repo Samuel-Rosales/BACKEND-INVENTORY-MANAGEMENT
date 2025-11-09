@@ -1,8 +1,10 @@
-import { SaleDB, ClientDB, TypePaymentDB, UserDB, SaleItemDB, MovementDB } from "../models";
+import { SaleDB, ClientDB, TypePaymentDB, UserDB, SaleItemDB, MovementDB, ProductDB } from "../models";
 import { SaleInterface } from "../interfaces";
 
 import { inventoryService } from "./inventory.service";
 import { db } from "../config/sequelize.config";
+
+import { ExchangeRateServices } from "./exchange-rate.service"; // Para obtener la TASA
 
 class SaleService {
 
@@ -66,12 +68,29 @@ class SaleService {
 
         try {
 
-            const { createdAt, updatedAt, sale_id, ...saleData  } = sale;
+            const rateResponse = await ExchangeRateServices.getCurrentRate();
 
-            // 1. Crear la cabecera de la Venta (no tiene depot_id)
-            const newSale = await SaleDB.create(saleData, { transaction: t });
+            if (rateResponse.status !== 200) {
+                throw new Error(rateResponse.message);
+            }
+            
+            const rateModel = rateResponse.data;
 
-            const items = (sale as any).sale_items ?? []; // 2. Extraer los ítems de la venta
+            if (!rateModel) {
+                throw new Error("Tasa de cambio no disponible.");
+            }
+            const exchange_rate = parseFloat(rateModel.get('rate') as string);
+            if (isNaN(exchange_rate)) {
+                throw new Error('Tasa de cambio inválida (NaN).');
+            }
+
+            const items = (sale as any).sale_items ?? [];
+            if (items.length === 0) {
+                throw new Error('La venta debe tener al menos un ítem.');
+            }
+
+            let totalVentaUSD = 0;
+            const itemsProcesados = [];// 2. Extraer los ítems de la venta
 
             // 3. Procesar cada ítem
             for (const item of items) {
@@ -81,6 +100,12 @@ class SaleService {
                 if (!depot_id) {
                     throw new Error(`El item ${item.product_id} debe especificar un almacén de origen (depot_id).`);
                 }
+
+                const producto = await ProductDB.findByPk(item.product_id, { transaction: t });
+                if (!producto) {
+                    throw new Error(`Producto con id ${item.product_id} no encontrado.`);
+                }
+                const unit_cost_usd = parseFloat(producto.get('base_price') as string); // Este es el precio AUTORITATIVO
                 
                 // 5. Llamar al InventoryService para restar stock
                 await inventoryService.deductStock(
@@ -89,22 +114,50 @@ class SaleService {
                     t
                 );
 
-                // 6. Crear el detalle de la venta (esto SÍ coincide con tu modelo)
-                await SaleItemDB.create({
-                    sale_id: (newSale as any).sale_id,
+                totalVentaUSD += unit_cost_usd * item.amount;
+
+                // --- 2d. GUARDAR ITEM PROCESADO ---
+                itemsProcesados.push({
                     product_id: item.product_id,
-                    depot_id: depot_id, // Tu SaleDetailFactory SÍ tiene depot_id
+                    depot_id: depot_id,
                     amount: item.amount,
-                    unit_cost: item.unit_cost 
+                    unit_cost: unit_cost_usd // Usamos el precio SEGURO de la DB
+                });
+            }
+
+            const totalVentaVES = totalVentaUSD * exchange_rate;
+
+            const { client_ci, user_ci, type_payment_id, sold_at } = sale;
+
+            const newSale = await SaleDB.create({
+                client_ci,
+                user_ci, // NOTA: Es más seguro obtener esto de req.user (del token)
+                type_payment_id,
+                sold_at: sold_at || new Date(),
+                status: true,
+                // --- ¡AQUÍ ESTÁ LA MAGIA! ---
+                total_usd: totalVentaUSD,
+                exchange_rate: exchange_rate,
+                total_ves: parseFloat(totalVentaVES.toFixed(2))
+            }, { transaction: t });
+
+            const newSaleId = (newSale as any).sale_id;
+
+            for (const itemData of itemsProcesados) {
+                
+                // 6. Crear el detalle de la venta (SaleItem)
+                await SaleItemDB.create({
+                    ...itemData,
+                    sale_id: newSaleId,
                 }, { transaction: t });
                 
-                // 7. Registrar el movimiento
+                // 7. Registrar el movimiento (Tu lógica existente)
                 await MovementDB.create({
                     type: 'Venta',
-                    depot_id: depot_id, 
-                    product_id: item.product_id,
-                    amount: item.amount,
-                    observation: `Venta ID: ${(newSale as any).sale_id}`,
+                    depot_id: itemData.depot_id, 
+                    product_id: itemData.product_id,
+                    amount: itemData.amount,
+                    observation: `Venta ID: ${newSaleId}`,
                     moved_at: new Date(),
                 }, { transaction: t });
             }
@@ -118,16 +171,10 @@ class SaleService {
             // 9. Revertir
             await t.rollback();
             
-            if (error instanceof Error) {
-                return {
-                    status: 400, // Bad Request (Error del cliente)
-                    message: error.message, 
-                    data: null,
-                };
-            }
+            const message = (error instanceof Error) ? error.message : "Interal server error";
             return {
-                status: 500, // Internal Server Error
-                message: "Interal server error",
+                status: 400, // 400 (Bad Request) es mejor para errores de lógica de negocio
+                message: message, 
                 data: null,
             };
         }

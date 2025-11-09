@@ -1,9 +1,7 @@
 import { Router  } from "express";
-import { validateFields } from "../middlewares";
+import { validateFields, validateJWT, checkPermission } from "../middlewares";
 import { MovementController } from "../controllers";
 import { movementValidators } from "../validators";
-import { validateJWT } from "../middlewares/validateJWT";
-import { checkPermission } from "../middlewares/checkPermission";
 
 const router = Router();
 const movementController = new MovementController();

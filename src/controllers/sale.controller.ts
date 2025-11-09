@@ -24,12 +24,41 @@ export class SaleController {
     };  
 
     create = async (req: Request,  res: Response  ) => {
-        const { status, message, data } = await SaleServices.create(req.body);
+        try {
+            // 1. Validar que el usuario autenticado existe
+            if (!req.user || !req.user.user_ci) {
+                return res.status(401).json({ 
+                    message: "No autorizado (Token inválido o no proveído)",
+                    data: null 
+                });
+            }
 
-        return res.status(status).json({
-            message,
-            data,
-        });
+            // 2. Obtener el CI seguro del token (NO DEL BODY)
+            const user_ci = req.user.user_ci;
+            
+            // 3. El 'saleInput' es el cuerpo (body) de la solicitud
+            const saleInput = req.body;
+
+            // 4. Inyectar el user_ci seguro en el objeto de la venta y llamar al servicio con un solo argumento
+            saleInput.user_ci = user_ci;
+
+            const { status, message, data } = await SaleServices.create(
+                saleInput // Argumento único: Los datos de la venta ya contienen user_ci seguro
+            );
+
+            // 5. Devolver la respuesta del servicio
+            return res.status(status).json({ 
+                message, 
+                data 
+            });
+
+        } catch (error) { // Añadir un try...catch es buena práctica
+            const message = (error instanceof Error) ? error.message : "Error interno";
+            return res.status(500).json({ 
+                message: message, 
+                data: null 
+            });
+        }
     };
 
     update = async (req: Request, res: Response) => {
