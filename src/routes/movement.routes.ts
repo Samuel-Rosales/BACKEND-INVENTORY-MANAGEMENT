@@ -8,8 +8,8 @@ const movementController = new MovementController();
 
 //METHOD GET
 router.get("/",
-    validateJWT,
-    checkPermission("read:movements"),
+    //7validateJWT,
+    //checkPermission("read:movements"),
     movementController.all
 ); // http://localhost:3000/api/movement
 

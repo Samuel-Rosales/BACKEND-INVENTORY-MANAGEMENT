@@ -177,7 +177,7 @@ export class Server {
     // --- NUEVO: Método para configurar todos los cron jobs ---
     private setupCronJobs(): void {
         // Ejecutar todos los días a las 8:00 AM, zona horaria de Venezuela
-        cron.schedule('48 11 * * *', () => {
+        cron.schedule('22 12 * * *', () => {
             console.log('[Cron Job] Ejecutando tarea programada de las 8:00 AM...');
             this.updateRateDaily();
         }, {

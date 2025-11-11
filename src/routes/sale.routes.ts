@@ -18,8 +18,8 @@ router.get("/:id",
 
 // METHOD POST
 router.post("/",
-    validateJWT,
-    checkPermission("create:sale"),
+    //validateJWT,
+    //checkPermission("create:sale"),
     saleValidators.validateCreateFields,
     saleValidators.validateClientCIExists,
     saleValidators.validateUserCIExists,

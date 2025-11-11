@@ -9,8 +9,8 @@ const productController = new ProductController();
 
 //  METHOD GET
 router.get("/", 
-    validateJWT,
-    checkPermission("read:products"),
+    //validateJWT,
+    //checkPermission("read:products"),
     productController.all
 ); // http://localhost:3000/api/product
 
