@@ -6,6 +6,7 @@ export interface ProductInterface {
     base_price: number;
     min_stock: number;
     status: boolean;
+    perishable: boolean;
     image_url?: string;
     createdAt?: Date;
     updatedAt?: Date;

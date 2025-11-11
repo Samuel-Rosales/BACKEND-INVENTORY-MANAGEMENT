@@ -1,5 +1,5 @@
 import { ProductDB, CategoryDB, StockGeneralDB, StockLotDB  } from "../models";
-import { ProductInterface } from "../interfaces";
+import { ProductInterface, StockGeneralInterface, StockLotInterface } from "../interfaces";
 import { ExchangeRateServices } from "./exchange-rate.service";
 
 class ProductService {
@@ -36,20 +36,37 @@ class ProductService {
                 ]
             });
 
-            const productsWithBs = products.map(product => {
-                const basePriceUSD = parseFloat(product.get('base_price') as string);
-                const price_bs = basePriceUSD * tasa;
+            const productsWithBsAndTotal = products.map(product => {
+                
+                let total_stock = 0;
+
+                const simpleProduct = product.toJSON() as ProductInterface & { stock_generals: StockGeneralInterface[] } & { stock_lots: StockLotInterface[] };
+                
+                const price_bs = simpleProduct.base_price * tasa;
+
+                if (!simpleProduct.perishable) {
+    
+                    total_stock = simpleProduct.stock_generals.reduce((accumulator, stock) =>{
+                        return accumulator + stock.amount;
+                    }, 0);
+                } else {
+
+                    total_stock = simpleProduct.stock_lots.reduce((accumlator, stock) =>{
+                        return accumlator + stock.amount;
+                    },0);
+                }
 
                 return {
                     ...product.toJSON(),
-                    price_bs: parseFloat(price_bs.toFixed(2)) // Redondea a 2 decimales
+                    price_bs: parseFloat(price_bs.toFixed(2)), // Redondea a 2 decimales
+                    total_stock: total_stock,
                 };
             });
 
             return { 
                 status: 200,
                 message: "Products obtained correctly", 
-                data: productsWithBs,   
+                data: productsWithBsAndTotal,   
             };
         } catch (error) {
             console.error("Error fetching products: ", error);
@@ -105,20 +122,33 @@ class ProductService {
                     data: null,
                 };
             }
+            const simpleProduct = product.toJSON() as ProductInterface & { stock_generals: StockGeneralInterface[] } & { stock_lots: StockLotInterface[] };
+            const precio_bs = simpleProduct.base_price * tasa;
+            
+            let total_stock = 0;
 
-            // 6. Transforma el dato para añadir precio_bs
-            const basePriceUSD = parseFloat(product.get('base_price') as string);
-            const precio_bs = basePriceUSD * tasa;
+            if (!simpleProduct.perishable) {
+    
+                total_stock = simpleProduct.stock_generals.reduce((accumulator, stock) =>{
+                    return accumulator + stock.amount;
+                }, 0);
+            } else {
 
-            const productoConBs = {
+                total_stock = simpleProduct.stock_lots.reduce((accumlator, stock) =>{
+                    return accumlator + stock.amount;
+                },0);
+            }
+
+            const productoWithBsAndTotal = {
                 ...product.toJSON(),
-                precio_bs: parseFloat(precio_bs.toFixed(2))
+                precio_bs: parseFloat(precio_bs.toFixed(2)),
+                total_stock: total_stock,
             };
 
             return {
                 status: 200,
                 message: "Product obtained correctly",
-                data: productoConBs,
+                data: productoWithBsAndTotal,
             };
 
         } catch (error) {

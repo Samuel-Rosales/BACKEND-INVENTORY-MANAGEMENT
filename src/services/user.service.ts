@@ -7,11 +7,7 @@ class UserService {
             const users = await UserDB.findAll({
                 include: [
                     {
-                        model: RolDB, as: "rol", include: [
-                            {
-                                model: PermissionDB, as: "permissions"
-                            }
-                        ] 
+                        model: RolDB, as: "rol"
                     }
                 ]
             });

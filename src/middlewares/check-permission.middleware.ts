@@ -23,7 +23,7 @@ export const checkPermission = (requiredPermission: string) => {
         console.log("Permisos del usuario:", userPermissions);
 
         // 3. Verificar si el permiso requerido está en la lista
-        if (userPermissions.includes(requiredPermission)) {
+        if (userPermissions.includes(requiredPermission) || userPermissions.includes('all:permissions')) {
             // ¡Autorizado! Continuar a la ruta
             next(); 
         } else {
