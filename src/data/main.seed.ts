@@ -18,7 +18,8 @@ import {
     stockLotSeed,
     movementSeed,
     permissionSeed,
-    rolePermissionSeed
+    rolePermissionSeed,
+    exchangeRateSeed
 } from './seeders';
 
 export const mainSeed = async () => {
@@ -27,6 +28,7 @@ export const mainSeed = async () => {
 
         // --- LEVEL 1: Models without dependencies ---
         console.log("\n--- Running Level 1: Base Data ---");
+        await exchangeRateSeed();
         await permissionSeed();
         await rolSeed();
         await typePaymentSeed();

@@ -57,7 +57,7 @@ class ProductService {
                 }
 
                 return {
-                    ...product.toJSON(),
+                    ...product,
                     price_bs: parseFloat(price_bs.toFixed(2)), // Redondea a 2 decimales
                     total_stock: total_stock,
                 };
@@ -140,7 +140,7 @@ class ProductService {
             }
 
             const productoWithBsAndTotal = {
-                ...product.toJSON(),
+                ...product,
                 precio_bs: parseFloat(precio_bs.toFixed(2)),
                 total_stock: total_stock,
             };

@@ -206,6 +206,12 @@ export const permissionSeed = async () => {
                 description: "Permite ver y generar reportes de ventas e inventario.",
                 status: true
             },
+            {
+                code: "all:permissions",
+                name: "Todos los Permisos",
+                description: "Permite tener todos los permisos del sistema.",
+                status: true
+            },
         ];
 
         // --- Lógica de inserción ---

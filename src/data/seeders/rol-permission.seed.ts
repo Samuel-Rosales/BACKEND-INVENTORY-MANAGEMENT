@@ -38,9 +38,18 @@ export const rolePermissionSeed = async () => {
         // --- 1. ROL: Administrador (Todos los permisos) ---
         const adminRole = await RolDB.findOne({ where: { name: "Administrador" } }) as RolInstance | null;
         if (adminRole) {
-            const allPermissions = await PermissionDB.findAll();
-            await adminRole.setPermissions(allPermissions);
-            console.log(`Administrador: Todos los ${allPermissions.length} permisos asignados.`);
+            const allPermissions = await PermissionDB.findOne({ where: { code: "all:permissions"} });
+            
+            if (allPermissions) {
+                // --- CORRECCIÓN AQUÍ ---
+                // Usa el método de asociación, no .set()
+                await (adminRole as any).addPermission(allPermissions); 
+                // (Nota: El método podría ser "addPermissions" (plural) si el alias es así)
+                
+                console.log(`Administrador: Permiso "all:permissions" asignado.`);
+            } else {
+                console.warn('Seed-Relaciones: Permiso "all:permissions" no encontrado. Saltando asignación.');
+            }
         }
 
         // --- 2. ROL: Gerente (Gestión completa del negocio) ---

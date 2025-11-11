@@ -12,23 +12,7 @@ class PurchaseService {
                 include: [
                     { model: ProviderDB, as: "provider" },
                     { model: UserDB, as: "user" },
-                    { model: TypePaymentDB, as: "type_payment" },
-                    { model: PurchaseGeneralItemDB, as: "purchase_general_items",
-                        include: [ 
-                            { 
-                                model: ProductDB, 
-                                as: "product" 
-                            }
-                        ]
-                    }, 
-                    { model: PurchaseLotItemDB, as: "purchase_lot_items",
-                        include: [ 
-                            { 
-                                model: ProductDB, 
-                                as: "product" 
-                            }
-                        ]
-                     },
+                    { model: TypePaymentDB, as: "type_payment" }
                 ],
             });
 

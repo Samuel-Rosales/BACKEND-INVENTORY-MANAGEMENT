@@ -1,6 +1,7 @@
 export * from "./category.seed";
 export * from "./client.seed";
 export * from "./depot.seed";
+export * from "./exchange-rate.seed";
 export * from "./movement.seed";
 export * from "./permission.seed";
 export * from "./product.seed";
