@@ -24,12 +24,6 @@ export class ClientValidators {
     ];
 
     validateUpdateFields = [
-        check("client_ci")
-            .optional()
-            .notEmpty().withMessage("La cédula del cliente es obligatoria.")
-            .isLength({ min: 7, max: 8 }).withMessage("La cédula debe tener entre 7 y 8 caracteres.")
-            .isString().withMessage("La cédula debe ser una cadena de texto."),
-
         check("name")
             .optional()
             .notEmpty().withMessage("El nombre del cliente es obligatorio.")

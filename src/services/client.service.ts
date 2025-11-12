@@ -23,7 +23,7 @@ class ClientService {
     }
 
 
-    async getOne (client_id: number) {
+    async getOne (client_id: string) {
         try {
             const client = await ClientDB.findByPk(client_id);
 
@@ -65,7 +65,7 @@ class ClientService {
         }
     }
 
-    async update (client_ci: number, client: Partial<ClientInterface> ) {
+    async update (client_ci: string, client: Partial<ClientInterface> ) {
         try {
             const { createdAt, updatedAt, client_ci: _, ... clientData} = client;
 
@@ -89,7 +89,7 @@ class ClientService {
         }   
     }
 
-    async delete (client_ci: number) {
+    async delete (client_ci: string) {
         try {
             await ClientDB.destroy({ where: {client_ci} });
 

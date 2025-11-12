@@ -31,7 +31,8 @@ export const mainSeed = async () => {
         await exchangeRateSeed();
         await permissionSeed();
         await rolSeed();
-        await typePaymentSeed();
+        await typePaymentSeed();    
+
         await categorySeed();
         await depotSeed();
         await clientSeed();

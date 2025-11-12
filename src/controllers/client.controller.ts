@@ -15,7 +15,7 @@ export class ClientController {
 
     one = async (req: Request, res: Response) => { 
         const { id } = req.params;
-        const { status, message, data } = await ClientServices.getOne(Number(id));
+        const { status, message, data } = await ClientServices.getOne(id);
         
         return res.status(status).json({ 
             message,
@@ -34,7 +34,7 @@ export class ClientController {
 
     update = async (req: Request, res: Response) => {
         const { id } = req.params; 
-        const { status, message, data } = await ClientServices.update(Number(id), req.body);
+        const { status, message, data } = await ClientServices.update(id, req.body);
 
         return res.status(status).json({
             message,
@@ -44,7 +44,7 @@ export class ClientController {
 
     delete = async (req: Request, res: Response) => {
         const { id } = req.params;
-        const { status, message } = await ClientServices.delete(Number(id));
+        const { status, message } = await ClientServices.delete(id);
         
         return res.status(status).json({
             message,
