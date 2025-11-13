@@ -31,6 +31,16 @@ router.patch("/:id",
     depotController.update, 
 ); // http://localhost:3000/api/depot/:id
 
+router.patch("/:id/deactivate", 
+    depotValidators.validateDepotParamIdExists,
+    depotController.updateDeactivate
+); // http://localhost:3000/api/depot/:id/deactivate
+
+router.patch("/:id/activate", 
+    depotValidators.validateDepotParamIdExists,
+    depotController.updateActivate
+); // http://localhost:3000/api/depot/:id/activate
+
 //METHOD DELETE
 router.delete("/:id",
     depotValidators.validateDepotParamIdExists,

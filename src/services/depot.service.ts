@@ -88,6 +88,64 @@ class DepotService {
         }
     }
 
+    async updateDeactivate(depot_id: number) {
+        try{
+            const depot = await DepotDB.findByPk(depot_id);
+            
+            if(!depot) {
+                return {
+                    status: 404,
+                    message: "Depot not found",
+                    data: null,
+                };
+            }
+
+            depot.update({ status: false });
+            return {
+                status: 200,
+                message: "Depot deactivated successfully",
+                data: depot,
+            };
+        } catch (error) {
+            console.error("Error deactivating depot: ", error);
+            
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        } 
+    } 
+
+    async updateActivate(depot_id: number) {
+        try{
+            const depot = await DepotDB.findByPk(depot_id);
+
+            if(!depot) {
+                return {
+                    status: 404,
+                    message: "Depot not found",
+                    data: null,
+                };
+            }
+
+            await depot.update({ status: true });
+
+            return {
+                status: 200,
+                message: "Depot activated successfully",
+                data: depot,
+            };
+        } catch (error) {
+            console.error("Error activating depot: ", error);
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }   
+    }
+
     //funcion mejorada para verfificar que si lo eliminó
     async delete(depot_id: number) {
         try {
