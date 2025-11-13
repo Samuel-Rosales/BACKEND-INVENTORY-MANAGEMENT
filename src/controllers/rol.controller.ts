@@ -60,7 +60,8 @@ export class RolController {
 
     assignPermissions = async (req: Request, res: Response) => {
         const { id } = req.params;
-        const { status, message, data } = await RolServices.assignPermissions(Number(id), req.body);
+        const { permission_ids } = req.body;
+        const { status, message, data } = await RolServices.assignPermissions(Number(id), permission_ids);
 
         return res.status(status).json({
             message,
@@ -70,7 +71,8 @@ export class RolController {
 
     removePermissions = async (req: Request, res: Response) => {
         const { id } = req.params;
-        const { status, message, data } = await RolServices.removePermissions(Number(id), req.body);
+        const { permission_ids } = req.body;
+        const { status, message, data } = await RolServices.removePermissions(Number(id), permission_ids);
 
         return res.status(status).json({
             message,
