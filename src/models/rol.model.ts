@@ -54,5 +54,10 @@ export const RolFactory = (sequelize: Sequelize) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        status: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true,
+        }
     }, { tableName: "roles", timestamps: true });
 };

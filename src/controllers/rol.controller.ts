@@ -67,4 +67,14 @@ export class RolController {
             data,
         });
     };
+
+    removePermissions = async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const { status, message, data } = await RolServices.removePermissions(Number(id), req.body);
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
 }
