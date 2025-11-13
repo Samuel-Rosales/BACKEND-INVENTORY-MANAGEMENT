@@ -89,6 +89,64 @@ class ClientService {
         }   
     }
 
+    async updateDeactivate(client_ci: string) {
+        try{
+            const client = await ClientDB.findByPk(client_ci);
+            
+            if(!client) {
+                return {
+                    status: 404,
+                    message: "Client not found",
+                    data: null,
+                };
+            }
+
+            client.update({ status: false });
+            return {
+                status: 200,
+                message: "Client deactivated successfully",
+                data: client,
+            };
+        } catch (error) {
+            console.error("Error deactivating client: ", error);
+            
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        } 
+    } 
+
+    async updateActivate(client_ci: string) {
+        try{
+            const client = await ClientDB.findByPk(client_ci);
+
+            if(!client) {
+                return {
+                    status: 404,
+                    message: "Client not found",
+                    data: null,
+                };
+            }
+
+            await client.update({ status: true });
+
+            return {
+                status: 200,
+                message: "Client activated successfully",
+                data: client,
+            };
+        } catch (error) {
+            console.error("Error activating client: ", error);
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }   
+    }
+
     async delete (client_ci: string) {
         try {
             await ClientDB.destroy({ where: {client_ci} });

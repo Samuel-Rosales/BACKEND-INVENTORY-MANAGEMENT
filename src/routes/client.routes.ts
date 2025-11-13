@@ -30,6 +30,16 @@ router.patch("/:id",
     clientController.update,
 ); // http://localhost:3000/api/client/:id
 
+router.patch("/:id/deactivate", 
+    clientValidators.validateClientParamCIExists,
+    clientController.updateDeactivate
+); // http://localhost:3000/api/client/:id/deactivate
+
+router.patch("/:id/activate", 
+    clientValidators.validateClientParamCIExists,
+    clientController.updateActivate
+); // http://localhost:3000/api/client/:id/activate
+
 //METHOD DELETE
 router.delete("/:id",
     clientValidators.validateClientParamCIExists,

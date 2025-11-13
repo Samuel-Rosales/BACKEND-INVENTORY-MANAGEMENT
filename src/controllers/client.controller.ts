@@ -42,6 +42,26 @@ export class ClientController {
         });
     };
 
+    updateDeactivate = async (req: Request, res: Response) => {
+        const { id } = req.params; 
+        const { status, message, data } = await ClientServices.updateDeactivate(id);
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
+
+    updateActivate = async (req: Request, res: Response) => {
+        const { id } = req.params; 
+        const { status, message, data } = await ClientServices.updateActivate(id);
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
+
     delete = async (req: Request, res: Response) => {
         const { id } = req.params;
         const { status, message } = await ClientServices.delete(id);
