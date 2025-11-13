@@ -31,6 +31,16 @@ router.patch("/:id",
     categoryController.update
 ); // http://localhost:3000/api/category/:id
 
+router.patch("/:id/deactivate", 
+    categoryValidators.validateCategoryParamIdExists,
+    categoryController.updateDeactivate
+); // http://localhost:3000/api/category/:id/deactivate
+
+router.patch("/:id/activate", 
+    categoryValidators.validateCategoryParamIdExists,
+    categoryController.updateActivate
+); // http://localhost:3000/api/category/:id/activate
+
 // METHOD DELETE
 router.delete("/:id", 
     categoryValidators.validateCategoryParamIdExists,

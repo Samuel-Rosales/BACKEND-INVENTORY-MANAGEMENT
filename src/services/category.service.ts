@@ -73,28 +73,86 @@ class CategoryService {
     }
 
     async update(category_id: number, category: Partial<CategoryInterface>) {
-            try {
-                const { createdAt, updatedAt, category_id: _, ... categorytData} = category;
-    
-                await CategoryDB.update(categorytData, { where: { category_id } });
-    
-                const updatedCategory = await CategoryDB.findByPk(category_id);
-    
+        try {
+            const { createdAt, updatedAt, category_id: _, ... categorytData} = category;
+
+            await CategoryDB.update(categorytData, { where: { category_id } });
+
+            const updatedCategory = await CategoryDB.findByPk(category_id);
+
+            return {
+                status: 200,
+                message: "Category update correctly",
+                data: updatedCategory,
+            };
+        } catch (error) {
+            console.error("Error updating category: ", error);
+
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }
+    }
+
+    async updateDeactivate(category_id: number) {
+        try{
+            const category = await CategoryDB.findByPk(category_id);
+            
+            if(!category) {
                 return {
-                    status: 200,
-                    message: "Category update correctly",
-                    data: updatedCategory,
-                };
-            } catch (error) {
-                console.error("Error updating category: ", error);
-    
-                return {
-                    status: 500,
-                    message: "Internal server error",
+                    status: 404,
+                    message: "Category not found",
                     data: null,
                 };
             }
-        }
+
+            category.update({ status: false });
+            return {
+                status: 200,
+                message: "Category deactivated successfully",
+                data: category,
+            };
+        } catch (error) {
+            console.error("Error deactivating category: ", error);
+            
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        } 
+    } 
+
+    async updateActivate(category_id: number) {
+        try{
+            const category = await CategoryDB.findByPk(category_id);
+
+            if(!category) {
+                return {
+                    status: 404,
+                    message: "Category not found",
+                    data: null,
+                };
+            }
+
+            await category.update({ status: true });
+
+            return {
+                status: 200,
+                message: "Category activated successfully",
+                data: category,
+            };
+        } catch (error) {
+            console.error("Error activating category: ", error);
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }   
+    }
 
     async delete (category_id: number) {
         try {

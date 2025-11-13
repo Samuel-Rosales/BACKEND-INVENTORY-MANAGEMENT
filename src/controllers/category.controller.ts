@@ -33,14 +33,34 @@ export class CategoryController {
      };
 
     update = async (req: Request, res: Response) => {
-            const { id } = req.params; 
-            const { status, message, data } = await CategoryServices.update(Number(id), req.body);
-    
-            return res.status(status).json({
-                message,
-                data,
-            });
-        };
+        const { id } = req.params; 
+        const { status, message, data } = await CategoryServices.update(Number(id), req.body);
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
+
+    updateDeactivate = async (req: Request, res: Response) => {
+        const { id } = req.params; 
+        const { status, message, data } = await CategoryServices.updateDeactivate(Number(id));
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
+
+    updateActivate = async (req: Request, res: Response) => {
+        const { id } = req.params; 
+        const { status, message, data } = await CategoryServices.updateActivate(Number(id));
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
 
      delete = async (req: Request, res: Response) => {
         const { id } = req.params;
