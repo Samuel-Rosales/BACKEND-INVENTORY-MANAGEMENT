@@ -36,6 +36,10 @@ export interface RolInstance extends Model<RolInterface>, RolInterface {
      */
     addPermission: BelongsToManyAddAssociationMixin<PermissionInstance, number>;
 
+    removePermission(permission: number | PermissionInstance): Promise<void>;
+    
+    // Para quitar múltiples (el que necesitas)
+    removePermissions(permissions: (number | PermissionInstance)[]): Promise<void>;
     // (Puedes añadir también removePermission, hasPermission, etc. si los necesitas)
 }
 

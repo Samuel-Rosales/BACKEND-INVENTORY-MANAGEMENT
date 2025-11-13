@@ -24,7 +24,14 @@ export class RolController {
     };
 
     create = async (req: Request, res: Response) => {
-        const { status, message, data } = await RolServices.create(req.body);
+
+        const { permission_ids, ...rolData } = req.body;
+
+            // 3. Llamar al servicio con los DOS argumentos separados
+        const { status, message, data } = await RolServices.create(
+            rolData,         // El objeto 'rol: RolInterface'
+            permission_ids   // El array 'permission_ids?: number[]'
+        );
 
         return res.status(status).json({
             message,
@@ -48,6 +55,16 @@ export class RolController {
 
         return res.status(status).json({
             message,
+        });
+    };
+
+    assignPermissions = async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const { status, message, data } = await RolServices.assignPermissions(Number(id), req.body);
+
+        return res.status(status).json({
+            message,
+            data,
         });
     };
 }

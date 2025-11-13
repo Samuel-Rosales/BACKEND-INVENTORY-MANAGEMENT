@@ -1,5 +1,7 @@
 import { RolDB, PermissionDB} from "../models";
 import { RolInterface } from "../interfaces/rol.interface";
+import { PermissionInterface } from "@/interfaces";
+import { db } from "../config/sequelize.config";
 
 class RolService {
     async getAll() {
@@ -55,23 +57,40 @@ class RolService {
         }
     }
 
-    async create(rol: RolInterface) {
+    async create(rol: RolInterface, permission_ids?: number[]) {
+    // Iniciamos una transacción
+        const t = await db.transaction(); 
+
         try {
-            const { createdAt, updatedAt, ...rolData  } = rol;
+            const { createdAt, updatedAt, ...rolData } = rol;
             
-            const newRol = await RolDB.create(rolData as any);
+            // 1. Crear el rol DENTRO de la transacción
+            const newRol = await RolDB.create(rolData as any, { 
+                transaction: t 
+            });
+
+            // 2. Asignar permisos DENTRO de la transacción
+            await newRol.setPermissions(permission_ids || [], { 
+                transaction: t 
+            });
+            
+            // 3. Si todo salió bien, confirma la transacción
+            await t.commit();
 
             return {
                 status: 201,
-                message: "Rol created successfully",
+                message: "Rol creado exitosamente",
                 data: newRol,
             };
-        } catch (error) {
-            console.error("Error creating rol", error);
 
+        } catch (error) {
+            // 4. Si algo falló, revierte la transacción
+            await t.rollback(); 
+            console.error("Error creando rol", error);
+            
             return {
                 status: 500,
-                message: "Internal server error",
+                message: "Error interno del servidor",
                 data: null,
             };
         }
@@ -127,6 +146,72 @@ class RolService {
             };
         }
     }
-}
 
+    async assignPermissions(rol_id: number, permission_ids: number[]) {
+
+        try {
+            const rol = await RolDB.findByPk(rol_id);
+
+            if (!rol) {
+                return {
+                    status: 404,
+                    message: "Rol not found",
+                    data: null,
+                };
+            }
+
+            await rol.setPermissions(permission_ids);
+
+            return {
+                status: 200,
+                message: "Permissions assigned successfully",
+                data: null,
+            };
+
+        } catch (error) {
+            console.error("Error assigning permissions to rol: ", error);
+
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };            
+        }
+    }
+
+    async removePermissions(rol_id: number, permission_ids: number[]) {
+
+        try {
+            // 1. Encontrar el rol
+            const rol = await RolDB.findByPk(rol_id);
+
+            if (!rol) {
+                return {
+                    status: 404,
+                    message: "Rol no encontrado",
+                    data: null,
+                };
+            }
+
+            // 2. Usar el método 'removePermissions'
+            // Esto solo quita las referencias en la tabla intermedia
+            await rol.removePermissions(permission_ids);
+
+            // 3. Responder con éxito
+            return {
+                status: 200,
+                message: "Permisos eliminados exitosamente del rol",
+                data: null,
+            };
+
+        } catch (error) {
+            console.error("Error eliminando permisos de rol: ", error);
+            return {
+                status: 500,
+                message: "Error interno del servidor al eliminar permisos",
+                data: null,
+            };
+        }
+    }
+}
 export const RolServices = new RolService();
