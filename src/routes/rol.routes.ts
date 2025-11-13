@@ -28,13 +28,13 @@ router.post("/",
 ); // http://localhost:3000/api/rol
 
 //MeTHOD PUT
-router.put("/:id/assign_permissions",
+router.patch("/:id/assign_permissions",
     rolValidators.validateFields,
     validateFields,
     rolController.assignPermissions
 ); // http://localhost:3000/api/rol/:id/assign_permissions
 
-router.put("/:id/remove_permissions",
+router.patch("/:id/remove_permissions",
     rolValidators.validateFields,
     validateFields,
     rolController.removePermissions
