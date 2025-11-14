@@ -30,6 +30,16 @@ router.patch("/:id",
     providercontroller.update,
 ); // http://localhost:3000/api/provider/:id
 
+router.patch("/:id/deactivate", 
+    providerValidators.validateProviderParamIdExists,
+    providercontroller.updateDeactivate
+); // http://localhost:3000/api/provider/:id/deactivate
+
+router.patch("/:id/activate", 
+    providerValidators.validateProviderParamIdExists,
+    providercontroller.updateActivate
+); // http://localhost:3000/api/provider/:id/activate
+
 //METHOD DELETE
 router.delete("/:id",
     providerValidators.validateProviderParamIdExists,

@@ -89,6 +89,64 @@ class ProviderService {
         }   
     }
 
+    async updateDeactivate(provider_id: number) {
+        try{
+            const provider = await ProviderDB.findByPk(provider_id);
+            
+            if(!provider) {
+                return {
+                    status: 404,
+                    message: "Provider not found",
+                    data: null,
+                };
+            }
+
+            provider.update({ status: false });
+            return {
+                status: 200,
+                message: "Provider deactivated successfully",
+                data: provider,
+            };
+        } catch (error) {
+            console.error("Error deactivating provider: ", error);
+            
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        } 
+    } 
+
+    async updateActivate(provider_id: number) {
+        try{
+            const provider = await ProviderDB.findByPk(provider_id);
+
+            if(!provider) {
+                return {
+                    status: 404,
+                    message: "Provider not found",
+                    data: null,
+                };
+            }
+
+            await provider.update({ status: true });
+
+            return {
+                status: 200,
+                message: "Provider activated successfully",
+                data: provider,
+            };
+        } catch (error) {
+            console.error("Error activating provider: ", error);
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }   
+    }
+
     async delete (provider_id: number) {
         try {
             await ProviderDB.destroy({ where: {provider_id} });

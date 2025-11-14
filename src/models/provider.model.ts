@@ -16,5 +16,10 @@ export const ProviderFactory = (sequelize: Sequelize) => {
             type: DataTypes.STRING(255),
             allowNull: false,
         },
+        status: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true,
+        },
     }, { tableName: "providers", timestamps: true });
 };
