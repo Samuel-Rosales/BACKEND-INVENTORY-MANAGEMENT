@@ -41,6 +41,26 @@ export class TypePaymentController {
             data,
         });
     };
+    
+    updateDeactivate = async (req: Request, res: Response) => {
+        const { id } = req.params; 
+        const { status, message, data } = await TypePaymentServices.updateDeactivate(Number(id));
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
+
+    updateActivate = async (req: Request, res: Response) => {
+        const { id } = req.params; 
+        const { status, message, data } = await TypePaymentServices.updateActivate(Number(id));
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
 
     delete = async (req: Request, res: Response) => {
         const { id } = req.params;

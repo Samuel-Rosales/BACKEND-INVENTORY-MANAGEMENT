@@ -12,5 +12,10 @@ export const TypePaymentFactory = (sequelize: Sequelize) => {
             allowNull: false,
             unique: true,
         },
+        status: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true,
+        },
     }, { tableName: "types_payments", timestamps: true });
 };

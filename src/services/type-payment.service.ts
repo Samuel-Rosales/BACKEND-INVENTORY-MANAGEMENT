@@ -88,6 +88,64 @@ class TypePaymentService {
         } 
     }
 
+    async updateDeactivate(type_payment_id: number) {
+        try{
+            const typePayment = await TypePaymentDB.findByPk(type_payment_id);
+            
+            if(!typePayment) {
+                return {
+                    status: 404,
+                    message: "Type payment not found",
+                    data: null,
+                };
+            }
+
+            typePayment.update({ status: false });
+            return {
+                status: 200,
+                message: "Type payment deactivated successfully",
+                data: typePayment,
+            };
+        } catch (error) {
+            console.error("Error deactivating type payment: ", error);
+            
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        } 
+    } 
+
+    async updateActivate(type_payment_id: number) {
+        try{
+            const typePayment = await TypePaymentDB.findByPk(type_payment_id);
+
+            if(!typePayment) {
+                return {
+                    status: 404,
+                    message: "Type payment not found",
+                    data: null,
+                };
+            }
+
+            await typePayment.update({ status: true });
+
+            return {
+                status: 200,
+                message: "Type payment activated successfully",
+                data: typePayment,
+            };
+        } catch (error) {
+            console.error("Error activating type payment: ", error);
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }   
+    }
+
     async delete ( type_payment_id: number) {
         try {
             await TypePaymentDB.destroy({ where: {type_payment_id} });
