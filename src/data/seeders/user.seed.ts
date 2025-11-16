@@ -8,7 +8,7 @@ export const userSeed = async () => {
             {
                 user_ci: "31350493",
                 name: "Samuel Rosales",
-                password: "defaultPassword1", // Cambia esto por una contraseña segura o hasheada
+                password: "$2b$10$FFTvkKY/PS7t5cObl9cCAuqayHEUkHl0gxOdx85ZlzdUlSib6EZhy", // Cambia esto por una contraseña segura o hasheada
                 rol_id: 1, // ID del Rol: Administrador
                 status: true,
             },

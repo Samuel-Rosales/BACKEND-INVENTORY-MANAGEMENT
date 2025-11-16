@@ -61,7 +61,7 @@ class AuthService {
                     user: {
                         user_ci: user.user_ci,
                         name: user.name,
-                        rol: user.rol_id
+                        rol_id: user.rol_id
                     }
                 }
             };
