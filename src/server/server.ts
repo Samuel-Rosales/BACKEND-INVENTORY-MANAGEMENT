@@ -44,6 +44,8 @@ export class Server {
 
     constructor() {
         this.app = express()
+        this.app.use(express.json({ limit: "50mb" })); // Middleware para parsear bodies JSON
+        this.app.use(express.urlencoded({ limit: "50mb", extended: true })); // Middleware para parsear bodies URL-encoded
         this.port = process.env.PORT || "3000"
         this.apiurl = process.env.API_URL || `http://localhost:${this.port}`
         this.paths = {

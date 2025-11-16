@@ -12,6 +12,10 @@ export const ProductFactory = (sequelize: Sequelize) => {
             allowNull: false,
             unique: true,
         },
+        sku: {
+            type: DataTypes.STRING(50),
+            unique: true,
+        },
         description: {
             type: DataTypes.STRING(255),
             allowNull: false,

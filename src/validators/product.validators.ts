@@ -12,6 +12,10 @@ export class ProductValidators {
         check("description")
             .notEmpty().withMessage("La descripción del producto es obligatoria.")
             .isString().withMessage("La descripción del producto debe ser una cadena de texto."),
+        
+        check("sku")
+            .notEmpty().withMessage("El SKU del producto es obligatorio.")
+            .isString().withMessage("El SKU del producto debe ser una cadena de texto."),
 
         check("category_id")
             .notEmpty().withMessage("El ID de la categoría es obligatorio.")
@@ -36,6 +40,11 @@ export class ProductValidators {
             .optional()
             .notEmpty().withMessage("La descripción no puede ser una cadena vacía.")
             .isString().withMessage("La descripción debe ser una cadena de texto."),
+
+        check("sku")
+            .optional()
+            .notEmpty().withMessage("El SKU no puede ser una cadena vacía.")
+            .isString().withMessage("El SKU debe ser una cadena de texto."),
 
         check("category_id")
             .optional()

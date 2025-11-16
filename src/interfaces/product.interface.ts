@@ -2,6 +2,7 @@ export interface ProductInterface {
     product_id: number;
     name: string;
     description: string;
+    sku?: string;
     category_id: number;
     base_price: number;
     min_stock: number;

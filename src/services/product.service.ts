@@ -40,7 +40,7 @@ class ProductService {
                 
                 let total_stock = 0;
 
-                const simpleProduct = product.toJSON() as ProductInterface & { stock_generals: StockGeneralInterface[] } & { stock_lots: StockLotInterface[] };
+                const simpleProduct = product.toJSON() as ProductInterface & { stock_generals: StockGeneralInterface[], stock_lots: StockLotInterface[] };
                 
                 const price_bs = simpleProduct.base_price * tasa;
 
@@ -51,13 +51,13 @@ class ProductService {
                     }, 0);
                 } else {
 
-                    total_stock = simpleProduct.stock_lots.reduce((accumlator, stock) =>{
-                        return accumlator + stock.amount;
+                    total_stock = simpleProduct.stock_lots.reduce((accumulator, stock) =>{
+                        return accumulator + stock.amount;
                     },0);
                 }
 
                 return {
-                    ...product,
+                    ...simpleProduct,
                     price_bs: parseFloat(price_bs.toFixed(2)), // Redondea a 2 decimales
                     total_stock: total_stock,
                 };
@@ -122,7 +122,7 @@ class ProductService {
                     data: null,
                 };
             }
-            const simpleProduct = product.toJSON() as ProductInterface & { stock_generals: StockGeneralInterface[] } & { stock_lots: StockLotInterface[] };
+            const simpleProduct = product.toJSON() as ProductInterface & { stock_generals: StockGeneralInterface[], stock_lots: StockLotInterface[] };
             const precio_bs = simpleProduct.base_price * tasa;
             
             let total_stock = 0;
@@ -140,7 +140,7 @@ class ProductService {
             }
 
             const productoWithBsAndTotal = {
-                ...product,
+                ...simpleProduct,
                 precio_bs: parseFloat(precio_bs.toFixed(2)),
                 total_stock: total_stock,
             };
