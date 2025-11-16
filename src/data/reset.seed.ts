@@ -20,7 +20,7 @@ const main = async () => {
     } catch (error) {
         console.error("The reset script failed:", error);
         process.exit(1);
-    }
+    } 
 };
 
 // Start execution

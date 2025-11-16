@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "node dist/app.js",
-    "dev": "tsc && node dist/app.js",
+    "dev": "tsc && nodemon dist/app.js",
     "reset": "ts-node -r tsconfig-paths/register src/data/reset.seed.ts",
     "seeds": "ts-node -r tsconfig-paths/register src/data/main.seed.ts",
     "seeds-reset": "ts-node -r tsconfig-paths/register -r dotenv/config src/data/main.seed.ts --reset"
@@ -45,6 +45,7 @@
     "mysql2": "^3.12.0",
     "node": "^20.14.0",
     "node-cron": "^4.2.1",
+    "nodemon": "^3.1.11",
     "pg": "^8.16.3",
     "sequelize": "^6.37.3",
     "swagger-jsdoc": "^6.2.8",
