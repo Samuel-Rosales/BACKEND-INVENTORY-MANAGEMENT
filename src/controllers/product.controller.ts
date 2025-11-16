@@ -94,6 +94,26 @@ export class ProductController {
         }
     };
 
+    updateDeactivate = async (req: Request, res: Response) => {
+        const { id } = req.params; 
+        const { status, message, data } = await ProductServices.updateDeactivate(Number(id));
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
+
+    updateActivate = async (req: Request, res: Response) => {
+        const { id } = req.params; 
+        const { status, message, data } = await ProductServices.updateActivate(Number(id));
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
+
     delete = async (req: Request, res: Response) => {
         const { id } = req.params;
         const { status, message } = await ProductServices.delete(Number(id));

@@ -42,6 +42,16 @@ router.patch("/:id",
     productController.update,
 ); // http://localhost:3000/api/product/:id
 
+router.patch("/:id/deactivate", 
+    productValidators.validateProductParamIdExists,
+    productController.updateDeactivate
+); // http://localhost:3000/api/product/:id/deactivate
+
+router.patch("/:id/activate", 
+    productValidators.validateProductParamIdExists,
+    productController.updateActivate
+); // http://localhost:3000/api/product/:id/activate
+
 //METHOD DELETE
 router.delete("/:id", 
     productValidators.validateProductParamIdExists, 

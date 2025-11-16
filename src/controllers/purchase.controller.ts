@@ -25,21 +25,21 @@ export class PurchaseController {
 
     create = async (req: Request,  res: Response  ) => {
         // 1. Validar que el usuario autenticado existe
-        if (!req.user || !req.user.user_ci) {
+        /*if (!req.user || !req.user.user_ci) {
             return res.status(401).json({ 
                 message: "No autorizado (Token inválido o no proveído)",
                 data: null 
             });
-        }
+        }*/
 
         // 2. Obtener el CI seguro del token (NO DEL BODY)
-        const user_ci = req.user.user_ci;
+        //const user_ci = req.user.user_ci;
 
         // 3. El 'saleInput' es el cuerpo (body) de la solicitud
         const purchaseInput = req.body;
 
         // 4. Inyectar el user_ci seguro en el objeto de la venta y llamar al servicio con un solo argumento
-        purchaseInput.user_ci = user_ci;
+        //purchaseInput.user_ci = user_ci;
 
         const { status, message, data } = await PurchaseServices.create(
             purchaseInput // Argumento único: Los datos de la venta ya contienen user_ci seguro

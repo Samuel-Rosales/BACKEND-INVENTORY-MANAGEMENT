@@ -242,6 +242,64 @@ class ProductService {
         }
     }
     
+    async updateDeactivate(product_id: number) {
+        try{
+            const product = await ProductDB.findByPk(product_id);
+            
+            if(!product) {
+                return {
+                    status: 404,
+                    message: "Product not found",
+                    data: null,
+                };
+            }
+
+            product.update({ status: false });
+            return {
+                status: 200,
+                message: "Product deactivated successfully",
+                data: product,
+            };
+        } catch (error) {
+            console.error("Error deactivating product: ", error);
+            
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        } 
+    } 
+
+    async updateActivate(product_id: number) {
+        try{
+            const product = await ProductDB.findByPk(product_id);
+
+            if(!product) {
+                return {
+                    status: 404,
+                    message: "Product not found",
+                    data: null,
+                };
+            }
+
+            await product.update({ status: true });
+
+            return {
+                status: 200,
+                message: "Product activated successfully",
+                data: product,
+            };
+        } catch (error) {
+            console.error("Error activating product: ", error);
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }   
+    }
+    
     /**
      * Elimina un producto por su ID.
      */
