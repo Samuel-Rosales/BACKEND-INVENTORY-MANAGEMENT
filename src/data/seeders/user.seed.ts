@@ -15,28 +15,28 @@ export const userSeed = async () => {
             {
                 user_ci: "31366298",
                 name: "Edgar Briceño",
-                password: "defaultPassword2",
+                password: "$2b$10$ZdpLb.GOgWk3HiXJyEsie./G/a8u61ph6SuZiDOW5g6AzDmIf82M.",
                 rol_id: 3, // ID del Rol: Operador de Almacén
                 status: true,
             },
             {
                 user_ci: "31111417",
                 name: "Marcos Castellanos",
-                password: "defaultPassword3",
+                password: "$2b$10$ZdpLb.GOgWk3HiXJyEsie./G/a8u61ph6SuZiDOW5g6AzDmIf82M.",
                 rol_id: 4, // ID del Rol: Visualizador
                 status: true,
             },
             {
                 user_ci: "29778174",
                 name: "Jesús Ramos",
-                password: "defaultPassword4",
+                password: "$2b$10$ZdpLb.GOgWk3HiXJyEsie./G/a8u61ph6SuZiDOW5g6AzDmIf82M.",
                 rol_id: 2, // ID del Rol: Gerente
                 status: true,
             },
             {
                 user_ci: "30665034",
                 name: "Anthony Wu Zhang",
-                password: "defaultPassword5",
+                password: "$2b$10$ZdpLb.GOgWk3HiXJyEsie./G/a8u61ph6SuZiDOW5g6AzDmIf82M.",
                 rol_id: 5, // ID del Rol: Visualizador
                 status: true,
             },
