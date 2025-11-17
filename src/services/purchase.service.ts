@@ -1,5 +1,5 @@
 import { PurchaseDB, ProviderDB, TypePaymentDB, UserDB, PurchaseGeneralItemDB, PurchaseLotItemDB, ProductDB, MovementDB } from "../models";
-import { PurchaseInterface } from "../interfaces";
+import { ProductInterface, PurchaseInterface } from "../interfaces";
 import { inventoryService } from "./inventory.service";
 import { db } from "../config/sequelize.config";
 import { ExchangeRateServices } from "./exchange-rate.service";
@@ -92,9 +92,7 @@ class PurchaseService {
                 throw new Error('Tasa de cambio inválida (NaN).');
             }
 
-            const generalItems = (purchase as any).purchase_general_items ?? [];
-            const lotItems = (purchase as any).purchase_lot_items ?? [];
-            const items = [...generalItems, ...lotItems];
+            const items = (purchase as PurchaseInterface).purchase_items;
  
             if (items.length === 0) {
                 throw new Error('La compra debe tener al menos un ítem.');
@@ -112,7 +110,7 @@ class PurchaseService {
                 }
                 
                 // Validar que el producto existe
-                const product = await ProductDB.findByPk(item.product_id, { transaction: t, attributes: ['perishable', 'name'] });
+                const product = await ProductDB.findByPk(item.product_id, { transaction: t, attributes: ['perishable', 'name'] }) as ProductInterface | null;
                 if (!product) {
                     throw new Error(`Producto con id ${item.product_id} no encontrado.`);
                 }
@@ -123,17 +121,18 @@ class PurchaseService {
                 }
 
                 // Validar lógica de perecedero
-                const is_perishable = (product as any).perishable;
-                if (is_perishable && !item.expiration_date) {
-                    throw new Error(`Producto perecedero ${(product as any).name} requiere una fecha de vencimiento.`);
+                if (product.perishable) {
+                    if (!('expiration_date' in item) || !item.expiration_date) {
+                        throw new Error(`Producto perecedero ${product.name} requiere una fecha de vencimiento.`);
+                    }
                 }
+                const isPerishable = product.perishable;
 
                 // --- 5. CALCULAR TOTAL (USD) ---
-                // (Para una COMPRA, confiamos en el unit_cost que nos da el usuario)
                 totalCompraUSD += item.unit_cost * item.amount;
 
                 // Guardar para el Bucle 2
-                itemsProcesados.push({ ...item, is_perishable });
+                itemsProcesados.push({ ...item, is_perishable: isPerishable });
             }
 
             // --- 6. CALCULAR TOTAL (VES) ---
@@ -166,7 +165,7 @@ class PurchaseService {
                 );
 
                 // 8b. Crear el detalle de compra (General o Lote)
-                if (item.is_perishable) {
+                if ('expiration_date' in item && item.is_perishable) { 
                     await PurchaseLotItemDB.create({
                         purchase_id: newPurchaseId,
                         product_id: item.product_id,
@@ -208,15 +207,12 @@ class PurchaseService {
             } catch (error) { 
                 console.error("Error creating purchase: ", error);
                 
-                // 7. Si algo falló (ej. un item no tenía depot_id)
                 await t.rollback();
 
-                // Si el error fue uno que nosotros lanzamos (ej. "depot_id no tiene...")
-                // lo tratamos como un error del cliente (400).
                 if (error instanceof Error) {
                     return {
-                        status: 400, // <-- 400 Bad Request
-                        message: error.message, // <-- Muestra el error real al usuario
+                        status: 400,
+                        message: error.message,
                         data: null,
                     };
                 }
@@ -271,17 +267,6 @@ class PurchaseService {
             };
         }
     }
-
-    /*const purchases = await PurchaseDB.findAll({
-  where: {
-        purchase_date: {
-        [Op.between]: ['2025-06-01', '2025-06-30']
-        }
-    },
-    include: [...]
-    });*/
-
-
 }
 
 export const PurchaseServices = new PurchaseService();

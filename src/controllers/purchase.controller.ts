@@ -42,7 +42,7 @@ export class PurchaseController {
         //purchaseInput.user_ci = user_ci;
 
         const { status, message, data } = await PurchaseServices.create(
-            purchaseInput // Argumento único: Los datos de la venta ya contienen user_ci seguro
+            purchaseInput
         );
 
         // 5. Devolver la respuesta del servicio
