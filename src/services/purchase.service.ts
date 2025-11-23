@@ -192,7 +192,6 @@ class PurchaseService {
                     user_ci: purchase.user_ci,
                     amount: item.amount,
                     observation: `Compra ID ${newPurchaseId}`,
-                    moved_at: new Date(),
                 }, { transaction: t });
             }
 

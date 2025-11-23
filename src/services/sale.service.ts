@@ -159,7 +159,6 @@ class SaleService {
                     product_id: itemData.product_id,
                     amount: itemData.amount,
                     observation: `Venta ID: ${newSaleId}`,
-                    moved_at: new Date(),
                 }, { transaction: t });
             }
 
