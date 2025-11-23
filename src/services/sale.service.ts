@@ -155,6 +155,7 @@ class SaleService {
                 await MovementDB.create({
                     type: 'Venta',
                     depot_id: itemData.depot_id, 
+                    user_ci: user_ci,
                     product_id: itemData.product_id,
                     amount: itemData.amount,
                     observation: `Venta ID: ${newSaleId}`,

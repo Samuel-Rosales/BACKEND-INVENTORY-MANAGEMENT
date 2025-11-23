@@ -189,9 +189,9 @@ class PurchaseService {
                     type: 'Compra',
                     depot_id: item.depot_id,
                     product_id: item.product_id,
+                    user_ci: purchase.user_ci,
                     amount: item.amount,
-                    observation: `Compra ID ${newPurchaseId}`, 
-                    Type: `Compra`,
+                    observation: `Compra ID ${newPurchaseId}`,
                     moved_at: new Date(),
                 }, { transaction: t });
             }

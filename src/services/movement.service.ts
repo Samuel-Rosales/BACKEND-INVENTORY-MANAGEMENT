@@ -1,4 +1,4 @@
-import { MovementDB, ProductDB, DepotDB } from "../models";
+import { MovementDB, ProductDB, DepotDB, UserDB } from "../models";
 import { MovementInterface } from "../interfaces";
 
 class MovementService {
@@ -6,8 +6,9 @@ class MovementService {
         try {
             const movements = await MovementDB.findAll({
                 include: [
-                    { model: ProductDB, as: "product" },
-                    { model: DepotDB, as: "depot" }
+                    { model: ProductDB, as: "product", attributes: ['product_id', 'name', 'description'] },
+                    { model: DepotDB, as: "depot", attributes: ['depot_id', 'name', 'location'] },
+                    { model: UserDB, as: "user", attributes: ['user_ci', 'name'] },
                 ]
             });
 

@@ -18,6 +18,10 @@ export class SaleValidators {
         check("type_payment_id")
             .notEmpty().withMessage("El ID del tipo de pago es obligatorio.")
             .isInt().withMessage("El ID del tipo de pago debe ser un número entero."),
+
+        check("sale_items")
+            .notEmpty().withMessage("Los items de la venta son obligatorios.")
+            .isArray({ min: 1 }).withMessage("Debe proporcionar al menos un item en la venta."),
     ];
 
     validateUpdateFields = [

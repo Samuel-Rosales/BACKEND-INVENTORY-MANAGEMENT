@@ -15,6 +15,11 @@ export class MovementValidator {
             .notEmpty().withMessage("El producto del movimiento es obligatorio.")
             .isNumeric().withMessage("El ID del producto debe ser un número entero."),
 
+        // --- user_ci ---
+        check("user_ci")
+            .notEmpty().withMessage("La cédula del usuario es obligatoria.")
+            .isString().withMessage("La cédula del usuario debe ser una cadena de texto."),
+
         // --- type ---
         check("type")
             .notEmpty().withMessage("El tipo del movimiento es obligatorio.")
@@ -43,6 +48,12 @@ export class MovementValidator {
             .optional()
             .notEmpty().withMessage("El producto del movimiento no puede estar vacío.")
             .isNumeric().withMessage("El ID del producto debe ser un número entero."),
+
+        // --- user_ci ---
+        check("user_ci")
+            .optional()
+            .notEmpty().withMessage("La cédula del usuario no puede estar vacía.")
+            .isString().withMessage("La cédula del usuario debe ser una cadena de texto."),
 
         // --- type ---
         check("type")

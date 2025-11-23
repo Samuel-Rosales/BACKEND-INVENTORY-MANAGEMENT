@@ -2,10 +2,11 @@ export interface MovementInterface {
     movement_id: number;
     depot_id: number;
     product_id: number;
-    type: 'Entrada' | 'Salida';
+    user_ci: string;
+    type: 'Compra' | 'Venta' | 'Ajuste Negativo' | 'Ajuste Positivo';
     amount: number;
     observation: string;
-    date: Date;
+    moved_at: Date;
     status: boolean;
     createdAt?: Date;
     updatedAt?: Date;   

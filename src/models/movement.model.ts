@@ -15,6 +15,10 @@ export const MovementFactory = (sequelize: Sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        user_ci: {
+            type: DataTypes.STRING(10),
+            allowNull: false,
+        },
         type: {
             type: DataTypes.ENUM('Compra', 'Venta', 'Ajuste Negativo', 'Ajuste Positivo'),
             allowNull: false,
@@ -29,7 +33,6 @@ export const MovementFactory = (sequelize: Sequelize) => {
         },
         moved_at: {
             type: DataTypes.DATE,
-            allowNull: false,
             defaultValue: DataTypes.NOW,
         },
         status: {

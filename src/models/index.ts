@@ -62,6 +62,9 @@ DepotDB.hasMany(MovementDB, { foreignKey: "depot_id", as: "movements" });
 MovementDB.belongsTo(ProductDB, { foreignKey: "product_id", as: "product" });
 ProductDB.hasMany(MovementDB, { foreignKey: "product_id", as: "movements" });
 
+MovementDB.belongsTo(UserDB, {foreignKey: "user_ci", as: "user"});
+UserDB.hasMany(MovementDB, { foreignKey: "user_ci", as: "movements" });
+
 UserDB.belongsTo(RolDB, { foreignKey: "rol_id", as: "rol" });
 RolDB.hasMany(UserDB, { foreignKey: "rol_id", as: "users" });
 
