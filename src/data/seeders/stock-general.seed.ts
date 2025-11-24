@@ -5,16 +5,16 @@ export const stockGeneralSeed = async () => {
         console.log("Iniciando seed de Stock General (No Perecederos)...");
 
         const stockToCreate = [
-            { productName: "Laptop HP ProBook", depotName: "Almacén Central Norte", amount: 12 },
-            { productName: "Monitor LED 24 pulgadas", depotName: "Almacén Central Norte", amount: 25 },
-            { productName: "Martillo de Uña 20oz", depotName: "Depósito Regional Sur", amount: 55 },
-            { productName: "Destornillador Phillips N°2", depotName: "Depósito Regional Sur", amount: 75 },
-            { productName: "Silla Ergonómica Ejecutiva", depotName: "Almacén Central Norte", amount: 10 },
-            { productName: "Silla Ergonómica Ejecutiva", depotName: "Mini-Hub de Distribución Este", amount: 8 },
-            { productName: "Archivador de Metal 3 Gavetas", depotName: "Almacén Central Norte", amount: 10 },
-            { productName: "Resma de Papel Carta", depotName: "Taller y Stock de Repuestos", amount: 120 },
-            { productName: "Toner Negro LaserJet", depotName: "Taller y Stock de Repuestos", amount: 30 },
-            { productName: "Guantes de Seguridad Nitrilo", depotName: "Depósito Regional Sur", amount: 80 },
+            { productName: "Laptop HP ProBook", depotName: "Almacén Principal", amount: 12 },
+            { productName: "Monitor LED 24 pulgadas", depotName: "Almacén Principal", amount: 25 },
+            { productName: "Martillo de Uña 20oz", depotName: "Almacén Principal", amount: 55 },
+            { productName: "Destornillador Phillips N°2", depotName: "Almacén Principal", amount: 75 },
+            { productName: "Silla Ergonómica Ejecutiva", depotName: "Almacén Principal", amount: 10 },
+            { productName: "Silla Ergonómica Ejecutiva", depotName: "Almacén Principal", amount: 8 },
+            { productName: "Archivador de Metal 3 Gavetas", depotName: "Almacén Principal", amount: 10 },
+            { productName: "Resma de Papel Carta", depotName: "Almacén Principal", amount: 120 },
+            { productName: "Toner Negro LaserJet", depotName: "Almacén Principal", amount: 30 },
+            { productName: "Guantes de Seguridad Nitrilo", depotName: "Almacén Principal", amount: 80 },
         ];
 
         // --- 1. Obtener IDs (CORREGIDO) ---

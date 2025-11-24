@@ -7,7 +7,7 @@ export const stockLotSeed = async () => {
         const lotsToCreate = [
             {
                 productName: "Baterías AAA (Paquete 4)",
-                depotName: "Almacén Central Norte",
+                depotName: "Almacén Principal",
                 expiration_date: "2027-10-01",
                 amount: 150,
                 cost_lot: 2.80,
@@ -15,7 +15,7 @@ export const stockLotSeed = async () => {
             },
             {
                 productName: "Baterías AAA (Paquete 4)",
-                depotName: "Almacén Central Norte",
+                depotName: "Almacén Principal",
                 expiration_date: "2028-03-01",
                 amount: 100,
                 cost_lot: 2.90,
@@ -23,7 +23,7 @@ export const stockLotSeed = async () => {
             },
             {
                 productName: "Baterías AAA (Paquete 4)",
-                depotName: "Mini-Hub de Distribución Este",
+                depotName: "Almacén Principal",
                 expiration_date: "2027-10-01",
                 amount: 80,
                 cost_lot: 2.80,

@@ -18,19 +18,19 @@ export const saleItemSeed = async () => {
             { 
                 sale_id: 1, 
                 productName: "Laptop HP ProBook", 
-                depotName: "Almacén Central Norte", 
+                depotName: "Almacén Principal", 
                 unit_cost: 999.99, amount: 1 
             },
             { 
                 sale_id: 1, 
                 productName: "Monitor LED 24 pulgadas", 
-                depotName: "Almacén Central Norte", 
+                depotName: "Almacén Principal", 
                 unit_cost: 219.50, amount: 1 
             },
             { 
                 sale_id: 1, 
                 productName: "Toner Negro LaserJet", 
-                depotName: "Taller y Stock de Repuestos", 
+                depotName: "Almacén Principal", 
                 unit_cost: 49.99, 
                 amount: 2 
             },
@@ -39,14 +39,14 @@ export const saleItemSeed = async () => {
             { 
                 sale_id: 2, 
                 productName: "Silla Ergonómica Ejecutiva", 
-                depotName: "Almacén Central Norte", 
+                depotName: "Almacén Principal", 
                 unit_cost: 179.99, 
                 amount: 1 
             },
             { 
                 sale_id: 2, 
                 productName: "Silla Ergonómica Ejecutiva", 
-                depotName: "Mini-Hub de Distribución Este", 
+                depotName: "Almacén Principal", 
                 unit_cost: 179.99, 
                 amount: 1 
             },
@@ -55,29 +55,29 @@ export const saleItemSeed = async () => {
             { 
                 sale_id: 3, 
                 productName: "Martillo de Uña 20oz", 
-                depotName: "Depósito Regional Sur", 
+                depotName: "Almacén Principal", 
                 unit_cost: 18.25, amount: 3 
             },
             { 
                 sale_id: 3, 
                 productName: "Destornillador Phillips N°2", 
-                depotName: "Depósito Regional Sur", 
+                depotName: "Almacén Principal", 
                 unit_cost: 14.99, 
                 amount: 2 
             },
             { 
                 sale_id: 3, 
                 productName: "Guantes de Seguridad Nitrilo",
-                depotName: "Depósito Regional Sur", 
+                depotName: "Almacén Principal", 
                 unit_cost: 19.50, 
                 amount: 1 
             },
 
             // Venta 4 (Taller)
-            { sale_id: 4, productName: "Resma de Papel Carta", depotName: "Taller y Stock de Repuestos", unit_cost: 5.99, amount: 10 },
+            { sale_id: 4, productName: "Resma de Papel Carta", depotName: "Almacén Principal", unit_cost: 5.99, amount: 10 },
 
             // Venta 5 (Almacén Central Norte)
-            { sale_id: 5, productName: "Archivador de Metal 3 Gavetas", depotName: "Almacén Central Norte", unit_cost: 110.00, amount: 4 },
+            { sale_id: 5, productName: "Archivador de Metal 3 Gavetas", depotName: "Almacén Principal", unit_cost: 110.00, amount: 4 },
         ];
 
         // --- 4. Mapear y filtrar ---

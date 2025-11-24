@@ -6,28 +6,8 @@ export const depotSeed = async () => {
 
         const depotsToCreate = [
             {
-                name: "Almacén Central Norte",
+                name: "Almacén Principal",
                 location: "Avenida 5, Galpón N° 12, Zona Industrial Norte",
-                status: true, // Activo
-            },
-            {
-                name: "Depósito Regional Sur",
-                location: "Carretera Panamericana, KM 25, Municipio Libertador",
-                status: true, // Activo
-            },
-            {
-                name: "Mini-Hub de Distribución Este",
-                location: "Calle Los Pinos, Centro Comercial Metropolitano, Nivel Sótano",
-                status: true, // Activo
-            },
-            {
-                name: "Reserva Temporal Oeste",
-                location: "Parcela B-4, Vía Intercomunal del Oeste. (Solo inventario de seguridad)",
-                status: false, // Inactivo/Mantenimiento
-            },
-            {
-                name: "Taller y Stock de Repuestos",
-                location: "Calle 10, Edificio El Sol, Nivel Mezzanina. (Stock Interno)",
                 status: true, // Activo
             },
         ];

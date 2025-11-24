@@ -14,7 +14,7 @@ export const purchaseLotItemSeed = async () => {
             {
                 purchaseKey: `1-${new Date("2025-10-21T08:00:00").toISOString()}`,
                 productName: "Baterías AAA (Paquete 4)",
-                depotName: "Almacén Central Norte", // <-- AÑADIDO
+                depotName: "Almacén Principal", // <-- AÑADIDO
                 amount: 100,
                 unit_cost: 3.20,
                 expiration_date: "2027-10-01",
@@ -22,7 +22,7 @@ export const purchaseLotItemSeed = async () => {
             {
                 purchaseKey: `1-${new Date("2025-10-21T08:00:00").toISOString()}`,
                 productName: "Baterías AAA (Paquete 4)",
-                depotName: "Mini-Hub de Distribución Este", // <-- AÑADIDO (Ejemplo de división)
+                depotName: "Almacén Principal", // <-- AÑADIDO (Ejemplo de división)
                 amount: 50,
                 unit_cost: 3.30,
                 expiration_date: "2028-04-01",

@@ -14,21 +14,21 @@ export const purchaseGeneralItemSeed = async () => {
             {
                 purchaseKey: `1-${new Date("2025-10-14T10:00:00").toISOString()}`,
                 productName: "Laptop HP ProBook",
-                depotName: "Almacén Central Norte", // <-- AÑADIDO
+                depotName: "Almacén Principal", // <-- AÑADIDO
                 amount: 5,
                 unit_cost: 840.00
             },
             {
                 purchaseKey: `1-${new Date("2025-10-14T10:00:00").toISOString()}`,
                 productName: "Monitor LED 24 pulgadas",
-                depotName: "Almacén Central Norte", // <-- AÑADIDO
+                depotName: "Almacén Principal", // <-- AÑADIDO
                 amount: 10,
                 unit_cost: 185.00
             },
             {
                 purchaseKey: `2-${new Date("2025-10-18T15:30:00").toISOString()}`,
                 productName: "Martillo de Uña 20oz",
-                depotName: "Depósito Regional Sur", // <-- AÑADIDO
+                depotName: "Almacén Principal", // <-- AÑADIDO
                 amount: 20,
                 unit_cost: 14.50
             },
@@ -42,28 +42,28 @@ export const purchaseGeneralItemSeed = async () => {
             {
                 purchaseKey: `3-${new Date("2025-10-16T11:00:00").toISOString()}`,
                 productName: "Silla Ergonómica Ejecutiva",
-                depotName: "Almacén Central Norte", // <-- AÑADIDO
+                depotName: "Almacén Principal", // <-- AÑADIDO
                 amount: 8,
                 unit_cost: 145.00
             },
             {
                 purchaseKey: `3-${new Date("2025-10-16T11:00:00").toISOString()}`,
                 productName: "Guantes de Seguridad Nitrilo",
-                depotName: "Depósito Regional Sur", // <-- AÑADIDO
+                depotName: "Almacén Principal", // <-- AÑADIDO
                 amount: 30,
                 unit_cost: 17.50
             },
             {
                 purchaseKey: `4-${new Date("2025-10-19T09:45:00").toISOString()}`,
                 productName: "Destornillador Phillips N°2",
-                depotName: "Taller y Stock de Repuestos", // <-- AÑADIDO
+                depotName: "Almacén Principal", // <-- AÑADIDO
                 amount: 40,
                 unit_cost: 12.00
             },
             {
                 purchaseKey: `4-${new Date("2025-10-19T09:45:00").toISOString()}`,
                 productName: "Toner Negro LaserJet",
-                depotName: "Taller y Stock de Repuestos", // <-- AÑADIDO
+                depotName: "Almacén Principal", // <-- AÑADIDO
                 amount: 15,
                 unit_cost: 44.00
             },
