@@ -1,4 +1,4 @@
-import { SaleDB, ClientDB, TypePaymentDB, UserDB, SaleItemDB, MovementDB, ProductDB } from "../models";
+import { SaleDB, ClientDB, TypePaymentDB, UserDB, SaleItemDB, MovementDB, ProductDB, DepotDB } from "../models";
 import { SaleInterface } from "../interfaces";
 
 import { inventoryService } from "./inventory.service";
@@ -12,17 +12,35 @@ class SaleService {
         try {
             const sales = await SaleDB.findAll({
                 include: [
-                    { model: ClientDB, as: "client" },
-                    { model: UserDB, as: "user" },
-                    { model: TypePaymentDB, as: "type_payment" },
-                    { model: SaleItemDB, as: "sale_items" },
+                    { model: ClientDB, as: "client", attributes: ['name'] },
+                    { model: UserDB, as: "user", attributes: ['name'] },
+                    { model: TypePaymentDB, as: "type_payment", attributes: ['name'] },
                 ],
             });
+
+            if (sales.length === 0) {
+                return {
+                    status: 404,
+                    message: "No sales found",
+                    data: null
+                };
+            }
+
+            const salesData = sales.map(sale => { {
+                const saleData = sale.toJSON();
+                return {
+                    ...saleData,
+                    client: saleData.client?.name || null,
+                    user: saleData.user?.name || null,
+                    type_payment: saleData.type_payment?.name || null,
+                };
+            }});
+
 
             return { 
                 status: 200,
                 message: "Sales obtained correctly", 
-                data: sales,   
+                data: salesData,   
             };
         } catch (error) {
             console.error("Error fetching sales: ", error);
@@ -39,17 +57,44 @@ class SaleService {
         try {
             const sale = await SaleDB.findByPk(sale_id, {
                 include: [
-                    { model: ClientDB, as: "client" },
-                    { model: UserDB, as: "user" },
-                    { model: TypePaymentDB, as: "type_payment" },
-                    { model: SaleItemDB, as: "sale_items" },
+                    { model: ClientDB, as: "client", attributes: ['name'] },
+                    { model: UserDB, as: "user", attributes: ['name'] },
+                    { model: TypePaymentDB, as: "type_payment", attributes: ['name'] },
+                    { 
+                        model: SaleItemDB, as: "sale_items", include: [
+                            { model: ProductDB, as: "product", attributes: ['name'] },
+                            { model: DepotDB, as: "depot", attributes: ['name'] }
+                        ] 
+                    },
                 ]
             });
+
+            if (!sale) {
+                return {
+                    status: 404,
+                    message: "Sale not found",
+                    data: null
+                };
+            }
+
+            const saleData = sale.toJSON();
+
+            const flattenedSale = {
+                ...saleData,
+                client: saleData.client?.name || null,
+                user: saleData.user?.name || null,
+                type_payment: saleData.type_payment?.name || null,
+                sale_items: saleData.sale_items?.map((item: any) => ({
+                    ...item,
+                    product: item.product?.name || null,
+                    depot: item.depot?.name || null
+                }))
+            };
 
             return {
                 status: 200,
                 message: "Sale obtained correctly",
-                data: sale,
+                data: flattenedSale,
             };
         } catch (error) {
             console.error("Error fetching Sale: ", error);

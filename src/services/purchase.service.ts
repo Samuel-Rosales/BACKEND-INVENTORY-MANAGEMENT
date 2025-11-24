@@ -1,4 +1,4 @@
-import { PurchaseDB, ProviderDB, TypePaymentDB, UserDB, PurchaseGeneralItemDB, PurchaseLotItemDB, ProductDB, MovementDB } from "../models";
+import { PurchaseDB, ProviderDB, TypePaymentDB, UserDB, PurchaseGeneralItemDB, PurchaseLotItemDB, ProductDB, MovementDB, DepotDB } from "../models";
 import { ProductInterface, PurchaseInterface } from "../interfaces";
 import { inventoryService } from "./inventory.service";
 import { db } from "../config/sequelize.config";
@@ -10,16 +10,34 @@ class PurchaseService {
         try {
             const purchases = await PurchaseDB.findAll({
                 include: [
-                    { model: ProviderDB, as: "provider" },
-                    { model: UserDB, as: "user" },
-                    { model: TypePaymentDB, as: "type_payment" }
+                    { model: ProviderDB, as: "provider", attributes: ['name'] },
+                    { model: UserDB, as: "user", attributes: ['name'] },
+                    { model: TypePaymentDB, as: "type_payment", attributes: ['name'] }
                 ],
             });
+
+            if (purchases.length === 0) {
+                return {
+                    status: 404,
+                    message: "No purchases found",
+                    data: null
+                };
+            }
+
+            const purchasesData = purchases.map(purchase => { {
+                const purchaseData = purchase.toJSON();
+                return {
+                    ...purchaseData,
+                    provider: purchaseData.provider?.name || null,
+                    user: purchaseData.user?.name || null,
+                    type_payment: purchaseData.type_payment?.name || null,
+                };
+            }});
 
             return { 
                 status: 200,
                 message: "Purchases obtained correctly", 
-                data: purchases,   
+                data: purchasesData,   
             };
         } catch (error) {
             console.error("Error fetching purchases: ", error);
@@ -36,32 +54,70 @@ class PurchaseService {
         try {
             const purchase = await PurchaseDB.findByPk(purchase_id, {
                 include: [
-                    { model: ProviderDB, as: "provider" },
-                    { model: UserDB, as: "user" },
-                    { model: TypePaymentDB, as: "type_payment" },
+                    { model: ProviderDB, as: "provider", attributes: ['name'] },
+                    { model: UserDB, as: "user", attributes: ['name'] },
+                    { model: TypePaymentDB, as: "type_payment", attributes: ['name'] },
                     { model: PurchaseGeneralItemDB, as: "purchase_general_items", 
                         include: [ 
                             { 
                                 model: ProductDB, 
-                                as: "product" 
+                                as: "product",
+                                attributes: ['name'] 
+                            },
+                            {
+                                model: DepotDB,
+                                as: "depot",
+                                attributes: ['name']
                             }
                         ]
                     }, 
-                    { model: PurchaseLotItemDB, as: "purchase_lot_items", 
+                    { model: PurchaseLotItemDB, as: "purchase_lot_items",
                          include: [ 
                             { 
                                 model: ProductDB, 
-                                as: "product" 
+                                as: "product",
+                                attributes: ['name']
+                            },
+                            {
+                                model: DepotDB,
+                                as: "depot",
+                                attributes: ['name']
                             }
                         ]
                     },
                 ]
             });
 
+            if (!purchase) {
+                return { status: 404, message: "Purchase not found", data: null };
+            }
+
+            const purchaseData = purchase.toJSON();
+
+            const flattenedPurchase = {
+                ...purchaseData,
+                // Extraemos el string. Usamos el operador ?. por seguridad
+                provider: purchaseData.provider?.name || null,
+                user: purchaseData.user?.name || null,
+                type_payment: purchaseData.type_payment?.name || null,
+                
+                // También puedes aplanar los items si quieres
+                purchase_general_items: purchaseData.purchase_general_items?.map((item: any) => ({
+                    ...item,
+                    product: item.product?.name || null,
+                    depot: item.depot?.name || null
+                })),
+                purchase_lot_items: purchaseData.purchase_lot_items?.map((item: any) => ({
+                    ...item,
+                    product: item.product?.name || null,
+                    depot: item.depot?.name || null
+                })),
+            };
+
             return {
                 status: 200,
                 message: "Purchase obtained correctly",
-                data: purchase,
+                data: flattenedPurchase,
             };
         } catch (error) {
             console.error("Error fetching purchase: ", error);
