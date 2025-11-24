@@ -10,7 +10,6 @@ export const stockGeneralSeed = async () => {
             { productName: "Martillo de Uña 20oz", depotName: "Almacén Principal", amount: 55 },
             { productName: "Destornillador Phillips N°2", depotName: "Almacén Principal", amount: 75 },
             { productName: "Silla Ergonómica Ejecutiva", depotName: "Almacén Principal", amount: 10 },
-            { productName: "Silla Ergonómica Ejecutiva", depotName: "Almacén Principal", amount: 8 },
             { productName: "Archivador de Metal 3 Gavetas", depotName: "Almacén Principal", amount: 10 },
             { productName: "Resma de Papel Carta", depotName: "Almacén Principal", amount: 120 },
             { productName: "Toner Negro LaserJet", depotName: "Almacén Principal", amount: 30 },
