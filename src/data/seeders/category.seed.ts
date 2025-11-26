@@ -6,29 +6,34 @@ export const categorySeed = async () => {
 
         const categoriesToCreate = [
             {
-                name: "Electrónicos",
-                description: "Dispositivos que requieren energía eléctrica, como computadoras y teléfonos.",
+                name: "Alimentos Básicos",
+                description: "Productos esenciales para la alimentación diaria, como arroz, frijoles y harina.",
                 status: true,
             },
             {
-                name: "Herramientas",
-                description: "Instrumentos utilizados para realizar tareas de construcción, reparación o mantenimiento.",
+                name: "Higiene Personal y Cuidado",
+                description: "Productos para el cuidado personal diario, como jabón, champú y pasta dental.",
                 status: true,
             },
             {
-                name: "Mobiliario",
-                description: "Artículos de uso diario como sillas, mesas, estanterías y armarios.",
+                name: "Limpieza Básica",
+                description: "Productos para la limpieza del hogar, como detergentes, desinfectantes y esponjas.",
                 status: true,
             },
             {
-                name: "Consumibles",
-                description: "Suministros que se agotan con el uso, como tinta, papel y baterías.",
+                name: "Herramientas Básicas",
+                description: "Herramientas manuales esenciales para reparaciones y mantenimiento del hogar.",
                 status: true,
             },
             {
-                name: "Seguridad",
-                description: "Equipos de protección personal (EPP) y sistemas de vigilancia.",
-                status: false, // Ejemplo de categoría inactiva inicialmente
+                name: "Ferretería básica",
+                description: "Suministros y materiales esenciales para reparaciones y proyectos de bricolaje en el hogar.",
+                status: true, // Ejemplo de categoría inactiva inicialmente
+            },
+            {
+                name: "Muebles Básicos",
+                description: "Muebles esenciales para el hogar, como sillas, mesas y estanterías.",
+                status: true, // Ejemplo de categoría inactiva inicialmente
             },
         ];
 
