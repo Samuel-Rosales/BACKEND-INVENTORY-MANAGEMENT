@@ -1,5 +1,5 @@
 import { ReportFilter, SaleRecord, SalesChartData } from "@/interfaces";
-import { SaleDB } from "../models";
+import { PurchaseDB, SaleDB } from "../models";
 import { Op } from "sequelize";
 
 class ReportService {
@@ -24,6 +24,34 @@ class ReportService {
             };
         } catch (error) {
             console.error("Error calculating USD total sales: ", error);
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }
+    }
+
+    async totalUsdPurchase() {
+        try {
+            const  purchases = await PurchaseDB.findAll();
+            const totalUSD: number = purchases.reduce((sum, purchase) => {
+                
+                const purchaseAmountString = purchase.get('total_usd') as string;
+
+                const numericAmount = parseFloat(purchaseAmountString);
+                
+                return sum + numericAmount;
+            }, 0);
+
+
+            return {
+                status: 200,
+                message: "USD total purchases calculated successfully",
+                data: totalUSD,
+            };
+        } catch (error) {
+            console.error("Error calculating USD total purchases: ", error);
             return {
                 status: 500,
                 message: "Internal server error",

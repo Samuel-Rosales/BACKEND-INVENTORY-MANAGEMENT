@@ -14,7 +14,16 @@ export class ReportController {
         });
     };
 
-     getSalesChart = async (req: Request, res: Response) => {
+    totalUsdPurchases = async (req: Request, res: Response) => {
+        const { status, message, data } = await ReportServices.totalUsdPurchase();
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
+
+    getSalesChart = async (req: Request, res: Response) => {
         try {
             // A. Extraemos el filtro del Query Param
             const { filter } = req.query;
