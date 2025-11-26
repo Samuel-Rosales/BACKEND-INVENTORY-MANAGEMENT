@@ -267,15 +267,6 @@ class SaleService {
             };
         }
     }
-
-    /*const purchases = await SaleDB.findAll({
-  where: {
-        purchase_date: {
-        [Op.between]: ['2025-06-01', '2025-06-30']
-        }
-    },
-    include: [...]
-    });*/
 }
 
 export const SaleServices = new SaleService();

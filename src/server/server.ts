@@ -26,6 +26,7 @@ import {
     PurchaseGeneralItemRoute,
     PurchaseLotItemRoute,
     PurchaseRoute,
+    ReportRoute,
     RolRoute,
     SaleItemRoute,
     SaleRoute,
@@ -61,6 +62,7 @@ export class Server {
             purchases: this.pre + "/purchase",
             purchase_general_items: this.pre + "/purchase_general_item",
             purchase_lot_items: this.pre + "/purchase_lot_item",
+            reports: this.pre + "/report",
             rols: this.pre + "/rol",
             sales: this.pre + "/sale",
             sale_items: this.pre + "/sale_item",
@@ -114,6 +116,7 @@ export class Server {
         this.app.use(this.paths.purchases, PurchaseRoute);
         this.app.use(this.paths.purchase_general_items, PurchaseGeneralItemRoute);
         this.app.use(this.paths.purchase_lot_items , PurchaseLotItemRoute);
+        this.app.use(this.paths.reports , ReportRoute);
         this.app.use(this.paths.rols, RolRoute);
         this.app.use(this.paths.sales, SaleRoute);
         this.app.use(this.paths.sale_items, SaleItemRoute);

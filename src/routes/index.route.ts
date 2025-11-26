@@ -10,6 +10,7 @@ export * from "./provider.routes";
 export * from "./purchase.routes";
 export * from "./purchase-general-item.routes";
 export * from "./purchase-lot-item.routes";
+export * from "./report.routes";
 export * from "./rol.routes";
 export * from "./type-payment.routes";
 export * from "./sale.routes";
