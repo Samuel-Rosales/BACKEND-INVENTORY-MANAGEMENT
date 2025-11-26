@@ -9,6 +9,7 @@ export * from "./provider.interface";
 export * from "./purchase.interface";
 export * from "./purchase-general-item.interface";
 export * from "./purchase-lot-item.interface";
+export * from "./report.interface";
 export * from "./rol.interface";
 export * from "./sale.interface";
 export * from "./sale-item.interface";
