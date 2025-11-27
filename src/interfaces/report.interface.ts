@@ -12,7 +12,7 @@ export interface SalesChartData {
 
 export interface SpotsChartData {
   index: number;  // Índices para mapear los labels: [0, 1, 2...]
-  values: number; // Eje Y: [100, 0, 50...]
+  value: number; // Eje Y: [100, 0, 50...]
 }
 
 // Lo que viene de la BD (Simplificado)

@@ -139,7 +139,7 @@ class ReportService {
 
         const spots: SpotsChartData[] = index.map((idx, i) => ({
             index: idx,
-            values: values[i]
+            value: values[i]
         }));
 
         return { filter, labels, spots, total };
