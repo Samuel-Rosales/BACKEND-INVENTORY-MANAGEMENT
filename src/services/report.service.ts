@@ -1,4 +1,4 @@
-import { ReportFilter, SaleRecord, SalesChartData } from "@/interfaces";
+import { ReportFilter, SaleRecord, SalesChartData, SpotsChartData } from "@/interfaces";
 import { PurchaseDB, SaleDB } from "../models";
 import { Op } from "sequelize";
 
@@ -137,7 +137,9 @@ class ReportService {
         // Total de transacciones
         const total = values.reduce((acc, curr) => acc + curr, 0);
 
-        return { filter, labels, index, values, total };
+        const spots: SpotsChartData = { index, values };
+
+        return { filter, labels, spots, total };
     }
 
     // ... (tu método getDateRange sigue igual) ...
