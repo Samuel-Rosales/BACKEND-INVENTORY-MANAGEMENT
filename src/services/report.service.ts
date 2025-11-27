@@ -137,7 +137,10 @@ class ReportService {
         // Total de transacciones
         const total = values.reduce((acc, curr) => acc + curr, 0);
 
-        const spots: SpotsChartData = { index, values };
+        const spots: SpotsChartData[] = index.map((idx, i) => ({
+            index: idx,
+            values: values[i]
+        }));
 
         return { filter, labels, spots, total };
     }
