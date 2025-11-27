@@ -86,24 +86,29 @@ class ReportService {
     private processSalesIntoBuckets(sales: SaleRecord[], filter: ReportFilter) {
         let labels: string[] = [];
         let values: number[] = [];
+        let index: number[] = [];
 
         // 1. Preparamos las cubetas vacías
         switch (filter) {
             case 'today':
                 values = new Array(24).fill(0);
+                index = Array.from({ length: 24 }, (_, i) => i);
                 labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
                 break;
             case 'week':
                 values = new Array(7).fill(0);
+                index = Array.from({ length: 7 }, (_, i) => i);
                 labels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
                 break;
             case 'month':
                 const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
                 values = new Array(daysInMonth).fill(0);
+                index = Array.from({ length: daysInMonth }, (_, i) => i);
                 labels = Array.from({ length: daysInMonth }, (_, i) => `${i + 1}`);
                 break;
             case 'year':
                 values = new Array(12).fill(0);
+                index = Array.from({ length: 12 }, (_, i) => i);
                 labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
                 break;
         }
@@ -132,7 +137,7 @@ class ReportService {
         // Total de transacciones
         const total = values.reduce((acc, curr) => acc + curr, 0);
 
-        return { filter, labels, values, total };
+        return { filter, labels, index, values, total };
     }
 
     // ... (tu método getDateRange sigue igual) ...
