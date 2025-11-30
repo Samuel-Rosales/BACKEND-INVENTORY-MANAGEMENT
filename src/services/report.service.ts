@@ -85,6 +85,7 @@ class ReportService {
 
     private processSalesIntoBuckets(sales: SaleRecord[], filter: ReportFilter) {
         let labels: string[] = [];
+        let label_shorts: string[] = [];
         let values: number[] = [];
         let index: number[] = [];
 
@@ -94,11 +95,15 @@ class ReportService {
                 values = new Array(24).fill(0);
                 index = Array.from({ length: 24 }, (_, i) => i);
                 labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+                label_shorts = labels.map(label => label.split(':')[0]);
+
                 break;
             case 'week':
                 values = new Array(7).fill(0);
                 index = Array.from({ length: 7 }, (_, i) => i);
                 labels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+                label_shorts = ['L', 'M', 'Mi', 'J', 'V', 'S', 'D'];
+                
                 break;
             case 'month':
                 const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
@@ -110,6 +115,7 @@ class ReportService {
                 values = new Array(12).fill(0);
                 index = Array.from({ length: 12 }, (_, i) => i);
                 labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                label_shorts = ['E', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
                 break;
         }
 
@@ -142,7 +148,7 @@ class ReportService {
             value: values[i]
         }));
 
-        return { filter, labels, spots, total };
+        return { filter, labels, label_shorts, spots, total };
     }
 
     // ... (tu método getDateRange sigue igual) ...

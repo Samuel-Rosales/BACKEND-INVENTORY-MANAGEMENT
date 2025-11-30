@@ -5,9 +5,9 @@ export type ReportFilter = 'today' | 'week' | 'month' | 'year';
 export interface SalesChartData {
   filter: ReportFilter;
   labels: string[]; // Eje X: ["00:00", "01:00"] o ["Lun", "Mar"]
+  label_shorts?: string[]; // Eje X corto: ["0", "1"] o ["L", "M"]
   spots: SpotsChartData[]; // Eje Y: [ {100, 0} 50...]
   total: number;    // Un total general es útil para mostrar arriba del gráfico
-
 }
 
 export interface SpotsChartData {
