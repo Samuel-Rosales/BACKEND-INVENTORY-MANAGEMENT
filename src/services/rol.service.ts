@@ -31,7 +31,12 @@ class RolService {
 
     async getOne(rol_id: number) {
         try {
-            const rol = await RolDB.findByPk(rol_id);
+            const rol = await RolDB.findByPk(rol_id , {
+                include: [{
+                    model: PermissionDB,
+                    as: 'permissions'
+                }]
+            });
 
             if (!rol) {
                 return {
@@ -56,6 +61,42 @@ class RolService {
             };
         }
     }
+
+    async getPermissionsByRolId(rol_id: number) {
+        try {
+            const rol = await RolDB.findByPk(rol_id , {
+                include: [{
+                    model: PermissionDB,
+                    as: 'permissions'
+                }]
+            });
+
+            if (!rol) {
+                return {
+                    status: 404,
+                    message: "Rol not found",
+                    data: null,
+                };
+            }
+
+            const permissions = rol.permissions;
+
+            return {
+                status: 200,
+                message: "Rol obtained correctly",
+                data: permissions,
+            };
+        } catch (error) {
+            console.error("Error fetching rol: ", error);
+
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null, 
+            };
+        }
+    }
+
 
     async create(rol: RolInterface, permission_ids?: number[]) {
     // Iniciamos una transacción

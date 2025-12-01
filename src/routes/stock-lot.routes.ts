@@ -16,6 +16,11 @@ router.get("/:id",
     stockLotController.one,
 ); // http://localhost:3000/api/stock_lot/:id
 
+router.get("/product/:product_id",
+    stockLotValidators.validateProductParamIdExists,
+    stockLotController.stockLotsByProduct,
+); // http://localhost:3000/api/stock_lot/product/:product_id
+
 // METHOD POST
 router.post("/",
     stockLotValidators.validateCreateFields,

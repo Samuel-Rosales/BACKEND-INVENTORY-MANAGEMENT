@@ -21,7 +21,17 @@ export class StockLotController {
             message,
             data,
         });
-    };  
+    }; 
+
+    stockLotsByProduct = async (req: Request, res: Response) => {
+        const { product_id } = req.params;
+        const { status, message, data } = await StockLotServices.stockLotsByProduct(Number(product_id));
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
 
     create = async (req: Request,  res: Response  ) => {
         const { status, message, data } = await StockLotServices.create(req.body);

@@ -16,10 +16,6 @@ router.get("/:id",
     rolController.one,
 ); // http://localhost:3000/api/rol/:id
 
-router.get("/user/:user_id", 
-    rolController.all
-); // http://localhost:3000/api/rol/user/:user_id
-
 //METHOD POST
 router.post("/",
     rolValidators.validateFields,

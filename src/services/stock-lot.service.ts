@@ -53,10 +53,7 @@ class StockLotService {
     async stockLotsByProduct(product_id: number) {
         try {
             const stockLots = await StockLotDB.findAll({
-                where: { product_id },
-                include: [
-                    { model: ProductDB, as: "product" },
-                ],
+                where: { product_id }
             });
 
             return {
