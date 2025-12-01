@@ -50,6 +50,31 @@ class StockLotService {
         }
     }
 
+    async stockLotsByProduct(product_id: number) {
+        try {
+            const stockLots = await StockLotDB.findAll({
+                where: { product_id },
+                include: [
+                    { model: ProductDB, as: "product" },
+                ],
+            });
+
+            return {
+                status: 200,
+                message: "Stock lots obtained correctly",
+                data: stockLots,
+            };
+        } catch (error) {
+            console.error("Error fetching stock lots by product: ", error);
+
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }
+    }
+
     async create(stockLot: StockLotInterface) {
         try {
             const { createdAt, updatedAt, ...stockLotData  } = stockLot;

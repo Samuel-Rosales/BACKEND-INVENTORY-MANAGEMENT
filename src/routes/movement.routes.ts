@@ -31,6 +31,24 @@ router.post("/",
     movementController.create,
 ); // http://localhost:3000/api/movement/:id
 
+router.post("/ajust_positive",
+    movementValidators.validateCreateFields,
+    movementValidators.validateDepotIdExists,
+    movementValidators.validateProductIdExists,
+    movementValidators.validateUserCIExists,
+    validateFields,
+    movementController.createAjustPositive,
+); // http://localhost:3000/api/movement/ajust_positive
+
+router.post("/ajust_negative",
+    movementValidators.validateCreateFields,
+    movementValidators.validateDepotIdExists,
+    movementValidators.validateProductIdExists,
+    movementValidators.validateUserCIExists,
+    validateFields,
+    movementController.createAjustNegative,
+); // http://localhost:3000/api/movement/ajust_negative
+
 //METHOD PATCH
 router.patch("/:id",
     movementValidators.validateUpdateMovementFields,

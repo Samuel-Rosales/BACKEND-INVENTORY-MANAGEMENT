@@ -1,6 +1,6 @@
 import { check } from "express-validator"; 
 import type { NextFunction, Request, Response } from "express";
-import { DepotDB, MovementDB, ProductDB } from "../models";
+import { DepotDB, MovementDB, ProductDB, UserDB } from "../models";
 
 export class MovementValidator {
 
@@ -143,6 +143,32 @@ export class MovementValidator {
             });
         }
     }
+
+    validateUserCIExists = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const user_ci = (req.body.user_ci ?? "").toString().trim();
+            if (!user_ci) return next();
+            
+
+            if (!user_ci || user_ci.length < 6 || user_ci.length > 10 || !/^\d{6,10}$/.test(user_ci)) {
+                return res.status(400).json({
+                message: `La cédula proporcionada '${user_ci}' no es válida. Debe ser un número entre 6 y 10 dígitos.`,
+                });
+            }
+
+            const existingUser = await UserDB.findByPk(user_ci);
+
+            if (!existingUser) {
+                return res.status(404).json({ message: `Usuario con la cédula '${user_ci}' no encontrado.` });
+            }
+
+            next();
+        } catch (error) {
+            return res.status(500).json({
+                message: "Internal server error in validateUserCIExists.",
+            });
+        }
+    };
 
     validateMovementParamIdExists = async (req: Request, res: Response, next: NextFunction) => {
         try {

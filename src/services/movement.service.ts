@@ -1,7 +1,10 @@
 import { MovementDB, ProductDB, DepotDB, UserDB } from "../models";
-import { MovementInterface } from "../interfaces";
+import { MovementInterface, ProductInterface } from "../interfaces";
+import { db } from "../config/sequelize.config";
+import { inventoryService } from "./inventory.service";
 
 class MovementService {
+    
     async getAll() {
         try {
             const movements = await MovementDB.findAll({
@@ -84,7 +87,7 @@ class MovementService {
     async create(movement: MovementInterface) {
         try {
             const { createdAt, updatedAt, movement_id, ... movementData } = movement;
-
+            
             const newMovement = await MovementDB.create(movementData);
 
             return {
@@ -101,6 +104,114 @@ class MovementService {
                 data: null,
             };
         }   
+    }
+
+    async createAjustPositive(movement: MovementInterface, date_expiration: Date) {
+        const t = await db.transaction();
+
+        try {
+            const { createdAt, updatedAt, movement_id, ... movementData } = movement;
+
+            const user = await UserDB.findByPk(movementData.user_ci);
+
+            if (!user) {
+                return {
+                    status: 400,
+                    message: "User not found",
+                    data: null,
+                };
+            }
+
+            if (movementData.type !== 'Ajuste Positivo') {
+                return {
+                    status: 400,
+                    message: "Invalid movement type for adjustment",
+                    data: null,
+                };
+            }
+
+            await inventoryService.addStockAjust(
+                movementData.product_id, 
+                movementData.depot_id,
+                movementData.amount,
+                date_expiration || new Date(),
+                t
+            );
+
+            const newMovement = await MovementDB.create(movementData, { transaction: t });
+
+            await t.commit();
+            
+            return {
+                status: 201,
+                message: "Movement created correctly",
+                data: newMovement,
+            };
+        } catch (error) {
+            await t.rollback();
+
+            console.error("Error creating movement: ", error);
+
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }   
+    }
+
+    async createAjustNegative(movement: MovementInterface, stock_lot_id: number) {
+        const t = await db.transaction();
+
+        try {
+            const { createdAt, updatedAt, movement_id, ... movementData } = movement;
+
+            const user = await UserDB.findByPk(movementData.user_ci);
+
+            if (!user) {
+                return {
+                    status: 400,
+                    message: "User not found",
+                    data: null,
+                };
+            }
+
+            if (movementData.type !== 'Ajuste Negativo') {
+                return {
+                    status: 400,
+                    message: "Invalid movement type for adjustment",
+                    data: null,
+                };
+            }
+
+            await inventoryService.deductStockAjust(
+                movementData.product_id, 
+                movementData.depot_id,
+                movementData.amount,
+                stock_lot_id,
+                t
+            );
+
+            const newMovement = await MovementDB.create(movementData, { transaction: t });
+
+            await t.commit();
+
+            return {
+                status: 201,
+                message: "Movement created correctly",
+                data: newMovement,
+            };
+        } catch (error) {
+            await t.rollback();
+
+            console.error("Error creating movement: ", error);
+
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }
     }
 
     async update(movement_id: number, movement: Partial<MovementInterface>) {

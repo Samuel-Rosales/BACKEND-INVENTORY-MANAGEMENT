@@ -28,7 +28,7 @@ export const SaleFactory = (sequelize: Sequelize) => {
             allowNull: false
         },
         total_ves: {
-            type: DataTypes.DECIMAL(10, 2), // El total en Bs. calculado
+            type: DataTypes.DECIMAL(20, 2), // El total en Bs. calculado
             allowNull: false
         },
         sold_at: {

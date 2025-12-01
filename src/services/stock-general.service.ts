@@ -55,6 +55,30 @@ class StockGeneralService {
         }
     }
 
+    async stockGeneralsByProduct(product_id: number) {
+        try {
+            const stockGenerals = await StockGeneralDB.findAll({
+                where: { product_id },
+                include: [
+                    { model: ProductDB, as: "product" },
+                ],
+            });
+            
+            return {
+                status: 200,
+                message: "Stock generals obtained correctly",
+                data: stockGenerals,
+            };
+        } catch (error) {
+            console.error("Error fetching stock generals by product: ", error);
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }
+    }
+
     async create(stockGeneral: StockGeneralInterface) {
         try {
             const { createdAt, updatedAt, ...stockGeneralData  } = stockGeneral;

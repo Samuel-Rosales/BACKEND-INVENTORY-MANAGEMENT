@@ -1,10 +1,12 @@
 import { Transaction } from "sequelize";
 import { Op } from "sequelize";
 import { 
+    DepotDB,
     ProductDB, 
     StockGeneralDB, 
     StockLotDB 
 } from "../models";
+import { ProductInterface } from "@/interfaces";
 
 // Interfaces para tipar los datos
 // (Basadas en tus modelos de 'Purchase Items')
@@ -74,6 +76,147 @@ class InventoryService {
             
             // Suma la cantidad al stock existente
             await stock.increment('amount', { by: item.amount, transaction: t });
+        }
+    }
+
+    public async addStockAjust(
+        product_id: number,
+        depot_id: number,
+        amount: number,
+        date_expiration: Date,
+        t: Transaction
+    ) {
+        // 1. Buscar el producto para saber si es perecedero
+        const product = await ProductDB.findByPk(product_id, { transaction: t });
+        if (!product) {
+            throw new Error(`Producto ${product_id} no encontrado.`);
+        }
+
+        const product_json = product.toJSON() as ProductInterface;
+
+        const depot = await DepotDB.findByPk(depot_id, { transaction: t });
+        
+        if (!depot) {
+            return {
+                status: 404,
+                message: "Depot not found",
+                data: null,
+            };
+        }
+
+        // --- Lógica de bifurcación basada en el flag 'perishable' ---
+        if (product_json.perishable) {
+            // --- ES PERECEDERO ---
+            // Crea un nuevo lote en StockLot
+            await StockLotDB.create({
+                product_id: product_id,
+                depot_id: depot_id,
+                expiration_date: date_expiration,
+                amount: amount,
+                cost_lot: 0 // Asumimos costo 0 para ajustes
+            }, { transaction: t });
+
+            /*const stock = await StockLotDB.findOne({
+                where: {
+                    stock_lot_id: stock_lot_id,
+                    depot_id: depot_id
+                },
+                transaction: t
+            });
+
+            if (stock) {
+                // Suma la cantidad al stock existente
+                await stock.increment('amount', { by: amount, transaction: t });
+            }*/
+        } else {
+            
+            // --- NO ES PERECEDERO ---
+            // Busca la fila de stock (product_id, depot_id) o la crea si no existe
+            const [stock, created] = await StockGeneralDB.findOrCreate({
+                where: {
+                    product_id: product_id,
+                    depot_id: depot_id
+                },
+                defaults: { amount: 0 }, // Si la crea, empieza en 0
+                transaction: t
+            });
+            
+            // Suma la cantidad al stock existente
+            await stock.increment('amount', { by: amount, transaction: t });
+        }
+    }
+
+    public async deductStockAjust(
+        product_id: number,
+        depot_id: number,
+        amount: number,
+        stock_lot_id: number,
+        t: Transaction
+    ) {
+        // 1. Buscar el producto
+        const product = await ProductDB.findByPk(product_id, { transaction: t });
+        if (!product) {
+            throw new Error(`Producto ${product_id} no encontrado.`);
+        }
+
+        const productJson = product.toJSON() as ProductInterface;
+
+        let amountToDeduct = amount;
+
+        if (productJson.perishable) {
+            
+            // --- LÓGICA FEFO (Perecederos) ---
+
+            // 1. Buscar todos los lotes con stock, ordenados por fecha (FEFO)
+            const lot = await StockLotDB.findOne({
+                where: {
+                    stock_lot_id: stock_lot_id,
+                    depot_id: depot_id,
+                    amount: { [Op.gt]: 0 } // Solo lotes con stock
+                },
+                order: [['expiration_date', 'ASC']], // First-Expired, First-Out
+                transaction: t,
+                lock: t.LOCK.UPDATE // Bloquea las filas para evitar ventas duplicadas
+            });
+
+            if (!lot) {
+                throw new Error(`Lote ${stock_lot_id} no encontrado en el depósito ${depot_id}.`);
+            }
+
+            const lotJson = lot.toJSON();
+
+            // 2. Verificar si hay suficiente stock total
+            const totalStock = lotJson.amount || 0;
+            if (totalStock < amountToDeduct) {
+                throw new Error(`Stock insuficiente para ${(product as any).name}. Stock: ${totalStock}, Solicitado: ${amountToDeduct}`);
+            }
+
+            // 3. Descontar del lote
+            await lot.decrement('amount', { by: amountToDeduct, transaction: t });
+
+        } else {
+            
+            // --- LÓGICA SIMPLE (No Perecederos) ---
+            
+            // 1. Buscar la fila de stock
+            const stock = await StockGeneralDB.findOne({
+                where: {
+                    product_id: productJson.product_id,
+                    depot_id: depot_id
+                },
+                transaction: t,
+                lock: t.LOCK.UPDATE // Bloquea la fila
+            });
+
+            const stockJson = stock?.toJSON();
+
+            // 2. Verificar stock
+            if (!stock || stockJson.amount < amountToDeduct) {
+                throw new Error(`Stock insuficiente para ${productJson.name}. Stock: ${stockJson.amount || 0}, Solicitado: ${amountToDeduct}`);
+            }
+
+            // 3. Descontar
+            await stock.decrement('amount', { by: amountToDeduct, transaction: t });
         }
     }
 
