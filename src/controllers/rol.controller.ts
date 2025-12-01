@@ -23,6 +23,16 @@ export class RolController {
         });
     };
 
+    getPermissionsByRolId = async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const { status, message, data } = await RolServices.getPermissionsByRolId(Number(id));
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
+
     create = async (req: Request, res: Response) => {
 
         const { permission_ids, ...rolData } = req.body;

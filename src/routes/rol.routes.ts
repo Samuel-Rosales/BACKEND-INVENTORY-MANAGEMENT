@@ -16,6 +16,11 @@ router.get("/:id",
     rolController.one,
 ); // http://localhost:3000/api/rol/:id
 
+router.get("/:id/permissions",
+    rolValidators.validateRolParamIdExists,
+    rolController.getPermissionsByRolId,
+); // http://localhost:3000/api/rol/:id/permissions
+
 //METHOD POST
 router.post("/",
     rolValidators.validateFields,
