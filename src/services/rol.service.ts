@@ -97,6 +97,31 @@ class RolService {
         }
     }
 
+    async checkPermission(roleId: number, permissionCode: string): Promise<boolean> {
+        try {
+            const role = await RolDB.findOne({
+                where: { 
+                    rol_id: roleId 
+                },
+                include: [{
+                    model: PermissionDB,
+                    as: 'permissions',
+                    where: { 
+                        code: permissionCode 
+                    },
+                    // --- AQUÍ ESTABA EL ERROR ---
+                    // Antes decía ['id'], pero tu columna se llama 'permission_id'
+                    attributes: ['permission_id'] 
+                }]
+            });
+
+            return !!role; 
+        } catch (error) {
+            console.error("Error checking permission: ", error);
+            return false;
+        }
+    }
+
 
     async create(rol: RolInterface, permission_ids?: number[]) {
     // Iniciamos una transacción

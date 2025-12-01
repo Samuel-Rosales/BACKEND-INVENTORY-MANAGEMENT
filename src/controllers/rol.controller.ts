@@ -33,6 +33,37 @@ export class RolController {
         });
     };
 
+    checkRolePermission = async (req: Request, res: Response) => {
+        try {
+            const { role_id, permission_code } = req.body;
+
+            if (!role_id || !permission_code) {
+                return res.status(400).json({
+                    message: "role_id and permission_code are required",
+                    data: null
+                });
+            }
+
+            const hasPermission = await RolServices.checkPermission(role_id, permission_code);
+
+            return res.status(200).json({
+                message: "Permission check executed",
+                data: {
+                    role_id: role_id,
+                    permission_code: permission_code,
+                    has_permission: hasPermission // true o false
+                }
+            });
+
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({
+                message: "Internal server error",
+                data: null
+            });
+        }
+    };
+
     create = async (req: Request, res: Response) => {
 
         const { permission_ids, ...rolData } = req.body;
