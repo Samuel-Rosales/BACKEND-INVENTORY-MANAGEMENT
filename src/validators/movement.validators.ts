@@ -145,22 +145,32 @@ export class MovementValidator {
     }
 
     validateMovementParamIdExists = async (req: Request, res: Response, next: NextFunction) => {
-        const rawId = (req.params.id ?? "").toString().trim();
-        if (!rawId) return next();
+        try {
+            const rawId = (req.params.id ?? "").toString().trim();
+            if (!rawId) return next();
 
-        const movement_id = Number.parseInt(rawId, 10);
+            const movement_id = Number.parseInt(rawId, 10);
 
-        if (Number.isNaN(movement_id) || !Number.isInteger(movement_id) || movement_id <= 0) {
-            return res.status(400).json({
-                message: `El ID del movimiento proporcionado "${rawId}" no es válido.`,
-            });
-        }
+            if (Number.isNaN(movement_id) || !Number.isInteger(movement_id) || movement_id <= 0) {
+                return res.status(400).json({
+                    message: `El ID del movimiento proporcionado "${rawId}" no es válido.`,
+                });
+            }
 
-        const existingMoviment = await MovementDB.findByPk(movement_id);
+            const existingMoviment = await MovementDB.findByPk(movement_id);
 
-        if (!existingMoviment) {
-            return res.status(404).json({
-                message: `Movimiento con ID "${movement_id}" no encontrado.`
+            
+            if (!existingMoviment) {
+                return res.status(404).json({
+                    message: `Movimiento con ID "${movement_id}" no encontrado.`
+                });
+        
+            }
+            
+            next();
+        } catch (error) {
+            return res.status(500).json({
+                message: "Internal server error in validateMovementParamIdExists.",
             });
         }
     };

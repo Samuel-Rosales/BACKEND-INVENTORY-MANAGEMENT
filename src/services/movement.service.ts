@@ -6,16 +6,35 @@ class MovementService {
         try {
             const movements = await MovementDB.findAll({
                 include: [
-                    { model: ProductDB, as: "product", attributes: ['product_id', 'name', 'description'] },
-                    { model: DepotDB, as: "depot", attributes: ['depot_id', 'name', 'location'] },
-                    { model: UserDB, as: "user", attributes: ['user_ci', 'name'] },
+                    { model: ProductDB, as: "product", attributes: ['name'] },
+                    { model: DepotDB, as: "depot", attributes: ['name'] },
+                    { model: UserDB, as: "user", attributes: ['name'] },
                 ]
             });
+            
+            if (movements.length === 0) {
+                return {
+                    status: 404,
+                    message: "No movements found",
+                    data: null
+                };
+            }
+
+            const movementsData = movements.map(movement => {{
+                const movementJson = movement.toJSON();
+
+                return {
+                    ...movementJson,
+                    product: movementJson.product?.name || '',
+                    depot: movementJson.depot?.name || '',
+                    user: movementJson.user?.name || '',
+                }
+            }});
 
             return {
                 status: 200,
                 message: "Movements obtained correctly",
-                data: movements,
+                data: movementsData,
             };
         } catch (error) {
             console.error("Error fetchig movements: ", error);
@@ -33,9 +52,18 @@ class MovementService {
             const movement = await MovementDB.findByPk(movement_id, {
                 include: [
                     { model: ProductDB, as: "product" },
-                    { model: DepotDB, as: "depot" }
+                    { model: DepotDB, as: "depot" },
+                    { model: UserDB, as: "user" }
                 ]
             });
+
+            if (!movement) {
+                return {
+                    status: 404,
+                    message: "Movement not found",
+                    data: null,
+                };
+            }
 
             return {
                 status: 200,

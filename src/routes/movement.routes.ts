@@ -23,7 +23,7 @@ router.get("/product/:product_id",
 ); // http://localhost:3000/api/movement/product/:product_id
 
 //METHOD POST 
-router.post("/:id",
+router.post("/",
     movementValidators.validateCreateFields,
     movementValidators.validateDepotIdExists,
     movementValidators.validateProductIdExists,
