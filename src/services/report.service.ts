@@ -6,6 +6,68 @@ import { db } from "../config";
 
 class ReportService {
 
+    async getClientCorrelationFM(period: string = 'year') {
+        try {
+            const endDate = new Date();
+            const startDate = new Date();
+
+            // 1. Filtro de Fechas (Reutilizamos la lógica del empleado)
+            switch (period) {
+                case 'week': startDate.setDate(endDate.getDate() - 7); break;
+                case 'month': startDate.setMonth(endDate.getMonth() - 1); break;
+                case 'year': startDate.setFullYear(endDate.getFullYear() - 1); break;
+                case 'all': default: startDate.setFullYear(2000); break; // Histórico
+            }
+
+            // 2. Consulta SQL: Agrupa Frecuencia (N° Órdenes) y Valor (Monto) por Cliente
+            const sql = `
+                SELECT
+                    s.client_ci,
+                    c.name as "client_name",
+                    
+                    -- EJE X: Frecuencia (Contar las ventas únicas)
+                    CAST(COUNT(DISTINCT s.sale_id) AS INTEGER) as "orders_count",
+                    
+                    -- EJE Y: Valor Monetario (Suma de los totales)
+                    COALESCE(CAST(SUM(s.total_usd) AS DECIMAL(10,2)), 0.00) as "total_spent"
+                
+                FROM sales s
+                -- Asumimos una tabla 'clients' donde el CI del cliente es la llave primaria.
+                -- Si tu tabla se llama diferente, ajusta 'clients'
+                JOIN clients c ON s.client_ci = c.client_ci 
+                
+                WHERE s.sold_at BETWEEN :startDate AND :endDate
+                  AND s.status = true
+                  
+                GROUP BY s.client_ci, c.name
+                ORDER BY "total_spent" DESC;
+            `;
+
+            const results = await db.query(sql, { 
+                type: QueryTypes.SELECT,
+                replacements: { startDate, endDate }
+            });
+
+            // 3. Mapeo para el Frontend
+            const mappedResults = results.map((item: any) => ({
+                name: item.client_name,
+                ordersCount: parseInt(item.orders_count),
+                totalSpent: parseFloat(item.total_spent),
+                // No necesitamos color en el backend; la UI lo asigna por cuadrante
+            }));
+
+            return {
+                status: 200,
+                message: "Client correlation (Frequency vs Value) retrieved successfully",
+                data: mappedResults
+            };
+
+        } catch (error) {
+            console.error("Error getting client correlation (FM):", error);
+            return { status: 500, message: "Internal server error", data: null };
+        }
+    }
+
     async getEmployeePerformance(period: string = 'month') {
         try {
             const endDate = new Date();

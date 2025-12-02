@@ -137,4 +137,14 @@ export class ReportController {
             data 
         });
     };
+
+    getClientCorrelationFM = async (req: Request, res: Response) => {
+        // Leemos el query param ?period=year (por defecto)
+        const period = req.query.period as string || 'year';
+        const { status, message, data } = await ReportServices.getClientCorrelationFM(period);
+        return res.status(status).json({ 
+            message, 
+            data 
+        });
+    };
 }

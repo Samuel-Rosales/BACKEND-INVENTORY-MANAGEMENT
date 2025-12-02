@@ -45,6 +45,10 @@ router.get("/employee_performance",
     controller.getEmployeePerformance
 ); // http://localhost:3000/api/report/employee_performance?period=month
 
+router.get("/client_correlation_fm",
+    controller.getClientCorrelationFM
+); // http://localhost:3000/api/report/client_correlation_fm?period=year
+
 export const ReportRoute = router;
 
 export default router;
