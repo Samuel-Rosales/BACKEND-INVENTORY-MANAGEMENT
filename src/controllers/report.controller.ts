@@ -125,5 +125,16 @@ export class ReportController {
             message,
             data
         });
-    }; 
+    };
+
+    getEmployeePerformance = async (req: Request, res: Response) => {
+        const period = req.query.period as string || 'month';
+        
+        const { status, message, data } = await ReportServices.getEmployeePerformance(period);
+
+        return res.status(status).json({ 
+            message, 
+            data 
+        });
+    };
 }

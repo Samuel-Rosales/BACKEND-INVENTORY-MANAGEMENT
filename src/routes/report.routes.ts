@@ -41,6 +41,10 @@ router.get("/inventory_by_category",
     controller.getInventoryByCategory
 ); // http://localhost:3000/api/report/inventory_by_category
 
+router.get("/employee_performance",
+    controller.getEmployeePerformance
+); // http://localhost:3000/api/report/employee_performance?period=month
+
 export const ReportRoute = router;
 
 export default router;
