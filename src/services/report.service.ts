@@ -8,84 +8,76 @@ import { stat } from "fs";
 class ReportService {
 
     async getInventoryEfficiency(period: string = 'month') {
-    try {
-        // ... lógica de fechas (igual que antes) ...
-        const endDate = new Date();
-        const startDate = new Date();
+        try {
+            const endDate = new Date();
+            const startDate = new Date();
 
-        switch (period) {
-            case 'week':
-                startDate.setDate(endDate.getDate() - 7);
-                break;
-            case 'month':
-                startDate.setMonth(endDate.getMonth() - 1);
-                break;
-            case 'year':
-                startDate.setFullYear(endDate.getFullYear() - 1);
-                break;
-            default: 
-                startDate.setFullYear(2000); 
-                break;
+            switch (period) {
+                case 'week': startDate.setDate(endDate.getDate() - 7); break;
+                case 'month': startDate.setMonth(endDate.getMonth() - 1); break;
+                case 'year': startDate.setFullYear(endDate.getFullYear() - 1); break;
+                default: startDate.setFullYear(2000); break;
+            }
+
+            const sql = `
+                SELECT 
+                    p.product_id,
+                    p.name,
+                    p.sku,
+                    
+                    COALESCE(CAST(SUM(si.amount) AS INTEGER), 0) as "quantity_sold",
+                    
+                    -- FÓRMULA DE GANANCIA CORREGIDA:
+                    -- (Precio Venta Histórico) - (Costo Promedio de Adquisición)
+                    COALESCE(CAST(
+                        SUM( 
+                            (
+                                si.unit_cost -  -- Este es tu PRECIO DE VENTA (10.00)
+                                
+                                -- SUB-CONSULTA: Buscamos cuánto te costó comprarlo (Promedio)
+                                COALESCE(
+                                    (SELECT AVG(unit_cost) FROM purchase_lot_items WHERE product_id = p.product_id), -- Busca en lotes
+                                    (SELECT AVG(unit_cost) FROM purchase_general_items WHERE product_id = p.product_id), -- O busca en generales
+                                    0 -- Si nunca lo has comprado, asume costo 0
+                                )
+                            ) * si.amount 
+                        ) 
+                    AS DECIMAL(10,2)), 0.00) as "total_profit"
+
+                FROM products p
+                LEFT JOIN sales_items si ON p.product_id = si.product_id 
+                    AND si."createdAt" BETWEEN :startDate AND :endDate
+                    AND si.status = true 
+                
+                GROUP BY p.product_id, p.name, p.sku
+                
+                ORDER BY "total_profit" DESC, "quantity_sold" DESC;
+            `;
+
+            const results = await db.query(sql, { 
+                type: QueryTypes.SELECT,
+                replacements: { startDate, endDate }
+            });
+
+            const mappedResults = results.map((item: any) => ({
+                product_id: item.product_id,
+                name: item.name,
+                sku: item.sku,
+                quantity_sold: parseInt(item.quantity_sold),
+                total_profit: parseFloat(item.total_profit)
+            }));
+
+            return { 
+                status: 200, 
+                message: "Inventory efficiency data retrieved successfully", 
+                data: mappedResults  
+            };
+
+        } catch (error) {
+            console.error("Error efficiency matrix:", error);
+            return { status: 500, message: "Internal server error", data: null };
         }
-
-        const sql = `
-            SELECT 
-                p.product_id,
-                p.name,
-                p.sku,
-                
-                -- Cantidad Total Vendida
-                CAST(SUM(si.amount) AS INTEGER) as "quantity_sold",
-                
-                -- Ganancia Total
-                CAST(
-                    SUM( 
-                        (p.base_price - si.unit_cost) * si.amount 
-                    ) 
-                AS DECIMAL(10,2)) as "total_profit"
-
-            FROM sales_items si
-            JOIN products p ON si.product_id = p.product_id
-            
-            -- FIX: Usamos comillas dobles para respetar el camelCase de Sequelize
-            WHERE si."createdAt" BETWEEN :startDate AND :endDate
-            AND si.status = true 
-            
-            GROUP BY p.product_id, p.name, p.sku, p.base_price
-            
-            HAVING SUM(si.amount) > 0
-            
-            ORDER BY "total_profit" DESC;
-        `;
-
-        const results = await db.query(sql, { 
-            type: QueryTypes.SELECT,
-            replacements: { startDate, endDate }
-        });
-
-        const mappedResults = results.map((item: any) => ({
-            product_id: item.product_id,
-            name: item.name,
-            sku: item.sku,
-            quantity_sold: parseInt(item.quantity_sold),
-            total_profit: parseFloat(item.total_profit)
-        }));
-
-        return { 
-            status: 200, 
-            message: "Inventory efficiency data retrieved successfully", 
-            data: mappedResults  
-        };
-
-    } catch (error) {
-        console.error("Error efficiency matrix:", error);
-        return {
-            status: 500,
-            message: "Internal server error retrieving inventory efficiency data",
-            data: null
-        };
     }
-}
 
     async getTopSellingProducts(period: string = 'all') {
         try {
