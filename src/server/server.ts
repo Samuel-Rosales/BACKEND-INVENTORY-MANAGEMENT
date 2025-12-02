@@ -44,6 +44,30 @@ export class Server {
     private paths: any
 
     constructor() {
+        // ==========================================================
+        // 🔑 SOLUCIÓN DEFINITIVA PARA LA FECHA (BACKEND)
+        // ==========================================================
+        
+        // Función auxiliar para agregar el cero inicial (ej: 9 -> 09)
+        const pad = (num: number) => (num < 10 ? '0' : '') + num;
+
+        // Sobrescribimos la función toJSON del objeto Date.
+        // Esto fuerza a que la serialización use los componentes de la HORA LOCAL
+        // del servidor para construir el string ISO, ignorando el valor UTC.
+        Date.prototype.toJSON = function() {
+            // Obtenemos los componentes de la hora local (¡la hora correcta!)
+            const year = this.getFullYear();
+            const month = pad(this.getMonth() + 1); // getMonth() es base 0
+            const day = pad(this.getDate());
+            const hour = pad(this.getHours());
+            const minute = pad(this.getMinutes());
+            const second = pad(this.getSeconds());
+            // Manejo de milisegundos con pad
+            const ms = String(this.getMilliseconds()).padStart(3, '0'); 
+
+            // Construimos la cadena en el formato ISO 8601 sin zona horaria
+            return `${year}-${month}-${day}T${hour}:${minute}:${second}.${ms}`;
+        };
         this.app = express()
         this.app.use(express.json({ limit: "50mb" })); // Middleware para parsear bodies JSON
         this.app.use(express.urlencoded({ limit: "50mb", extended: true })); // Middleware para parsear bodies URL-encoded
