@@ -110,7 +110,7 @@ class MovementService {
         const t = await db.transaction();
 
         try {
-            const { createdAt, updatedAt, movement_id, ... movementData } = movement;
+            const { createdAt, updatedAt, movement_id, moved_at, ... movementData } = movement;
 
             const user = await UserDB.findByPk(movementData.user_ci);
 
@@ -134,7 +134,7 @@ class MovementService {
                 movementData.product_id, 
                 movementData.depot_id,
                 movementData.amount,
-                date_expiration || new Date(),
+                date_expiration,
                 t
             );
 
@@ -164,7 +164,7 @@ class MovementService {
         const t = await db.transaction();
 
         try {
-            const { createdAt, updatedAt, movement_id, ... movementData } = movement;
+            const { createdAt, updatedAt, movement_id, moved_at, ... movementData } = movement;
 
             const user = await UserDB.findByPk(movementData.user_ci);
 

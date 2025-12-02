@@ -1,35 +1,18 @@
-// Importa tu modelo 'Permission' (asumo que se llama PermissionDB en tu index)
 import { PermissionDB } from "src/models"; 
-import { PermissionInterface } from "src/interfaces"; // Ajusta la ruta a tu interfaz
+import { PermissionInterface } from "src/interfaces";
 
 export const permissionSeed = async () => {
     try {
         console.log("Iniciando seed de Permisos...");
 
         const permissionsToCreate: Omit<PermissionInterface, 'permission_id'>[] = [
-            // --- 1. Permisos de Administración (Usuarios y Roles) ---
+            // ==========================================================
+            // 1. ADMINISTRACIÓN (Usuarios y Roles)
+            // ==========================================================
             {
-                code: "create:user",
-                name: "Crear Usuarios",
-                description: "Permite crear nuevos usuarios en el sistema.",
-                status: true
-            },
-            {
-                code: "read:users",
-                name: "Ver Usuarios",
-                description: "Permite ver la lista de usuarios y sus detalles.",
-                status: true
-            },
-            {
-                code: "update:user",
-                name: "Actualizar Usuarios",
-                description: "Permite modificar la información de usuarios existentes.",
-                status: true
-            },
-            {
-                code: "delete:user",
-                name: "Eliminar Usuarios",
-                description: "Permite eliminar usuarios del sistema.",
+                code: "manage:users",
+                name: "Gestionar Usuarios",
+                description: "Permite crear, ver, editar y eliminar usuarios del sistema.",
                 status: true
             },
             {
@@ -39,75 +22,81 @@ export const permissionSeed = async () => {
                 status: true
             },
 
-            // --- 2. Permisos de Productos e Inventario ---
+            // ==========================================================
+            // 2. PRODUCTOS E INVENTARIO
+            // ==========================================================
             {
                 code: "create:product",
                 name: "Crear Productos",
-                description: "Permite añadir nuevos productos al inventario.",
+                description: "Permite registrar nuevos productos en el catálogo.",
                 status: true
             },
             {
                 code: "read:products",
                 name: "Ver Productos",
-                description: "Permite ver la lista y detalles de productos.",
+                description: "Permite ver el catálogo de productos.",
                 status: true
             },
             {
                 code: "update:product",
                 name: "Actualizar Productos",
-                description: "Permite modificar info (nombre, precio, etc) de productos.",
+                description: "Permite editar información de productos (precios, nombres).",
                 status: true
             },
             {
                 code: "delete:product",
                 name: "Eliminar Productos",
-                description: "Permite eliminar productos del inventario.",
-                status: true
-            },
-            {
-                code: "read:stock",
-                name: "Ver Stock",
-                description: "Permite consultar el stock actual en los almacenes.",
-                status: true
-            },
-            {
-                code: "adjust:stock",
-                name: "Ajustar Stock",
-                description: "Permite realizar ajustes manuales de entrada/salida de stock.",
+                description: "Permite eliminar productos del sistema.",
                 status: true
             },
             {
                 code: "read:movements",
                 name: "Ver Movimientos",
-                description: "Permite ver el historial de movimientos de inventario (kardex).",
+                description: "Permite ver el Kardex o historial de movimientos.",
+                status: true
+            },
+            {
+                code: "create:movements",
+                name: "Crear Movimientos",
+                description: "Permite registrar nuevos movimientos en el Kardex o historial.",
                 status: true
             },
 
-            // --- 3. Permisos de Ventas ---
+            // ==========================================================
+            // 3. VENTAS
+            // ==========================================================
             {
                 code: "create:sale",
                 name: "Registrar Venta",
-                description: "Permite registrar una nueva venta.",
+                description: "Permite registrar nuevas ventas.",
+                status: true
+            },
+            {
+                code: "confirm:sale", // Corresponde a 'manageSales' en Dart
+                name: "Gestionar Ventas",
+                description: "Permite confirmar o gestionar ventas.",
                 status: true
             },
             {
                 code: "read:sales",
                 name: "Ver Ventas",
-                description: "Permite ver el historial de ventas.",
+                description: "Permite ver el historial de ventas realizadas.",
                 status: true
             },
             {
                 code: "cancel:sale",
                 name: "Anular Venta",
-                description: "Permite anular una venta ya registrada.",
+                description: "Permite anular una venta ya procesada.",
                 status: true
             },
 
-            // --- 4. Permisos de Compras ---
+            // ==========================================================
+            // 4. COMPRAS
+            // ==========================================================
             {
                 code: "create:purchase",
                 name: "Registrar Compra",
-                description: "Permite registrar una nueva compra a proveedores.",
+                description: "Permite registrar entradas de mercancía por compra a proveedores.",
                 status: true
             },
             {
@@ -119,102 +108,73 @@ export const permissionSeed = async () => {
             {
                 code: "cancel:purchase",
                 name: "Anular Compra",
-                description: "Permite anular una compra ya registrada.",
+                description: "Permite anular una orden de compra.",
                 status: true
             },
 
-            // --- 5. Permisos de Entidades (Clientes, Proveedores, etc.) ---
+            // ==========================================================
+            // 5. ENTIDADES (Clientes y Proveedores)
+            // ==========================================================
             {
-                code: "create:client",
-                name: "Crear Clientes",
-                description: "Permite registrar nuevos clientes.",
+                code: "manage:client",
+                name: "Gestionar Clientes",
+                description: "Control total (Crear, Ver, Editar, Eliminar) sobre clientes.",
                 status: true
             },
             {
-                code: "read:clients",
-                name: "Ver Clientes",
-                description: "Permite ver la lista de clientes.",
-                status: true
-            },
-            {
-                code: "update:client",
-                name: "Actualizar Clientes",
-                description: "Permite modificar datos de clientes.",
-                status: true
-            },
-            {
-                code: "delete:client",
-                name: "Eliminar Clientes",
-                description: "Permite eliminar clientes.",
-                status: true
-            },
-            {
-                code: "create:provider",
-                name: "Crear Proveedores",
-                description: "Permite registrar nuevos proveedores.",
-                status: true
-            },
-            {
-                code: "read:providers",
-                name: "Ver Proveedores",
-                description: "Permite ver la lista de proveedores.",
-                status: true
-            },
-            {
-                code: "update:provider",
-                name: "Actualizar Proveedores",
-                description: "Permite modificar datos de proveedores.",
-                status: true
-            },
-            {
-                code: "delete:provider",
-                name: "Eliminar Proveedores",
-                description: "Permite eliminar proveedores.",
+                code: "manage:provider",
+                name: "Gestionar Proveedores",
+                description: "Control total (Crear, Ver, Editar, Eliminar) sobre proveedores.",
                 status: true
             },
 
-            // --- 6. Permisos de Configuración (Almacenes, Categorías, etc.) ---
+            // ==========================================================
+            // 6. CONFIGURACIÓN
+            // ==========================================================
             {
                 code: "manage:categories",
                 name: "Gestionar Categorías",
-                description: "Permite crear, editar y eliminar categorías de productos.",
+                description: "Permite administrar categorías de productos.",
                 status: true
             },
             {
                 code: "manage:depots",
                 name: "Gestionar Almacenes",
-                description: "Permite crear, editar y eliminar almacenes (depots).",
+                description: "Permite administrar depósitos físicos.",
                 status: true
             },
             {
                 code: "manage:paymenttypes",
                 name: "Gestionar Tipos de Pago",
-                description: "Permite crear, editar y eliminar tipos de pago.",
+                description: "Permite administrar los tipos de pago disponibles.",
                 status: true
             },
-            {
-                code: "read:exchangerate",
-                name: "Ver Tasa de Cambio",
-                description: "Permite ver el historial de la tasa de cambio.",
-                status: true
-            },
+            // Comentado en Dart, lo comento aquí también para mantener consistencia
+            // {
+            //     code: "read:exchangerate",
+            //     name: "Ver Tasa de Cambio",
+            //     description: "Ver historial de tasa de cambio.",
+            //     status: true
+            // },
 
-            // --- 7. Permisos de Reportes ---
+            // ==========================================================
+            // 7. REPORTES Y SUPER ADMIN
+            // ==========================================================
             {
-                code: "view:reports",
+                code: "read:reports",
                 name: "Ver Reportes",
-                description: "Permite ver y generar reportes de ventas e inventario.",
+                description: "Acceso al Dashboard de reportes y estadísticas.",
                 status: true
             },
             {
                 code: "all:permissions",
-                name: "Todos los Permisos",
-                description: "Permite tener todos los permisos del sistema.",
+                name: "Super Admin",
+                description: "Permiso maestro. Tiene acceso a todo sin restricciones.",
                 status: true
             },
         ];
 
-        // --- Lógica de inserción ---
+        // --- Lógica de inserción (Sin cambios) ---
 
         // 1. Obtener los 'codes' de los permisos ya existentes
         const existingPermissions = await PermissionDB.findAll({ 
@@ -239,6 +199,6 @@ export const permissionSeed = async () => {
 
     } catch (error) {
         console.error("Error al ejecutar seed de Permisos:", error);
-        throw error; // Propaga el error para detener la ejecución del seeder principal
+        throw error; 
     }
 };
