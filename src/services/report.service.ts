@@ -6,6 +6,83 @@ import { db } from "../config";
 
 class ReportService {
 
+    async getInventoryByCategory() {
+        try {
+            // Esta consulta es un poco compleja porque une varias tablas,
+            // pero es la única forma precisa de obtener el VALOR monetario por categoría.
+            const sql = `
+                WITH CategoryValues AS (
+                    SELECT 
+                        c.name as category_name,
+                        c.category_id,
+                        
+                        -- Suma valor en Stock General (Cantidad * Costo Promedio Histórico)
+                        COALESCE(SUM(
+                            (SELECT SUM(sg.amount) FROM stock_generals sg WHERE sg.product_id = p.product_id AND sg.status = true) * COALESCE((SELECT AVG(unit_cost) FROM purchase_general_items WHERE product_id = p.product_id), 0)
+                        ), 0)
+                        +
+                        -- Suma valor en Stock Lotes (Cantidad * Costo Lote)
+                        COALESCE(SUM(
+                            (SELECT SUM(sl.amount * sl.cost_lot) FROM stock_lots sl WHERE sl.product_id = p.product_id AND sl.status = true)
+                        ), 0) 
+                        as total_value
+
+                    FROM categories c
+                    JOIN products p ON c.category_id = p.category_id
+                    WHERE c.status = true AND p.status = true
+                    GROUP BY c.category_id, c.name
+                )
+                SELECT 
+                    category_name as "name",
+                    CAST(total_value AS DECIMAL(10,2)) as "value",
+                    
+                    -- Calculamos el porcentaje sobre el total
+                    CAST(
+                        (total_value * 100.0) / (SELECT SUM(total_value) FROM CategoryValues WHERE total_value > 0)
+                    AS DECIMAL(10,1)) as "percentage"
+                    
+                FROM CategoryValues
+                WHERE total_value > 0 -- Solo mostrar categorías que tengan valor monetario
+                ORDER BY total_value DESC;
+            `;
+
+            const results = await db.query(sql, { type: QueryTypes.SELECT });
+
+            // Definimos una paleta de colores fija para que el frontend las asigne en orden
+            // El frontend recibirá el HEX string.
+            const colors = [
+                "#6366F1", // Indigo (Electrónica/Alta)
+                "#3B82F6", // Blue (Ropa/Media)
+                "#10B981", // Emerald (Hogar/Baja)
+                "#F59E0B", // Amber
+                "#EC4899", // Pink
+                "#8B5CF6", // Violet
+                "#9CA3AF"  // Gray (Otros)
+            ];
+
+            const mappedData = results.map((item: any, index: number) => ({
+                name: item.name,
+                value: parseFloat(item.value), // Valor monetario total
+                percentage: parseFloat(item.percentage), // Para el PieChart
+                color: colors[index % colors.length] // Asigna color cíclicamente
+            }));
+
+            return {
+                status: 200,
+                message: "Inventory by category retrieved successfully",
+                data: mappedData
+            };
+
+        } catch (error) {
+            console.error("Error getting inventory by category:", error);
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null
+            };
+        }
+    }
+
     async getInventoryValue() {
         try {
             const sql = `

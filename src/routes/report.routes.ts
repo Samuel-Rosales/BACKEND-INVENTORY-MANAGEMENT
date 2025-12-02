@@ -37,6 +37,10 @@ router.get("/total_inventory_items",
     controller.getTotalInventoryItems
 ); // http://localhost:3000/api/report/total_inventory_items
 
+router.get("/inventory_by_category",
+    controller.getInventoryByCategory
+); // http://localhost:3000/api/report/inventory_by_category
+
 export const ReportRoute = router;
 
 export default router;

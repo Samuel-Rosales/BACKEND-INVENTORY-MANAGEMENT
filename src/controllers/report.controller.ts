@@ -130,4 +130,12 @@ export class ReportController {
             data
         });
     };
+
+    getInventoryByCategory = async (req: Request, res: Response) => {
+        const { status, message, data } = await ReportServices.getInventoryByCategory();
+        return res.status(status).json({
+            message,
+            data
+        });
+    };
 }
