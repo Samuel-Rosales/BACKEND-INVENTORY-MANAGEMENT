@@ -63,27 +63,15 @@ export class ReportController {
     }
 
     getTopSellingProducts = async (req: Request, res: Response) => {
-        try {
-            const period = (req.query.period as string) || 'all';
+        // Leemos el query param ?period=month
+        const period = req.query.period as string || 'all';
+        
+        const { status, message, data } = await ReportServices.getTopSellingProducts(period);
 
-            // 2. Llamamos al servicio
-            const result = await ReportServices.getTopSellingProducts(period);
-
-            // 3. Devolvemos la respuesta usando el status que nos dio el servicio
-            return res.status(200).json({
-                status: 200,
-                message: "Report generated successfully",
-                data: result.data
-            });
-
-        } catch (error) {
-            console.error("Error en ReportController.getTopSellingProducts:", error);
-            return res.status(500).json({
-                status: 500,
-                message: "Internal Server Error",
-                data: null
-            });
-        }
+        return res.status(status).json({ 
+            message, 
+            data 
+        });
     };
 
     getInventoryEfficiency = async (req: Request, res: Response) => {
@@ -137,5 +125,5 @@ export class ReportController {
             message,
             data
         });
-    };
+    }; 
 }

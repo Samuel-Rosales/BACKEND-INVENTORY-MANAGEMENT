@@ -309,70 +309,62 @@ class ReportService {
 
     async getTopSellingProducts(period: string = 'all') {
         try {
-            // 1. LÓGICA DE FILTRADO DE FECHAS
+            // 1. LÓGICA DE FECHAS (Filtro dinámico)
             let dateFilter = {};
             const now = new Date();
-            // Clonamos la fecha actual para manipularla sin afectar 'now'
-            const startDate = new Date(now); 
+            const startDate = new Date(now);
 
-            // Configuramos el inicio del día/semana/mes/año
             switch (period) {
                 case 'day':
-                    // Inicio de hoy (00:00:00)
                     startDate.setHours(0, 0, 0, 0);
                     break;
                 case 'week':
-                    // Inicio de la semana (Domingo como día 0, o Lunes según prefieras)
-                    // Restamos los días transcurridos desde el inicio de la semana
-                    const dayOfWeek = startDate.getDay(); // 0 (Domingo) - 6 (Sábado)
-                    const diff = startDate.getDate() - dayOfWeek; 
+                    const day = startDate.getDay();
+                    const diff = startDate.getDate() - day + (day === 0 ? -6 : 1); // Ajuste al lunes
                     startDate.setDate(diff);
                     startDate.setHours(0, 0, 0, 0);
                     break;
                 case 'month':
-                    // Día 1 del mes actual
                     startDate.setDate(1);
                     startDate.setHours(0, 0, 0, 0);
                     break;
                 case 'year':
-                    // Día 1 de Enero del año actual
                     startDate.setMonth(0, 1);
                     startDate.setHours(0, 0, 0, 0);
                     break;
                 case 'all':
                 default:
-                    // Si es 'all' o no se reconoce, no filtramos (dejamos startDate null)
+                    // 'all' no aplica filtro de fecha
                     break;
             }
 
-            // Si se seleccionó un periodo específico, aplicamos el filtro WHERE
             if (period !== 'all') {
                 dateFilter = {
                     createdAt: {
-                        [Op.between]: [startDate, now] // Desde el inicio calculado hasta AHORA mismo
+                        [Op.between]: [startDate, now]
                     }
                 };
             }
 
-            // 2. CONSULTA A LA BASE DE DATOS
+            // 2. CONSULTA A LA BASE DE DATOS (Top 5 más vendidos)
             const topProducts = await SaleItemDB.findAll({
-                // APLICAMOS EL FILTRO AQUÍ
-                where: dateFilter, 
-                
+                where: {
+                    ...dateFilter,
+                    status: true // Solo ventas activas
+                },
                 attributes: [
                     'product_id',
-                    // Sumamos 'amount' como 'total_sold'
+                    // Sumamos la cantidad vendida
                     [sequelize.fn('SUM', sequelize.col('SaleItem.amount')), 'total_sold']
                 ],
                 include: [
                     {
                         model: ProductDB,
-                        as: 'product',
+                        as: 'product', // Asegúrate que tu alias en el modelo sea este
                         attributes: ['name', 'base_price', 'image_url', 'sku']
                     }
                 ],
                 group: [
-                    // Agrupación obligatoria para Postgres
                     'SaleItem.product_id', 
                     'product.product_id', 
                     'product.name', 
@@ -380,24 +372,41 @@ class ReportService {
                     'product.image_url', 
                     'product.sku'
                 ],
-                // Ordenamos por la columna calculada
                 order: [[sequelize.literal('total_sold'), 'DESC']],
-                limit: 5,
+                limit: 10,
                 raw: true,
                 nest: true
             });
 
-            // 3. MAPEO DE DATOS (CamelCase para el Frontend)
-            const formattedData = topProducts.map((item: any) => ({
-                product_id: item.product_id,
-                total_sold: parseInt(item.total_sold),
-                product: {
-                    name: item.product.name,
-                    price: parseFloat(item.product.base_price),
-                    imageUrl: item.product.image_url,
-                    sku: item.product.sku
+            // 3. CÁLCULO DE PORCENTAJE (Lógica para la UI)
+            // Obtenemos el valor máximo (el del primer producto, ya que ordenamos DESC)
+            let maxSold = 0;
+            if (topProducts.length > 0) {
+                maxSold = parseInt((topProducts[0] as any).total_sold);
+            }
+
+            // 4. MAPEO DE DATOS
+            const formattedData = topProducts.map((item: any) => {
+                const soldCount = parseInt(item.total_sold);
+                
+                // Calculamos porcentaje relativo al líder (0.0 a 1.0)
+                // Si el líder vendió 100 y este 50, el porcentaje es 0.5
+                let percentage = 0.0;
+                if (maxSold > 0) {
+                    percentage = parseFloat((soldCount / maxSold).toFixed(2));
                 }
-            }));
+
+                return {
+                    name: item.product.name, 
+                    soldCount: soldCount,
+                    percentage: percentage,  // <--- Esto llena la barrita en Flutter
+                    
+                    // Datos extra útiles
+                    product_id: item.product_id,
+                    sku: item.product.sku,
+                    imageUrl: item.product.image_url
+                };
+            });
 
             return {
                 status: 200,
@@ -406,10 +415,10 @@ class ReportService {
             };
 
         } catch (error) {
-            console.error(`Error obteniendo top productos (${period}):`, error);
+            console.error(`Error obtaining top products (${period}):`, error);
             return {
                 status: 500,
-                message: "Internal server error",
+                message: "Internal server error retrieving top products",
                 data: null,
             };
         }
