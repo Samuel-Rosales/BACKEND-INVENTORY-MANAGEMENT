@@ -21,6 +21,10 @@ router.get("/top_selling_products",
     controller.getTopSellingProducts
 ); // http://localhost:3000/api/report/top_selling_products?period=month
 
+router.get("/inventory_efficiency",
+    controller.getInventoryEfficiency
+); // http://localhost:3000/api/report/inventory_efficiency
+
 export const ReportRoute = router;
 
 export default router;

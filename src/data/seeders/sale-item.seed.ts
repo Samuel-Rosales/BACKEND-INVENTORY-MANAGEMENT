@@ -3,23 +3,27 @@ import { SaleItemDB, ProductDB, DepotDB } from "src/models";
 
 export const saleItemSeed = async () => {
     try {
-        console.log("Iniciando seed de Detalles de Venta...");
+        console.log("Iniciando seed de Detalles de Venta (CORREGIDO PARA MARGEN POSITIVO)...");
 
-        // --- 1. Definir items a vender (PRODUCTOS ACTUALIZADOS) ---
+        // --- 1. Definir items a vender CON COSTOS REALES DE ADQUISICIÓN ---
         const itemsToSell = [
-            // Venta 1 (Muebles y Hogar) - Antes era Tecnología
+            // Venta 1 (Muebles y Hogar)
             { 
                 sale_id: 1, 
                 productName: "Mesa Plegable Tipo Maletín (1.80m)", 
                 depotName: "Almacén Principal", 
-                unit_cost: 210.00, // Precio venta (base 200)
+                // CORREGIDO: Costo de compra real (ver purchaseGeneralItem.seed) = 190.00
+                // Precio Base Producto = 200.00 -> Ganancia = 10.00
+                unit_cost: 190.00, 
                 amount: 1 
             },
             { 
                 sale_id: 1, 
                 productName: "Silla Plástica Manaplas (Sin brazos)", 
                 depotName: "Almacén Principal", 
-                unit_cost: 23.00, // Precio venta (base 21.50)
+                // CORREGIDO: Costo de compra real = 20.00
+                // Precio Base Producto = 21.50 -> Ganancia = 1.50
+                unit_cost: 20.00, 
                 amount: 4 
             },
             
@@ -28,7 +32,8 @@ export const saleItemSeed = async () => {
                 sale_id: 2, 
                 productName: "Silla Plástica Manaplas (Sin brazos)", 
                 depotName: "Almacén Principal", 
-                unit_cost: 23.00, 
+                // Costo de compra = 20.00
+                unit_cost: 20.00, 
                 amount: 2 
             },
 
@@ -37,39 +42,49 @@ export const saleItemSeed = async () => {
                 sale_id: 3, 
                 productName: "Martillo de Uña Curva 16oz (Mango Madera)", 
                 depotName: "Almacén Principal", 
-                unit_cost: 48.00, 
+                // CORREGIDO: Costo de compra real = 42.00
+                // Precio Base Producto = 46.00 -> Ganancia = 4.00
+                unit_cost: 42.00, 
                 amount: 1 
             },
             { 
                 sale_id: 3, 
                 productName: "Destornillador Estriado Pretul 1/4\" x 4\"", 
                 depotName: "Almacén Principal", 
-                unit_cost: 11.00, 
+                // CORREGIDO: Costo de compra real = 9.50
+                // Precio Base Producto = 10.25 -> Ganancia = 0.75
+                unit_cost: 9.50, 
                 amount: 1 
             },
             { 
                 sale_id: 3, 
                 productName: "Teipe Cobra Negro (Cinta Eléctrica) 18m",
                 depotName: "Almacén Principal", 
-                unit_cost: 5.50, 
+                // CORREGIDO: Costo de compra real = 4.00
+                // Precio Base Producto = 4.75 -> Ganancia = 0.75
+                unit_cost: 4.00, 
                 amount: 3 
             },
 
-            // Venta 4 (Insumos) - Antes era Papel
+            // Venta 4 (Insumos)
             { 
                 sale_id: 4, 
                 productName: "Tirro Plástico Transparente (Cinta de Embalaje)", 
                 depotName: "Almacén Principal", 
-                unit_cost: 3.50, 
+                // CORREGIDO: Costo de compra real = 2.20
+                // Precio Base Producto = 2.75 -> Ganancia = 0.55
+                unit_cost: 2.20, 
                 amount: 5 
             },
 
-            // Venta 5 (Almacenamiento) - Antes era Archivador
+            // Venta 5 (Almacenamiento)
             { 
                 sale_id: 5, 
                 productName: "Estante Plástico 4 Niveles", 
                 depotName: "Almacén Principal", 
-                unit_cost: 55.00, 
+                // CORREGIDO: Costo de compra real = 45.00
+                // Precio Base Producto = 50.00 -> Ganancia = 5.00
+                unit_cost: 45.00, 
                 amount: 2 
             },
         ];
@@ -114,7 +129,7 @@ export const saleItemSeed = async () => {
                 sale_id: item.sale_id,
                 product_id,
                 depot_id, 
-                unit_cost: item.unit_cost,
+                unit_cost: item.unit_cost, // AHORA SÍ ES EL COSTO REAL
                 amount: item.amount,
                 status: true,
                 createdAt: new Date(),
