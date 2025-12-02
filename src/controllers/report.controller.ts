@@ -107,7 +107,24 @@ export class ReportController {
 
     getLowStockAlerts = async (req: Request, res: Response) => {
         const { status, message, data } = await ReportServices.getLowStockAlerts();
+
+        return res.status(status).json({
+            message,
+            data
+        });
+    };
+
+    getInventoryValue = async (req: Request, res: Response) => {
+        const { status, message, data } = await ReportServices.getInventoryValue();
         
+        return res.status(status).json({
+            message,
+            data
+        });
+    };
+
+    getTotalInventoryItems = async (req: Request, res: Response) => {
+        const { status, message, data } = await ReportServices.getTotalInventoryItems();
         return res.status(status).json({
             message,
             data

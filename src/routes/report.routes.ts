@@ -29,6 +29,14 @@ router.get("/low_stock_alerts",
     controller.getLowStockAlerts
 ); // http://localhost:3000/api/report/low_stock_alerts
 
+router.get("/inventory_value",
+    controller.getInventoryValue
+); // http://localhost:3000/api/report/inventory_value
+
+router.get("/total_inventory_items",
+    controller.getTotalInventoryItems
+); // http://localhost:3000/api/report/total_inventory_items
+
 export const ReportRoute = router;
 
 export default router;

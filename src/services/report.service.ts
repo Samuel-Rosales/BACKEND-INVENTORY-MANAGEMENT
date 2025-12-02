@@ -6,6 +6,91 @@ import { db } from "../config";
 
 class ReportService {
 
+    async getInventoryValue() {
+        try {
+            const sql = `
+                SELECT 
+                    (
+                        -- PARTE A: Valor de Perecederos (LOTES)
+                        -- Lógica: Cantidad Actual en Stock * Costo Real de ese Lote
+                        -- Si vendes un producto, 'amount' en stock_lots baja, por lo tanto este valor baja.
+                        COALESCE((
+                            SELECT SUM(amount * cost_lot) 
+                            FROM stock_lots 
+                            WHERE status = true AND amount > 0
+                        ), 0)
+                        
+                        +
+                        
+                        -- PARTE B: Valor de No Perecederos (GENERAL)
+                        -- Lógica: Cantidad Actual en Stock * Costo Promedio de tus Compras
+                        COALESCE((
+                            SELECT SUM(
+                                sg.amount * (
+                                    -- Buscamos a cuánto has comprado este producto en el pasado (Promedio)
+                                    COALESCE(
+                                        (SELECT AVG(unit_cost) FROM purchase_general_items WHERE product_id = sg.product_id),
+                                        0 -- Si fue un regalo o semilla sin compra, costo 0
+                                    )
+                                )
+                            )
+                            FROM stock_generals sg
+                            WHERE sg.status = true AND sg.amount > 0
+                        ), 0)
+                        
+                    ) as "total_value_usd";
+            `;
+
+            const result = await db.query(sql, { type: QueryTypes.SELECT });
+            
+            const totalValue = result[0] ? parseFloat((result[0] as any).total_value_usd) : 0.00;
+
+            return {
+                status: 200,
+                message: "Inventory total value retrieved successfully",
+                data: {
+                    total_value_usd: totalValue,
+                    currency: "USD"
+                }
+            };
+
+        } catch (error) {
+            console.error("Error getting inventory value:", error);
+            return { status: 500, message: "Internal server error", data: null };
+        }
+    }
+
+    // 2. SERVICIO: Conteo Total de Items Físicos
+    async getTotalInventoryItems() {
+        try {
+            const sql = `
+                SELECT 
+                    (
+                        -- Suma de Stocks Generales
+                        COALESCE((SELECT SUM(amount) FROM stock_generals WHERE status = true), 0) 
+                        +
+                        -- Suma de Stocks por Lotes
+                        COALESCE((SELECT SUM(amount) FROM stock_lots WHERE status = true), 0)
+                    ) as "total_items";
+            `;
+
+            const result = await db.query(sql, { type: QueryTypes.SELECT });
+            const totalItems = result[0] ? parseInt((result[0] as any).total_items) : 0;
+
+            return {
+                status: 200,
+                message: "Total inventory items count retrieved",
+                data: {
+                    total_items: totalItems
+                }
+            };
+
+        } catch (error) {
+            console.error("Error getting total items:", error);
+            return { status: 500, message: "Internal server error", data: null };
+        }
+    }
+
     async getLowStockAlerts() {
         try {
             const sql = `
@@ -256,6 +341,7 @@ class ReportService {
     async totalUsdSales() {
         try {
             const  sales = await SaleDB.findAll();
+            
             const totalUSD: number = sales.reduce((sum, sale) => {
                 
                 const saleAmountString = sale.get('total_usd') as string;
