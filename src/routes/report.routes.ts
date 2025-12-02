@@ -17,6 +17,10 @@ router.get("/sales_dates_stats",
     controller.getSalesChart
 ); // http://localhost:3000/api/report/sales_dates_stats?filter=week
 
+router.get("/top_selling_products",
+    controller.getTopSellingProducts
+); // http://localhost:3000/api/report/top_selling_products
+
 export const ReportRoute = router;
 
 export default router;

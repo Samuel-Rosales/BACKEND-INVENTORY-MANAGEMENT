@@ -1,8 +1,71 @@
 import { ReportFilter, SaleRecord, SalesChartData, SpotsChartData } from "@/interfaces";
-import { PurchaseDB, SaleDB } from "../models";
+import { ProductDB, PurchaseDB, SaleDB, SaleItemDB } from "../models";
 import { Op } from "sequelize";
+import sequelize from "sequelize";
 
 class ReportService {
+
+    async getTopSellingProducts() {
+        try {
+            const topProducts = await SaleItemDB.findAll({
+                attributes: [
+                    'product_id',
+                    // 1. SUMAMOS 'amount' (nombre real en tu DB), NO 'quantity'
+                    [sequelize.fn('SUM', sequelize.col('SaleItem.amount')), 'total_sold']
+                ],
+                include: [
+                    {
+                        model: ProductDB,
+                        as: 'product', // Asegúrate de que en tu archivo de relaciones (index.ts) tengas definido el alias 'product'
+                        // 2. PEDIMOS LOS NOMBRES REALES DE LAS COLUMNAS
+                        attributes: ['name', 'base_price', 'image_url', 'sku']
+                    }
+                ],
+                group: [
+                    // 3. AGRUPACIÓN OBLIGATORIA (Postgres es estricto aquí)
+                    // Debes usar 'SaleItem' (nombre del modelo), no la variable
+                    'SaleItem.product_id', 
+                    'product.product_id', 
+                    'product.name', 
+                    'product.base_price', 
+                    'product.image_url', 
+                    'product.sku'
+                ],
+                // Ordenamos por la columna virtual que creamos arriba
+                order: [[sequelize.literal('total_sold'), 'DESC']],
+                limit: 5,
+                raw: true,  // Importante: devuelve datos planos
+                nest: true  // Importante: anida el objeto 'product' dentro del resultado
+            });
+
+            // 4. MAPEO (Opcional pero recomendado para tu Frontend)
+            // Convertimos los nombres de DB (snake_case) a lo que espera tu app (camelCase)
+            const formattedData = topProducts.map((item: any) => ({
+                product_id: item.product_id,
+                total_sold: parseInt(item.total_sold), // Aseguramos que sea número
+                product: {
+                    name: item.product.name,
+                    price: parseFloat(item.product.base_price), // Front espera 'price', DB tiene 'base_price'
+                    imageUrl: item.product.image_url,           // Front espera 'imageUrl', DB tiene 'image_url'
+                    sku: item.product.sku
+                }
+            }));
+
+            return {
+                status: 200,
+                message: "Top selling products retrieved successfully",
+                data: formattedData,
+            };
+
+        } catch (error) {
+            console.error("Error Sequelize:", error);
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }
+    }
 
     async totalUsdSales() {
         try {

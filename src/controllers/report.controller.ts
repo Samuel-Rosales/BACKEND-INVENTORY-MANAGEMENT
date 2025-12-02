@@ -61,4 +61,13 @@ export class ReportController {
             });
         }
     }
+
+    getTopSellingProducts = async (req: Request, res: Response) => {
+        const { status, message, data } = await ReportServices.getTopSellingProducts();
+
+        return res.status(status).json({
+            message,
+            data,
+        });
+    }
 }
