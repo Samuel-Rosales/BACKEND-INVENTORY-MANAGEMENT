@@ -25,6 +25,10 @@ router.get("/inventory_efficiency",
     controller.getInventoryEfficiency
 ); // http://localhost:3000/api/report/inventory_efficiency
 
+router.get("/low_stock_alerts",
+    controller.getLowStockAlerts
+); // http://localhost:3000/api/report/low_stock_alerts
+
 export const ReportRoute = router;
 
 export default router;

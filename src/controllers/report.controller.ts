@@ -104,4 +104,13 @@ export class ReportController {
             });
         }
     };
+
+    getLowStockAlerts = async (req: Request, res: Response) => {
+        const { status, message, data } = await ReportServices.getLowStockAlerts();
+        
+        return res.status(status).json({
+            message,
+            data
+        });
+    };
 }

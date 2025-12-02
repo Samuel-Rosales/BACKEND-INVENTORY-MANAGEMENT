@@ -3,9 +3,75 @@ import { ProductDB, PurchaseDB, SaleDB, SaleItemDB } from "../models";
 import { Op, QueryTypes } from "sequelize";
 import sequelize from "sequelize";
 import { db } from "../config";
-import { stat } from "fs";
 
 class ReportService {
+
+    async getLowStockAlerts() {
+        try {
+            const sql = `
+                SELECT 
+                    p.product_id,
+                    p.name,
+                    p.sku,
+                    p.image_url,
+                    p.min_stock,
+                    
+                    -- Cálculo del Stock Total (Suma Generales + Lotes)
+                    (
+                        COALESCE((SELECT SUM(amount) FROM stock_generals WHERE product_id = p.product_id AND status = true), 0) +
+                        COALESCE((SELECT SUM(amount) FROM stock_lots WHERE product_id = p.product_id AND status = true), 0)
+                    ) as "current_stock"
+
+                FROM products p
+                WHERE p.status = true
+                
+                -- FILTRO: Solo devolver donde el Stock Actual sea MENOR al Mínimo
+                AND (
+                    COALESCE((SELECT SUM(amount) FROM stock_generals WHERE product_id = p.product_id AND status = true), 0) +
+                    COALESCE((SELECT SUM(amount) FROM stock_lots WHERE product_id = p.product_id AND status = true), 0)
+                ) < p.min_stock
+                
+                ORDER BY "current_stock" ASC; -- Muestra primero los más críticos (stock 0)
+            `;
+
+            const results = await db.query(sql, { 
+                type: QueryTypes.SELECT 
+            });
+
+            // Mapeo para formatear números y calcular el déficit
+            const alerts = results.map((item: any) => {
+                const currentStock = parseInt(item.current_stock);
+                const minStock = item.min_stock;
+                
+                return {
+                    product_id: item.product_id,
+                    name: item.name,
+                    sku: item.sku,
+                    image_url: item.image_url,
+                    min_stock: minStock,
+                    current_stock: currentStock,
+                    // Cuántos faltan para llegar al mínimo (Déficit)
+                    missing_amount: minStock - currentStock,
+                    // Nivel de urgencia visual
+                    status: currentStock === 0 ? 'CRITICO' : 'BAJO'
+                };
+            });
+
+            return {
+                status: 200,
+                message: "Low stock alerts retrieved successfully",
+                data: alerts
+            };
+
+        } catch (error) {
+            console.error("Error getting low stock alerts:", error);
+            return {
+                status: 500,
+                message: "Internal server error retrieving stock alerts",
+                data: null
+            };
+        }
+    }
 
     async getInventoryEfficiency(period: string = 'month') {
         try {
