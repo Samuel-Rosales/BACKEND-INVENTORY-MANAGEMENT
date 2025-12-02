@@ -19,7 +19,7 @@ router.get("/sales_dates_stats",
 
 router.get("/top_selling_products",
     controller.getTopSellingProducts
-); // http://localhost:3000/api/report/top_selling_products
+); // http://localhost:3000/api/report/top_selling_products?period=month
 
 export const ReportRoute = router;
 

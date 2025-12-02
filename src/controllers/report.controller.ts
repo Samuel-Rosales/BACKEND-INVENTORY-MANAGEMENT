@@ -63,11 +63,22 @@ export class ReportController {
     }
 
     getTopSellingProducts = async (req: Request, res: Response) => {
-        const { status, message, data } = await ReportServices.getTopSellingProducts();
+        try {
+            const period = (req.query.period as string) || 'all';
 
-        return res.status(status).json({
-            message,
-            data,
-        });
-    }
+            // 2. Llamamos al servicio
+            const result = await ReportServices.getTopSellingProducts(period);
+
+            // 3. Devolvemos la respuesta usando el status que nos dio el servicio
+            return res.status(result.status).json(result);
+
+        } catch (error) {
+            console.error("Error en ReportController.getTopSellingProducts:", error);
+            return res.status(500).json({
+                status: 500,
+                message: "Internal Server Error",
+                data: null
+            });
+        }
+    };
 }

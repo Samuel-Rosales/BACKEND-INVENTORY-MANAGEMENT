@@ -5,25 +5,72 @@ import sequelize from "sequelize";
 
 class ReportService {
 
-    async getTopSellingProducts() {
+    async getTopSellingProducts(period: string = 'all') {
         try {
+            // 1. LÓGICA DE FILTRADO DE FECHAS
+            let dateFilter = {};
+            const now = new Date();
+            // Clonamos la fecha actual para manipularla sin afectar 'now'
+            const startDate = new Date(now); 
+
+            // Configuramos el inicio del día/semana/mes/año
+            switch (period) {
+                case 'day':
+                    // Inicio de hoy (00:00:00)
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                case 'week':
+                    // Inicio de la semana (Domingo como día 0, o Lunes según prefieras)
+                    // Restamos los días transcurridos desde el inicio de la semana
+                    const dayOfWeek = startDate.getDay(); // 0 (Domingo) - 6 (Sábado)
+                    const diff = startDate.getDate() - dayOfWeek; 
+                    startDate.setDate(diff);
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                case 'month':
+                    // Día 1 del mes actual
+                    startDate.setDate(1);
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                case 'year':
+                    // Día 1 de Enero del año actual
+                    startDate.setMonth(0, 1);
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                case 'all':
+                default:
+                    // Si es 'all' o no se reconoce, no filtramos (dejamos startDate null)
+                    break;
+            }
+
+            // Si se seleccionó un periodo específico, aplicamos el filtro WHERE
+            if (period !== 'all') {
+                dateFilter = {
+                    createdAt: {
+                        [Op.between]: [startDate, now] // Desde el inicio calculado hasta AHORA mismo
+                    }
+                };
+            }
+
+            // 2. CONSULTA A LA BASE DE DATOS
             const topProducts = await SaleItemDB.findAll({
+                // APLICAMOS EL FILTRO AQUÍ
+                where: dateFilter, 
+                
                 attributes: [
                     'product_id',
-                    // 1. SUMAMOS 'amount' (nombre real en tu DB), NO 'quantity'
+                    // Sumamos 'amount' como 'total_sold'
                     [sequelize.fn('SUM', sequelize.col('SaleItem.amount')), 'total_sold']
                 ],
                 include: [
                     {
                         model: ProductDB,
-                        as: 'product', // Asegúrate de que en tu archivo de relaciones (index.ts) tengas definido el alias 'product'
-                        // 2. PEDIMOS LOS NOMBRES REALES DE LAS COLUMNAS
+                        as: 'product',
                         attributes: ['name', 'base_price', 'image_url', 'sku']
                     }
                 ],
                 group: [
-                    // 3. AGRUPACIÓN OBLIGATORIA (Postgres es estricto aquí)
-                    // Debes usar 'SaleItem' (nombre del modelo), no la variable
+                    // Agrupación obligatoria para Postgres
                     'SaleItem.product_id', 
                     'product.product_id', 
                     'product.name', 
@@ -31,34 +78,33 @@ class ReportService {
                     'product.image_url', 
                     'product.sku'
                 ],
-                // Ordenamos por la columna virtual que creamos arriba
+                // Ordenamos por la columna calculada
                 order: [[sequelize.literal('total_sold'), 'DESC']],
                 limit: 5,
-                raw: true,  // Importante: devuelve datos planos
-                nest: true  // Importante: anida el objeto 'product' dentro del resultado
+                raw: true,
+                nest: true
             });
 
-            // 4. MAPEO (Opcional pero recomendado para tu Frontend)
-            // Convertimos los nombres de DB (snake_case) a lo que espera tu app (camelCase)
+            // 3. MAPEO DE DATOS (CamelCase para el Frontend)
             const formattedData = topProducts.map((item: any) => ({
                 product_id: item.product_id,
-                total_sold: parseInt(item.total_sold), // Aseguramos que sea número
+                total_sold: parseInt(item.total_sold),
                 product: {
                     name: item.product.name,
-                    price: parseFloat(item.product.base_price), // Front espera 'price', DB tiene 'base_price'
-                    imageUrl: item.product.image_url,           // Front espera 'imageUrl', DB tiene 'image_url'
+                    price: parseFloat(item.product.base_price),
+                    imageUrl: item.product.image_url,
                     sku: item.product.sku
                 }
             }));
 
             return {
                 status: 200,
-                message: "Top selling products retrieved successfully",
+                message: `Top selling products for period '${period}' retrieved successfully`,
                 data: formattedData,
             };
 
         } catch (error) {
-            console.error("Error Sequelize:", error);
+            console.error(`Error obteniendo top productos (${period}):`, error);
             return {
                 status: 500,
                 message: "Internal server error",
