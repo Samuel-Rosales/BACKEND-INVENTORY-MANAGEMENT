@@ -16,15 +16,15 @@ router.get("/:user_ci",
     userController.one
 ); // http://localhost:3000/api/user/:id
 
-router.get("/rol/:rol_id", 
+router.get("/role/:rol_id", 
     userController.all
-); // http://localhost:3000/api/user/rol/:rol_id
+); // http://localhost:3000/api/user/role/:rol_id
 
 
 //METHOD POST
 router.post("/",
     userValidators.validateCreateFields,
-    userValidators.validateRolIdExists,
+    userValidators.validateRoleIdExists,
     userValidators.validateUserAlreadyExists,
     validateFields,
     userController.create

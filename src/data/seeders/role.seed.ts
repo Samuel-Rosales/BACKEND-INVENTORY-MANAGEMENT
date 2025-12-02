@@ -1,8 +1,8 @@
-import { RolDB } from "src/models"; 
+import { RoleeDB } from "src/models"; 
 
-export const rolSeed = async () => {
+export const roleSeed = async () => {
     try {
-        console.log("Starting rol seeds...");
+        console.log("Starting role seeds...");
 
         // Los roles fundamentales para la aplicación
         const rolesToCreate = [
@@ -25,34 +25,34 @@ export const rolSeed = async () => {
 
         // 1. Obtener los nombres de los roles ya existentes en la DB
         // Usamos 'as { name: string }[]' para el tipado, evitando el error de TypeScript
-        const existingRoles = await RolDB.findAll({ 
+        const existingRolees = await RoleeDB.findAll({ 
             attributes: ['name'] 
         }); 
         
-        const existingNames = existingRoles.map(rol => (rol as any).name);
+        const existingNames = existingRolees.map(role => (role as any).name);
 
         // 2. Filtrar el arreglo, manteniendo solo los roles que NO existan
-        const uniqueRolesToCreate = rolesToCreate.filter(rol => 
-            !existingNames.includes(rol.name)
+        const uniqueRoleesToCreate = rolesToCreate.filter(role => 
+            !existingNames.includes(role.name)
         );
 
         // 3. Aplicar las fechas a los roles que serán insertados
-        const finalRoles = uniqueRolesToCreate.map(rol => ({
-            ...rol,
+        const finalRolees = uniqueRoleesToCreate.map(role => ({
+            ...role,
             createdAt: new Date(),
             updatedAt: new Date(),
         }));
 
-        if (finalRoles.length > 0) {
+        if (finalRolees.length > 0) {
             // 4. Insertar SOLO los nuevos roles
-            const createdRoles = await RolDB.bulkCreate(finalRoles);
-            console.log(`Seed de Roles ejecutado correctamente. Insertados: ${createdRoles.length}`);
+            const createdRolees = await RoleeDB.bulkCreate(finalRolees);
+            console.log(`Seed de Rolees ejecutado correctamente. Insertados: ${createdRolees.length}`);
         } else {
-            console.log("Seed de Roles ejecutado. No se insertaron nuevos roles (todos ya existían).");
+            console.log("Seed de Rolees ejecutado. No se insertaron nuevos roles (todos ya existían).");
         }
 
     } catch (error) {
-        console.error("Error al ejecutar seed de Roles:", error);
+        console.error("Error al ejecutar seed de Rolees:", error);
         throw error;
     }
 };

@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
-import { RolServices } from "../services";
+import { RoleServices } from "../services";
 
-export class RolController {
+export class RoleController {
     constructor() {}
 
     all = async (req: Request, res: Response) => {
-        const { status, message, data } = await RolServices.getAll();
+        const { status, message, data } = await RoleServices.getAll();
 
         return res.status(status).json({
             message,
@@ -15,7 +15,7 @@ export class RolController {
 
     one = async (req: Request, res: Response) => {
         const { id } = req.params
-        const { status, message, data } = await RolServices.getOne(Number(id));
+        const { status, message, data } = await RoleServices.getOne(Number(id));
 
         return res.status(status).json({
             message,
@@ -23,9 +23,9 @@ export class RolController {
         });
     };
 
-    getPermissionsByRolId = async (req: Request, res: Response) => {
+    getPermissionsByRoleId = async (req: Request, res: Response) => {
         const { id } = req.params;
-        const { status, message, data } = await RolServices.getPermissionsByRolId(Number(id));
+        const { status, message, data } = await RoleServices.getPermissionsByRoleId(Number(id));
 
         return res.status(status).json({
             message,
@@ -33,7 +33,7 @@ export class RolController {
         });
     };
 
-    checkRolePermission = async (req: Request, res: Response) => {
+    checkRoleePermission = async (req: Request, res: Response) => {
         try {
             const { role_id, permission_code } = req.body;
 
@@ -44,7 +44,7 @@ export class RolController {
                 });
             }
 
-            const hasPermission = await RolServices.checkPermission(role_id, permission_code);
+            const hasPermission = await RoleServices.checkPermission(role_id, permission_code);
 
             return res.status(200).json({
                 message: "Permission check executed",
@@ -69,8 +69,8 @@ export class RolController {
         const { permission_ids, ...rolData } = req.body;
 
             // 3. Llamar al servicio con los DOS argumentos separados
-        const { status, message, data } = await RolServices.create(
-            rolData,         // El objeto 'rol: RolInterface'
+        const { status, message, data } = await RoleServices.create(
+            rolData,         // El objeto 'role: RoleInterface'
             permission_ids   // El array 'permission_ids?: number[]'
         );
 
@@ -82,7 +82,7 @@ export class RolController {
 
     update = async (req: Request, res: Response) => {
         const { id } = req.params;
-        const { status, message, data } = await RolServices.update(Number(id), req.body);
+        const { status, message, data } = await RoleServices.update(Number(id), req.body);
 
         return res.status(status).json({
             message,
@@ -92,7 +92,7 @@ export class RolController {
 
     delete = async (req: Request, res: Response) => {
         const { id } = req.params;
-        const { status, message } = await RolServices.delete(Number(id));
+        const { status, message } = await RoleServices.delete(Number(id));
 
         return res.status(status).json({
             message,
@@ -102,7 +102,7 @@ export class RolController {
     assignPermissions = async (req: Request, res: Response) => {
         const { id } = req.params;
         const { permission_ids } = req.body;
-        const { status, message, data } = await RolServices.assignPermissions(Number(id), permission_ids);
+        const { status, message, data } = await RoleServices.assignPermissions(Number(id), permission_ids);
 
         return res.status(status).json({
             message,
@@ -113,7 +113,7 @@ export class RolController {
     removePermissions = async (req: Request, res: Response) => {
         const { id } = req.params;
         const { permission_ids } = req.body;
-        const { status, message, data } = await RolServices.removePermissions(Number(id), permission_ids);
+        const { status, message, data } = await RoleServices.removePermissions(Number(id), permission_ids);
 
         return res.status(status).json({
             message,

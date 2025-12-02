@@ -1,7 +1,7 @@
 import "dotenv/config"
 import { db } from "src/config";
 import {
-    rolSeed,
+    roleSeed,
     typePaymentSeed,
     categorySeed,
     depotSeed,
@@ -30,7 +30,7 @@ export const mainSeed = async () => {
         console.log("\n--- Running Level 1: Base Data ---");
         await exchangeRateSeed();
         await permissionSeed();
-        await rolSeed();
+        await roleSeed();
         await typePaymentSeed();    
 
         await categorySeed();

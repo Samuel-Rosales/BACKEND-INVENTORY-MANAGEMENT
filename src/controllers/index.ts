@@ -11,7 +11,7 @@ export * from "./purchase.controller";
 export * from "./purchase-general-item.controller";
 export * from "./purchase-lot-item.controller";
 export * from "./report.controller";
-export * from "./rol.controller";
+export * from "./role.controller";
 export * from "./type-payment.controller";
 export * from "./sale.controller";
 export * from "./sale-item.controller";

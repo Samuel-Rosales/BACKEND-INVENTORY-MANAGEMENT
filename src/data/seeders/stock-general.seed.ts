@@ -9,7 +9,7 @@ export const stockGeneralSeed = async () => {
         const stockToCreate = [
             // --- Higiene y Limpieza (No perecederos) ---
             { productName: "Jabón de Tocador Protex Avena (110g)", depotName: "Almacén Principal", amount: 50 },
-            { productName: "Papel Higiénico Rosal Plus (4 Rollos)", depotName: "Almacén Principal", amount: 100 },
+            { productName: "Papel Higiénico Rosal Plus (4 Rolelos)", depotName: "Almacén Principal", amount: 100 },
             { productName: "Champú Head & Shoulders Limpieza Renovadora (375ml)", depotName: "Almacén Principal", amount: 30 },
             { productName: "Detergente en Polvo Ace (900g)", depotName: "Almacén Principal", amount: 45 },
             { productName: "Cloro Nevex Regular (1 Litro)", depotName: "Almacén Principal", amount: 60 },

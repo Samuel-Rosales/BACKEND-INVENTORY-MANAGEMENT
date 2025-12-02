@@ -120,7 +120,7 @@ export const productSeed = async () => {
                 status: true,
             },
             {
-                name: "Papel Higiénico Rosal Plus (4 Rollos)",
+                name: "Papel Higiénico Rosal Plus (4 Rolelos)",
                 sku: "HIG-005",
                 description: "Papel higiénico hoja doble, textura suave y resistente. Paquete de 4 rollos.",
                 image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1764115496/papel_higienico_tnklcq.png",

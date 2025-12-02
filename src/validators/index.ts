@@ -3,7 +3,7 @@ export * from "./category.validators";
 export * from "./client.validators";
 export * from "./depot.validators";
 export * from "./movement.validators";
-export * from "./rol.validators";
+export * from "./role.validators";
 export * from "./permission.validators";
 export * from "./product.validators";
 export * from "./provider.validators";

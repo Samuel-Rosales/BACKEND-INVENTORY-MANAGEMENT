@@ -91,7 +91,7 @@ export const saleItemSeed = async () => {
             { name: "Aceite de Maíz Mazeite (1L)", price: 5.00 },
             { name: "Jabón de Tocador Protex Avena (110g)", price: 2.00 },
             { name: "Champú Head & Shoulders Limpieza Renovadora (375ml)", price: 12.00 },
-            { name: "Papel Higiénico Rosal Plus (4 Rollos)", price: 5.00 },
+            { name: "Papel Higiénico Rosal Plus (4 Rolelos)", price: 5.00 },
             { name: "Cloro Nevex Regular (1 Litro)", price: 3.50 },
             { name: "Bombillo LED 9W Luz Blanca (Rosca E27)", price: 4.00 },
             { name: "Teipe Cobra Negro (Cinta Eléctrica) 18m", price: 6.00 }

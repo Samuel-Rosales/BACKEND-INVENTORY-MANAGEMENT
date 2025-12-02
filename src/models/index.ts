@@ -13,7 +13,7 @@ import { ProviderFactory } from "./provider.model";
 import { PurchaseFactory } from "./purchase.model";
 import { PurchaseGeneralItemFactory } from "./purchase-general-item.model";
 import { PurchaseLotItemFactory } from "./purchase-lot-item.model";
-import { RolFactory } from "./rol.model";
+import { RoleeFactory } from "./role.model";
 import { SaleFactory } from "./sale.model";
 import { SaleItemFactory } from "./sale-item.model";
 import { StockGeneralFactory } from "./stock-general.model";
@@ -30,12 +30,12 @@ export const ExchangeRateDB = ExchangeRateFactory(db);
 export const DepotDB = DepotFactory(db);
 export const ProviderDB = ProviderFactory(db);
 export const PermissionDB = PermissionFactory(db);
-export const RolDB = RolFactory(db);
+export const RoleeDB = RoleeFactory(db);
 export const TypePaymentDB = TypePaymentFactory(db);
 
 // Nivel 2: Modelos que dependen del Nivel 1
 export const ProductDB = ProductFactory(db);   // Depende de Category
-export const UserDB = UserFactory(db);         // Depende de Rol
+export const UserDB = UserFactory(db);         // Depende de Rolee
 
 // Nivel 3: Modelos de Transacciones que dependen de Nivel 1 y 2
 export const PurchaseDB = PurchaseFactory(db); // Depende de Provider, User, TypePayment
@@ -65,8 +65,8 @@ ProductDB.hasMany(MovementDB, { foreignKey: "product_id", as: "movements" });
 MovementDB.belongsTo(UserDB, {foreignKey: "user_ci", as: "user"});
 UserDB.hasMany(MovementDB, { foreignKey: "user_ci", as: "movements" });
 
-UserDB.belongsTo(RolDB, { foreignKey: "rol_id", as: "rol" });
-RolDB.hasMany(UserDB, { foreignKey: "rol_id", as: "users" });
+UserDB.belongsTo(RoleeDB, { foreignKey: "role_id", as: "role" });
+RoleeDB.hasMany(UserDB, { foreignKey: "role_id", as: "users" });
 
 PurchaseDB.belongsTo(TypePaymentDB, { foreignKey: "type_payment_id", as: "type_payment" });
 TypePaymentDB.hasMany(PurchaseDB, { foreignKey: "type_payment_id", as: "purchases" });
@@ -148,8 +148,8 @@ DepotDB.hasMany(PurchaseLotItemDB, { foreignKey: "depot_id", as: "purchase_lot_i
 SaleItemDB.belongsTo(DepotDB, { foreignKey: "depot_id", as: "depot" });
 DepotDB.hasMany(SaleItemDB, { foreignKey: "depot_id", as: "sale_items" });
 
-RolDB.belongsToMany(PermissionDB, { through: 'role_permissions', foreignKey: 'role_id', otherKey: 'permission_id', timestamps: false, as: 'permissions'});
-PermissionDB.belongsToMany(RolDB, { through: 'role_permissions', foreignKey: 'permission_id', otherKey: 'role_id', timestamps: false, as: 'roles'});
+RoleeDB.belongsToMany(PermissionDB, { through: 'role_permissions', foreignKey: 'role_id', otherKey: 'permission_id', timestamps: false, as: 'permissions'});
+PermissionDB.belongsToMany(RoleeDB, { through: 'role_permissions', foreignKey: 'permission_id', otherKey: 'role_id', timestamps: false, as: 'roles'});
 
 // --- 4. EXPORTA LA FUNCIÓN DE SINCRONIZACIÓN ---
 export const syncDatabase = async (options?: SyncOptions) => {

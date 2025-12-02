@@ -23,7 +23,7 @@ export const UserFactory = (sequelize: Sequelize) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        rol_id: {
+        role_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },

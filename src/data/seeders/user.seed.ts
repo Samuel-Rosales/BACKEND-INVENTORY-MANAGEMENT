@@ -9,35 +9,35 @@ export const userSeed = async () => {
                 user_ci: "31350493",
                 name: "Samuel Rosales",
                 password: "$2b$10$FFTvkKY/PS7t5cObl9cCAuqayHEUkHl0gxOdx85ZlzdUlSib6EZhy", // Cambia esto por una contraseña segura o hasheada
-                rol_id: 1, // ID del Rol: Administrador
+                role_id: 1, // ID del Rolee: Administrador
                 status: true,
             },
             {
                 user_ci: "31366298",
                 name: "Edgar Briceño",
                 password: "$2b$10$ZdpLb.GOgWk3HiXJyEsie./G/a8u61ph6SuZiDOW5g6AzDmIf82M.",
-                rol_id: 3, // ID del Rol: Operador de Almacén
+                role_id: 3, // ID del Rolee: Operador de Almacén
                 status: true,
             },
             {
                 user_ci: "31111417",
                 name: "Marcos Castellanos",
                 password: "$2b$10$ZdpLb.GOgWk3HiXJyEsie./G/a8u61ph6SuZiDOW5g6AzDmIf82M.",
-                rol_id: 4, // ID del Rol: Visualizador
+                role_id: 4, // ID del Rolee: Visualizador
                 status: true,
             },
             {
                 user_ci: "29778174",
                 name: "Jesús Ramos",
                 password: "$2b$10$ZdpLb.GOgWk3HiXJyEsie./G/a8u61ph6SuZiDOW5g6AzDmIf82M.",
-                rol_id: 2, // ID del Rol: Gerente
+                role_id: 2, // ID del Rolee: Gerente
                 status: true,
             },
             {
                 user_ci: "30665034",
                 name: "Anthony Wu Zhang",
                 password: "$2b$10$ZdpLb.GOgWk3HiXJyEsie./G/a8u61ph6SuZiDOW5g6AzDmIf82M.",
-                rol_id: 5, // ID del Rol: Visualizador
+                role_id: 5, // ID del Rolee: Visualizador
                 status: true,
             },
         ];

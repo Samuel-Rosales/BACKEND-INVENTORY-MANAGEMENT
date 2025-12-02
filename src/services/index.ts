@@ -11,7 +11,7 @@ export * from "./purchase.service";
 export * from "./purchase-general-item.service";
 export * from "./purchase-lot-item.service";
 export * from "./report.service";
-export * from "./rol.service";
+export * from "./role.service";
 export * from "./sale.service"; 
 export * from "./sale-item.service"; 
 export * from "./stock-general.service"; 

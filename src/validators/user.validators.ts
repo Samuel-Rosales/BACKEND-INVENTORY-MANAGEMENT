@@ -1,6 +1,6 @@
 import { check } from "express-validator"; 
 import type { NextFunction, Request, Response } from "express";
-import { RolDB, UserDB } from "../models";
+import { RoleeDB, UserDB } from "../models";
 
 export class UserValidators {
 
@@ -18,9 +18,9 @@ export class UserValidators {
             .notEmpty().withMessage("La contraseña es obligatoria.")
             .isLength({ min: 6 }).withMessage("La contraseña debe tener al menos 6 caracteres."),
 
-        check("rol_id")
-            .notEmpty().withMessage("El ID del rol es obligatorio.")
-            .isInt().withMessage("El ID del rol debe ser un número entero."),
+        check("role_id")
+            .notEmpty().withMessage("El ID del role es obligatorio.")
+            .isInt().withMessage("El ID del role debe ser un número entero."),
 
         check("status")
             .notEmpty().withMessage("El estado del usuario es obligatorio.")
@@ -38,10 +38,10 @@ export class UserValidators {
             .notEmpty().withMessage("La contraseña no puede estar vacía.")
             .isLength({ min: 6 }).withMessage("La contraseña debe tener al menos 6 caracteres."),
 
-        check("rol_id")
+        check("role_id")
             .optional()
-            .notEmpty().withMessage("El ID del rol no puede estar vacío.")
-            .isInt().withMessage("El ID del rol debe ser un número entero."),
+            .notEmpty().withMessage("El ID del role no puede estar vacío.")
+            .isInt().withMessage("El ID del role debe ser un número entero."),
 
         check("status")
             .optional()
@@ -49,30 +49,30 @@ export class UserValidators {
             .isBoolean().withMessage("El estado debe ser un valor booleano."),
     ];
 
-    validateRolIdExists = async (req: Request, res: Response, next: NextFunction) => {
+    validateRoleIdExists = async (req: Request, res: Response, next: NextFunction) => {
         
         try {
             const rawId = (req.body.rol_id ?? "").toString().trim();
-            const rol_id = Number.parseInt(rawId, 10);
+            const role_id = Number.parseInt(rawId, 10);
 
-            if (Number.isNaN(rol_id) || !Number.isInteger(rol_id) || rol_id <= 0) {
+            if (Number.isNaN(role_id) || !Number.isInteger(role_id) || role_id <= 0) {
                 return res.status(400).json({
-                    message: `El ID del rol '${rawId}' no es válido.`,
+                    message: `El ID del role '${rawId}' no es válido.`,
                 });
             }
 
-            const rol = await RolDB.findByPk(rol_id);
+            const role = await RoleeDB.findByPk(role_id);
             
-            if (!rol) {
+            if (!role) {
                 return res.status(400).json({
-                    message: `El rol con ID '${rol_id}' no existe.`
+                    message: `El role con ID '${role_id}' no existe.`
                 });
             }
 
             next();
         } catch (error) {
             return res.status(500).json({ 
-                message: "Internal server error in validateRolExists."
+                message: "Internal server error in validateRoleExists."
             }); 
         }
     }; 

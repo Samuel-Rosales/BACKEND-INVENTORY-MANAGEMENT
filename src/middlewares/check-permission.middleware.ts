@@ -11,15 +11,15 @@ export const checkPermission = (requiredPermission: string) => {
     return (req: Request, res: Response, next: NextFunction) => {
         
         // 1. Validar que req.user y sus permisos existan
-        if (!req.user || !req.user.rol || !req.user.rol.permissions) {
+        if (!req.user || !req.user.role || !req.user.role.permissions) {
             return res.status(500).json({
                 message: 'Error de servidor: Datos de usuario no cargados en la request.'
             });
         }
 
         // 2. Obtener la lista de permisos del usuario (que cargamos en validateJWT)
-        // (req.user.rol.permissions es un array [{name: '...'}, {name: '...'}])
-        const userPermissions = req.user.rol.permissions.map(perm => perm.code);
+        // (req.user.role.permissions es un array [{name: '...'}, {name: '...'}])
+        const userPermissions = req.user.role.permissions.map(perm => perm.code);
         console.log("Permisos del usuario:", userPermissions);
 
         // 3. Verificar si el permiso requerido está en la lista

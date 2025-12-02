@@ -1,30 +1,30 @@
 paths:
-  /rol:
+  /role:
     get:
-      tags: [Rol]
+      tags: [Rolee]
       summary: Obtiene todos los roles
       responses:
         '200': { description: 'OK' }
     post:
-      tags: [Rol]
-      summary: Crea un nuevo rol
+      tags: [Rolee]
+      summary: Crea un nuevo role
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RolInput'
+              $ref: '#/components/schemas/RoleInput'
       responses:
         '201': { description: 'Created' }
 
 components:
   schemas:
-    Rol:
+    Rolee:
       type: object
       properties:
         rol_id: { type: integer }
         name: { type: string }
-    RolInput:
+    RoleInput:
       type: object
       properties:
         name: { type: string }

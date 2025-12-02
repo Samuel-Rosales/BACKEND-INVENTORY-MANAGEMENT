@@ -9,12 +9,12 @@ import {
 } from "sequelize";
 
 // --- 2. IMPORTA LA INTERFAZ Y LA INSTANCIA del otro modelo ---
-import { RolInterface } from "../interfaces"; 
+import { RoleInterface } from "../interfaces"; 
 import { PermissionInstance } from "./permission.model"; // <-- ¡Importante!
 
 // --- 3. DEFINE TU ROLINSTANCE ---
 // (Probablemente ya tienes esta parte)
-export interface RolInstance extends Model<RolInterface>, RolInterface {
+export interface RoleeInstance extends Model<RoleInterface>, RoleInterface {
     
     // --- 4. AÑADE LOS MÉTODOS "MÁGICOS" AQUÍ ---
 
@@ -43,9 +43,9 @@ export interface RolInstance extends Model<RolInterface>, RolInterface {
     // (Puedes añadir también removePermission, hasPermission, etc. si los necesitas)
 }
 
-export const RolFactory = (sequelize: Sequelize) => {
-    return sequelize.define<RolInstance>("Rol", { // <-- Fíjate que usa <RolInstance>
-        rol_id: {
+export const RoleeFactory = (sequelize: Sequelize) => {
+    return sequelize.define<RoleeInstance>("Rolee", { // <-- Fíjate que usa <RoleeInstance>
+        role_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
