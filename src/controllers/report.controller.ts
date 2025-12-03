@@ -147,4 +147,22 @@ export class ReportController {
             data 
         });
     };
+
+    getProductCostHistory = async (req: Request, res: Response) => {
+        const { product_id } = req.params; // ID del producto (Obligatorio)
+        const { provider_id } = req.query; // ID del proveedor (Opcional)
+
+        if (!product_id) {
+            return res.status(400).json({ message: "Product ID is required" });
+        }
+
+        // Convertimos a número o dejamos undefined si no lo enviaron
+        const providerIdNumber = provider_id ? Number(provider_id) : undefined;
+
+        const result = await ReportServices.getProductCostHistory(Number(product_id), providerIdNumber);
+        return res.status(result.status).json({ 
+            message: result.message, 
+            data: result.data 
+        });
+    };
 }

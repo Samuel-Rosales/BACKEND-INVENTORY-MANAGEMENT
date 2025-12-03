@@ -6,6 +6,66 @@ import { db } from "../config";
 
 class ReportService {
 
+    async getProductCostHistory(productId: number, providerId?: number) {
+        try {
+            // Construimos la cláusula WHERE dinámicamente
+            let providerFilter = "";
+            
+            // Si nos enviaron un proveedor, agregamos el filtro SQL
+            if (providerId) {
+                providerFilter = "AND p.provider_id = :providerId";
+            }
+
+            const sql = `
+                SELECT 
+                    TO_CHAR(p.bought_at, 'YYYY-MM-DD') as "date",
+                    CAST(items.unit_cost AS DECIMAL(10,2)) as "cost",
+                    prov.name as "provider_name",
+                    prov.provider_id
+                
+                FROM purchases p
+                JOIN providers prov ON p.provider_id = prov.provider_id
+                
+                JOIN (
+                    SELECT purchase_id, product_id, unit_cost FROM purchase_general_items
+                    UNION ALL
+                    SELECT purchase_id, product_id, unit_cost FROM purchase_lot_items
+                ) as items ON p.purchase_id = items.purchase_id
+                
+                WHERE items.product_id = :productId
+                AND p.status = 'Aprobado'
+                ${providerFilter} -- <--- Aquí se inyecta el filtro opcional
+                
+                ORDER BY p.bought_at ASC;
+            `;
+
+            const results = await db.query(sql, { 
+                type: QueryTypes.SELECT,
+                replacements: { 
+                    productId,
+                    providerId // Sequelize ignorará esto si no está en el SQL string, pero es seguro pasarlo
+                }
+            });
+
+            const history = results.map((item: any) => ({
+                date: item.date,
+                cost: parseFloat(item.cost),
+                provider: item.provider_name,
+                providerId: item.provider_id
+            }));
+
+            return {
+                status: 200,
+                message: "Product cost history retrieved successfully",
+                data: history
+            };
+
+        } catch (error) {
+            console.error("Error getting product cost history:", error);
+            return { status: 500, message: "Internal server error", data: null };
+        }
+    }
+
     async getClientCorrelationFM(period: string = 'year') {
         try {
             const endDate = new Date();

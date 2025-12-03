@@ -49,6 +49,10 @@ router.get("/client_correlation_fm",
     controller.getClientCorrelationFM
 ); // http://localhost:3000/api/report/client_correlation_fm?period=year
 
+router.get("/cost_history/:product_id",
+    controller.getProductCostHistory
+); // http://localhost:3000/api/report/cost_history/15?provider_id=2
+
 export const ReportRoute = router;
 
 export default router;
