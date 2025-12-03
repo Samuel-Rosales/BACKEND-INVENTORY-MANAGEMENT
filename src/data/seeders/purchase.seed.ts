@@ -26,7 +26,7 @@ export const purchaseSeed = async () => {
             const userCI = userCIs[Math.floor(Math.random() * userCIs.length)];
 
             // Tasa de cambio variable
-            const exchangeRate = 36.0 + (Math.random() * 1.0);
+            const exchangeRate = 200.0 + (Math.random() * 1.0);
 
             purchasesToCreate.push({
                 provider_id: providerId,

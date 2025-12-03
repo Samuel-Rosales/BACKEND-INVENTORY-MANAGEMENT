@@ -38,7 +38,7 @@ export const saleSeed = async () => {
                 const saleDate = new Date(date);
                 saleDate.setHours(8 + Math.floor(Math.random() * 10), Math.floor(Math.random() * 60));
 
-                const exchangeRate = 36.5 + (Math.random() * 0.5);
+                const exchangeRate = 200.5 + (Math.random() * 0.5);
 
                 salesToCreate.push({
                     client_ci: selectedClientCI,
