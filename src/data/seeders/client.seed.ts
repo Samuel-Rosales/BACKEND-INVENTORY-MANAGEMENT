@@ -2,69 +2,52 @@ import { ClientDB } from "src/models";
 
 export const clientSeed = async () => {
     try {
-        console.log("Iniciando seed de Clientes...");
+        console.log("👥 Iniciando seed de Clientes (Masivo)...");
 
-        const clientsToCreate = [
-            {
-                client_ci: "12345678",
-                name: "Ana María Pérez",
-                phone: "04121112233",
-                address: "Calle Los Girasoles, Edificio Apto 5B, Urb. Centro",
-                status: true,
-            },
-            {
-                client_ci: "20987654",
-                name: "Roberto Gómez Bolaños",
-                phone: "04144445566",
-                address: "Av. Principal, Quinta Los Robles, Sector Este",
-                status: true,
-            },
-            {
-                client_ci: "08765432",
-                name: "Sofía Hernández García",
-                phone: "04267778899",
-                address: "Calle 3, Local 10, Casco Histórico",
-                status: true,
-            },
-            {
-                client_ci: "25135790",
-                name: "Elsa Martínez",
-                phone: "04240001122",
-                address: "Urbanización El Sol, Casa N° 12",
-                status: false, // Cliente inactivo de prueba
-            },
+        // 1. Clientes Reales / Manuales
+        const specificClients = [
+            { client_ci: "12345678", name: "Ana María Pérez", phone: "04121112233", address: "Calle Los Girasoles", status: true },
+            { client_ci: "20987654", name: "Roberto Gómez Bolaños", phone: "04144445566", address: "Av. Principal", status: true },
+            { client_ci: "08765432", name: "Sofía Hernández", phone: "04267778899", address: "Casco Histórico", status: true },
+            { client_ci: "25135790", name: "Elsa Martínez", phone: "04240001122", address: "Urb. El Sol", status: false },
         ];
 
-        // 1. Obtener las cédulas de los clientes ya existentes en la DB
-        // Usamos el casting para que TypeScript reconozca la propiedad 'client_ci'
-        const existingClients = await ClientDB.findAll({ 
-            attributes: ['client_ci'] 
-        }); 
-        
-        const existingCIs = existingClients.map(client => (client as any).client_ci);
+        // 2. Generar 50 Clientes "Dummy" para llenar gráficas
+        const dummyClients = [];
+        for (let i = 1; i <= 50; i++) {
+            const randomCI = (30000000 + i).toString(); 
+            dummyClients.push({
+                client_ci: randomCI,
+                name: `Cliente Frecuente ${i}`,
+                phone: `0412000${i.toString().padStart(4, '0')}`,
+                address: `Zona Residencial #${i}`,
+                status: true
+            });
+        }
 
-        // 2. Filtrar el arreglo, manteniendo solo los clientes cuyas CIs NO existan
-        const uniqueClientsToCreate = clientsToCreate.filter(client => 
-            !existingCIs.includes(client.client_ci)
-        );
+        const allClients = [...specificClients, ...dummyClients];
 
-        // 3. Aplicar las fechas a los clientes que serán insertados
-        const finalClients = uniqueClientsToCreate.map(client => ({
-            ...client,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        }));
+        // 3. Verificar existencia para no duplicar
+        const existingClients = await ClientDB.findAll({ attributes: ['client_ci'] });
+        const existingCIs = new Set(existingClients.map(c => (c as any).client_ci));
 
-        if (finalClients.length > 0) {
-            // 4. Insertar SOLO los nuevos clientes
-            const createdClients = await ClientDB.bulkCreate(finalClients);
-            console.log(`Seed de Clientes ejecutado correctamente. Insertados: ${createdClients.length}`);
+        const newClients = allClients.filter(c => !existingCIs.has(c.client_ci));
+
+        // 4. Insertar
+        if (newClients.length > 0) {
+            const finalClients = newClients.map(c => ({
+                ...c,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            }));
+            const created = await ClientDB.bulkCreate(finalClients);
+            console.log(`✅ ${created.length} Clientes insertados.`);
         } else {
-            console.log("Seed de Clientes ejecutado. No se insertaron nuevos clientes (todos ya existían).");
+            console.log("ℹ️ No hay clientes nuevos por insertar.");
         }
 
     } catch (error) {
-        console.error("Error al ejecutar seed de Clientes:", error);
+        console.error("❌ Error en seed de Clientes:", error);
         throw error;
     }
 };

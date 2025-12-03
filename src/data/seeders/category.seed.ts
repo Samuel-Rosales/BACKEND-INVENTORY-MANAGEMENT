@@ -2,55 +2,54 @@ import { CategoryDB } from "src/models";
 
 export const categorySeed = async () => {
     try {
-        console.log("Iniciando seed de Categorías...");
+        console.log("🏪 Iniciando seed de Categorías (Bodega)...");
 
         const categoriesToCreate = [
+            // ID 1: Coincide con Harina, Arroz, etc.
             {
                 name: "Alimentos Básicos",
-                description: "Productos esenciales para la alimentación diaria, como arroz, frijoles y harina.",
+                description: "Productos esenciales de la canasta alimentaria: Harinas, arroz, pasta, aceites y margarina.",
                 status: true,
             },
+            // ID 2: Coincide con Jabón, Champú, etc.
             {
-                name: "Higiene Personal y Cuidado",
-                description: "Productos para el cuidado personal diario, como jabón, champú y pasta dental.",
+                name: "Higiene Personal",
+                description: "Artículos para el aseo y cuidado personal diario.",
                 status: true,
             },
+            // ID 3: Coincide con Cloro, Detergente.
             {
-                name: "Limpieza Básica",
-                description: "Productos para la limpieza del hogar, como detergentes, desinfectantes y esponjas.",
+                name: "Limpieza del Hogar",
+                description: "Productos para el mantenimiento, desinfección y limpieza de superficies.",
                 status: true,
             },
+            // ID 4: NUEVA - Coincide con Pepitos, Galletas, Chocolates.
             {
-                name: "Herramientas Básicas",
-                description: "Herramientas manuales esenciales para reparaciones y mantenimiento del hogar.",
+                name: "Golosinas y Snacks",
+                description: "Dulces, galletas, chocolates y snacks salados para la merienda.",
                 status: true,
             },
+            // ID 5: NUEVA - Coincide con Refrescos, Malta, Agua.
             {
-                name: "Ferretería básica",
-                description: "Suministros y materiales esenciales para reparaciones y proyectos de bricolaje en el hogar.",
-                status: true, // Ejemplo de categoría inactiva inicialmente
-            },
-            {
-                name: "Muebles Básicos",
-                description: "Muebles esenciales para el hogar, como sillas, mesas y estanterías.",
-                status: true, // Ejemplo de categoría inactiva inicialmente
+                name: "Bebidas y Refrescos",
+                description: "Bebidas gaseosas, jugos, malta y agua mineral.",
+                status: true,
             },
         ];
 
-        // 1. Obtener los nombres de las categorías ya existentes en la DB
-        // Usamos el casting para que TypeScript reconozca la propiedad 'name'
+        // 1. Verificar existentes
         const existingCategories = await CategoryDB.findAll({ 
             attributes: ['name'] 
         }); 
         
-        const existingNames = existingCategories.map(category => (category as any).name);
+        const existingNames = new Set(existingCategories.map(category => (category as any).name));
 
-        // 2. Filtrar el arreglo, manteniendo solo las categorías que NO existan
+        // 2. Filtrar nuevas
         const uniqueCategoriesToCreate = categoriesToCreate.filter(category => 
-            !existingNames.includes(category.name)
+            !existingNames.has(category.name)
         );
 
-        // 3. Aplicar las fechas a las categorías que serán insertadas
+        // 3. Preparar datos
         const finalCategories = uniqueCategoriesToCreate.map(category => ({
             ...category,
             createdAt: new Date(),
@@ -58,15 +57,15 @@ export const categorySeed = async () => {
         }));
 
         if (finalCategories.length > 0) {
-            // 4. Insertar SOLO las nuevas categorías
+            // 4. Insertar
             const createdCategories = await CategoryDB.bulkCreate(finalCategories);
-            console.log(`Seed de Categorías ejecutado correctamente. Insertadas: ${createdCategories.length}`);
+            console.log(`✅ ${createdCategories.length} Categorías de bodega insertadas.`);
         } else {
-            console.log("Seed de Categorías ejecutado. No se insertaron nuevas categorías (todas ya existían).");
+            console.log("ℹ️ No hay categorías nuevas por insertar.");
         }
 
     } catch (error) {
-        console.error("Error al ejecutar seed de Categorías:", error);
+        console.error("❌ Error seed Categorías:", error);
         throw error;
     }
 };

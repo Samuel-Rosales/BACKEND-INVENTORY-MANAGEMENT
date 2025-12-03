@@ -1,166 +1,109 @@
-// src/data/seeders/saleItem.seed.ts
-import { SaleItemDB, ProductDB, DepotDB, SaleDB } from "src/models"; 
+import { SaleItemDB, ProductDB, DepotDB, SaleDB } from "src/models";
+import { db as sequelize } from "../../config";
 
 export const saleItemSeed = async () => {
     try {
-        console.log("Iniciando seed de Detalles de Venta (COMPLETO)...");
+        console.log("🛒 Generando ventas de Bodega...");
 
-        // 1. OBTENER DATOS REALES DE LA BD
-        // Necesitamos saber qué ventas existen para asignarles items
         const sales = await SaleDB.findAll({ attributes: ['sale_id'] });
+        const products = await ProductDB.findAll({ attributes: ['product_id', 'name', 'base_price'] });
+        const depots = await DepotDB.findAll({ attributes: ['depot_id'] });
+
+        if (sales.length === 0) throw new Error("❌ Corre saleSeed primero.");
+        
         const saleIds = sales.map((s: any) => s.sale_id);
+        const defaultDepotId = depots.length > 0 ? (depots[0] as any).depot_id : 1;
 
-        if (saleIds.length === 0) {
-            throw new Error("No hay ventas (Sales) creadas. Ejecuta el seed de Ventas primero.");
+        // Catálogo con precio de venta (+35% ganancia)
+        const catalog = products.map((p: any) => ({
+            id: p.product_id,
+            name: p.name,
+            basePrice: parseFloat(p.base_price),
+            sellingPrice: parseFloat(p.base_price) * 1.35 
+        }));
+
+        const itemsToCreate = [];
+        const existingCombinations = new Set(); 
+
+        for (const saleId of saleIds) {
+            // Una compra en bodega suele tener varias cositas (1 a 5 items)
+            const numberOfProducts = Math.floor(Math.random() * 5) + 1; 
+
+            for (let k = 0; k < numberOfProducts; k++) {
+                const prod = catalog[Math.floor(Math.random() * catalog.length)];
+
+                if (existingCombinations.has(`${saleId}-${prod.id}`)) continue;
+                existingCombinations.add(`${saleId}-${prod.id}`);
+
+                // --- LÓGICA DE CANTIDAD DE BODEGA ---
+                let qty = 1;
+                const name = prod.name.toLowerCase();
+
+                if (name.includes("chupeta") || name.includes("galleta") || name.includes("pepito")) {
+                    // Chucherías: La gente compra varias (2 a 6)
+                    qty = Math.floor(Math.random() * 5) + 2;
+                } 
+                else if (name.includes("harina") || name.includes("arroz") || name.includes("azucar")) {
+                    // Víveres: 2 o 4 paqueticos
+                    qty = Math.floor(Math.random() * 3) + 1;
+                }
+                else if (name.includes("refresco") || name.includes("malta")) {
+                    // Bebidas: 1 o 2
+                    qty = Math.floor(Math.random() * 2) + 1;
+                }
+                else if (prod.basePrice > 1000) {
+                     // El producto "Marcos Castellanos" (casi nunca se vende, solo 1)
+                     qty = 1;
+                     // Hacemos que sea muy raro que aparezca en una venta (1% prob)
+                     if (Math.random() > 0.01) continue; 
+                }
+
+                itemsToCreate.push({
+                    sale_id: saleId,
+                    product_id: prod.id,
+                    depot_id: defaultDepotId,
+                    unit_cost: parseFloat(prod.sellingPrice.toFixed(2)),
+                    amount: qty,
+                    status: true,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                });
+            }
         }
 
-        const products = await ProductDB.findAll({ attributes: ['product_id', 'name'] });
-        const depots = await DepotDB.findAll({ attributes: ['depot_id', 'name'] });
-        
-        const defaultDepotId = depots.length > 0 ? (depots[0] as any).depot_id : null;
-        if (!defaultDepotId) throw new Error("No hay almacenes creados.");
-
-        const productMap = new Map(products.map(p => [(p as any).name, (p as any).product_id]));
-        const depotMap = new Map(depots.map(d => [(d as any).name, (d as any).depot_id]));
-
-        // --- 2. LISTA DE ITEMS MANUALES (Para las primeras 5 ventas fijas) ---
-        // 'unit_cost' aquí representa el PRECIO DE VENTA al cliente.
-        const manualItems = [
-            // Venta 1
-            { 
-                sale_id: 1, 
-                productName: "Mesa Plegable Tipo Maletín (1.80m)", 
-                depotName: "Almacén Principal", 
-                unit_cost: 210.00, // Venta
-                amount: 1 
-            },
-            { 
-                sale_id: 1, 
-                productName: "Silla Plástica Manaplas (Sin brazos)", 
-                depotName: "Almacén Principal", 
-                unit_cost: 25.00, 
-                amount: 4 
-            },
-            // Venta 2
-            { 
-                sale_id: 2, 
-                productName: "Silla Plástica Manaplas (Sin brazos)", 
-                depotName: "Almacén Principal", 
-                unit_cost: 25.00, 
-                amount: 2 
-            },
-            // Venta 3
-            { 
-                sale_id: 3, 
-                productName: "Martillo de Uña Curva 16oz (Mango Madera)", 
-                depotName: "Almacén Principal", 
-                unit_cost: 50.00, 
-                amount: 1 
-            },
-            { 
-                sale_id: 3, 
-                productName: "Destornillador Estriado Pretul 1/4\" x 4\"", 
-                depotName: "Almacén Principal", 
-                unit_cost: 12.00, 
-                amount: 1 
-            },
-            // Venta 4
-            { 
-                sale_id: 4, 
-                productName: "Tirro Plástico Transparente (Cinta de Embalaje)", 
-                depotName: "Almacén Principal", 
-                unit_cost: 3.50, 
-                amount: 5 
-            },
-            // Venta 5
-            { 
-                sale_id: 5, 
-                productName: "Estante Plástico 4 Niveles", 
-                depotName: "Almacén Principal", 
-                unit_cost: 60.00, 
-                amount: 2 
-            },
-        ];
-
-        // --- 3. GENERADOR DE ITEMS ALEATORIOS (Para las ventas 6 en adelante) ---
-        // Lista de productos con precios de venta simulados
-        const catalog = [
-            { name: "Harina de Maíz Blanco P.A.N. (1kg)", price: 1.50 },
-            { name: "Arroz Blanco de Mesa Primor (1kg)", price: 2.20 },
-            { name: "Margarina Mavesa (500g)", price: 3.50 },
-            { name: "Aceite de Maíz Mazeite (1L)", price: 5.00 },
-            { name: "Jabón de Tocador Protex Avena (110g)", price: 2.00 },
-            { name: "Champú Head & Shoulders Limpieza Renovadora (375ml)", price: 12.00 },
-            { name: "Papel Higiénico Rosal Plus (4 Rolelos)", price: 5.00 },
-            { name: "Cloro Nevex Regular (1 Litro)", price: 3.50 },
-            { name: "Bombillo LED 9W Luz Blanca (Rosca E27)", price: 4.00 },
-            { name: "Teipe Cobra Negro (Cinta Eléctrica) 18m", price: 6.00 }
-        ];
-
-        const randomItems = [];
-        
-        // Generamos unos 150 items distribuidos entre todas las ventas existentes
-        for (let i = 0; i < 150; i++) {
-            // Seleccionar una venta aleatoria de las que EXISTEN en la BD
-            const randomSaleId = saleIds[Math.floor(Math.random() * saleIds.length)];
-            
-            // Seleccionar producto aleatorio
-            const prod = catalog[Math.floor(Math.random() * catalog.length)];
-            
-            // Cantidad aleatoria (1-10)
-            const qty = Math.floor(Math.random() * 10) + 1;
-
-            randomItems.push({
-                sale_id: randomSaleId,
-                productName: prod.name,
-                depotName: "Almacén Principal",
-                unit_cost: prod.price, // Precio de Venta
-                amount: qty
-            });
+        // Insertar Items
+        const CHUNK_SIZE = 500;
+        for (let i = 0; i < itemsToCreate.length; i += CHUNK_SIZE) {
+            const chunk = itemsToCreate.slice(i, i + CHUNK_SIZE);
+            await SaleItemDB.bulkCreate(chunk);
         }
+        console.log(`✅ ${itemsToCreate.length} items vendidos.`);
 
-        // Unimos todo
-        const allItemsToCreate = [...manualItems, ...randomItems];
+        // --- SINCRONIZACIÓN DE TOTALES (Fix anterior incluido) ---
+        console.log("🔄 Sincronizando totales de VENTAS...");
+        const saleItemTable = SaleItemDB.getTableName();
+        const saleTable = SaleDB.getTableName();
 
-        // --- 4. VALIDACIÓN Y CREACIÓN ---
-        const existingItems = await SaleItemDB.findAll({ attributes: ['sale_id', 'product_id'] });
-        const existingSet = new Set(existingItems.map(i => `${(i as any).sale_id}-${(i as any).product_id}`));
-
-        const finalItems = [];
-        
-        for (const item of allItemsToCreate) {
-            const product_id = productMap.get(item.productName);
-            let depot_id = depotMap.get(item.depotName);
-            if (!depot_id) depot_id = defaultDepotId;
-
-            // Validaciones
-            if (!product_id) continue; // Si el producto no existe, saltar
-            if (existingSet.has(`${item.sale_id}-${product_id}`)) continue; // Si ya existe el item en esa venta, saltar
-
-            // Agregamos al set temporal para evitar duplicados dentro del mismo loop
-            existingSet.add(`${item.sale_id}-${product_id}`);
-
-            finalItems.push({
-                sale_id: item.sale_id,
-                product_id,
-                depot_id, 
-                unit_cost: item.unit_cost, // Precio Venta
-                amount: item.amount,
-                status: true,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            });
-        }
-
-        if (finalItems.length > 0) {
-            await SaleItemDB.bulkCreate(finalItems);
-            console.log(`Seed de Items de Venta ejecutado. Insertados: ${finalItems.length} detalles.`);
-        } else {
-            console.log("No se insertaron nuevos items (ya existían o no se encontraron productos).");
-        }
+        const query = `
+            UPDATE ${saleTable}
+            SET 
+                total_usd = (
+                    SELECT COALESCE(SUM(amount * unit_cost), 0)
+                    FROM ${saleItemTable} AS si
+                    WHERE si.sale_id = ${saleTable}.sale_id
+                ),
+                total_ves = (
+                    SELECT COALESCE(SUM(amount * unit_cost), 0)
+                    FROM ${saleItemTable} AS si
+                    WHERE si.sale_id = ${saleTable}.sale_id
+                ) * exchange_rate
+            WHERE status = true;
+        `;
+        await sequelize.query(query);
+        console.log("✅ Totales de Ventas actualizados.");
 
     } catch (error) {
-        console.error("Error al ejecutar seed de Items de Venta:", error);
+        console.error("❌ Error seed Sale Items:", error);
         throw error;
     }
 };
