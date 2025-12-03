@@ -51,7 +51,7 @@ class ReportService {
                 date: item.date,
                 cost: parseFloat(item.cost),
                 provider: item.provider_name,
-                providerId: item.provider_id
+                provider_id: item.provider_id
             }));
 
             return {
