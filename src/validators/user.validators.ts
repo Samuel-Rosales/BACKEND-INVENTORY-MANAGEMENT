@@ -52,7 +52,7 @@ export class UserValidators {
     validateRoleIdExists = async (req: Request, res: Response, next: NextFunction) => {
         
         try {
-            const rawId = (req.body.rol_id ?? "").toString().trim();
+            const rawId = (req.body.role_id ?? "").toString().trim();
             const role_id = Number.parseInt(rawId, 10);
 
             if (Number.isNaN(role_id) || !Number.isInteger(role_id) || role_id <= 0) {

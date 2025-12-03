@@ -87,7 +87,7 @@ export class Server {
             purchase_general_items: this.pre + "/purchase_general_item",
             purchase_lot_items: this.pre + "/purchase_lot_item",
             reports: this.pre + "/report",
-            rols: this.pre + "/role",
+            roles: this.pre + "/role",
             sales: this.pre + "/sale",
             sale_items: this.pre + "/sale_item",
             stock_generals: this.pre + "/stock_general",
@@ -141,7 +141,7 @@ export class Server {
         this.app.use(this.paths.purchase_general_items, PurchaseGeneralItemRoute);
         this.app.use(this.paths.purchase_lot_items , PurchaseLotItemRoute);
         this.app.use(this.paths.reports , ReportRoute);
-        this.app.use(this.paths.rols, RoleRoute);
+        this.app.use(this.paths.roles, RoleRoute);
         this.app.use(this.paths.sales, SaleRoute);
         this.app.use(this.paths.sale_items, SaleItemRoute);
         this.app.use(this.paths.stock_generals , StockGeneralRoute);

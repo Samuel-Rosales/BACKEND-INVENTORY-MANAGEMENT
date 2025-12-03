@@ -50,19 +50,19 @@ export class PermissionValidator {
     validatePermissionParamIdExists = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const rawId = (req.params.id ?? "").toString().trim();
-            const rol_id = Number.parseInt(rawId, 10);
+            const role_id = Number.parseInt(rawId, 10);
 
-            if (Number.isNaN(rol_id) || !Number.isInteger(rol_id) || rol_id <= 0) {
+            if (Number.isNaN(role_id) || !Number.isInteger(role_id) || role_id <= 0) {
                 return res.status(400).json({
                     message: `El ID de permiso "${rawId}" no es válido.`,
                 });
             }
 
-            const existingPermission = await PermissionDB.findByPk(rol_id);
+            const existingPermission = await PermissionDB.findByPk(role_id);
 
             if (!existingPermission) {
                 return res.status(404).json({
-                    message: `Permiso con ID "${rol_id}" no encontrado.`,
+                    message: `Permiso con ID "${role_id}" no encontrado.`,
                 });
             }
 

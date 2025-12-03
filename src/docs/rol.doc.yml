@@ -22,7 +22,7 @@ components:
     Rolee:
       type: object
       properties:
-        rol_id: { type: integer }
+        role_id: { type: integer }
         name: { type: string }
     RoleInput:
       type: object

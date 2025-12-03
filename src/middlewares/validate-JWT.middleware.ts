@@ -45,8 +45,8 @@ export const validateJWT = async (req: Request, res: Response, next: NextFunctio
 
     try {
         // 5. Verificar el token con la clave secreta
-        // 'payload' tendrá { id, ci, rol_id } que pusimos en el login
-        const payload = jwt.verify(token, JWT_SECRET) as { user_ci: string, rol_id: number };
+        // 'payload' tendrá { id, ci, role_id } que pusimos en el login
+        const payload = jwt.verify(token, JWT_SECRET) as { user_ci: string, role_id: number };
 
         // 6. Obtener el usuario de la BD basado en el ID del payload
         //    (Usamos 'id' porque es más eficiente para buscar que 'ci')

@@ -29,9 +29,9 @@ class RoleService {
         }
     }
 
-    async getOne(rol_id: number) {
+    async getOne(role_id: number) {
         try {
-            const role = await RoleeDB.findByPk(rol_id , {
+            const role = await RoleeDB.findByPk(role_id , {
                 include: [{
                     model: PermissionDB,
                     as: 'permissions'
@@ -62,9 +62,9 @@ class RoleService {
         }
     }
 
-    async getPermissionsByRoleId(rol_id: number) {
+    async getPermissionsByRoleId(role_id: number) {
         try {
-            const role = await RoleeDB.findByPk(rol_id , {
+            const role = await RoleeDB.findByPk(role_id , {
                 include: [{
                     model: PermissionDB,
                     as: 'permissions'
@@ -74,7 +74,7 @@ class RoleService {
             if (!role) {
                 return {
                     status: 404,
-                    message: "Rolee not found",
+                    message: "Role not found",
                     data: null,
                 };
             }
@@ -162,13 +162,13 @@ class RoleService {
         }
     }
 
-    async update(rol_id: number, role: Partial<RoleInterface>) {
+    async update(role_id: number, role: Partial<RoleInterface>) {
         try {
             const { createdAt, updatedAt, role_id: _,  ...rolData } = role;
 
-            await RoleeDB.update(rolData, { where: { role_id: rol_id } });
+            await RoleeDB.update(rolData, { where: { role_id: role_id } });
 
-            const updatedRole = await RoleeDB.findByPk(rol_id);
+            const updatedRole = await RoleeDB.findByPk(role_id);
             
             return {
                 status: 200,
@@ -186,9 +186,9 @@ class RoleService {
         } 
     }
 
-    async delete(rol_id: number) {
+    async delete(role_id: number) {
         try {
-            const deletedCount  = await RoleeDB.destroy({ where: { role_id: rol_id } });
+            const deletedCount  = await RoleeDB.destroy({ where: { role_id: role_id } });
 
             if (deletedCount === 0) {
                 return {
@@ -213,10 +213,10 @@ class RoleService {
         }
     }
 
-    async assignPermissions(rol_id: number, permission_ids: number[]) {
+    async assignPermissions(role_id: number, permission_ids: number[]) {
 
         try {
-            const role = await RoleeDB.findByPk(rol_id);
+            const role = await RoleeDB.findByPk(role_id);
 
             if (!role) {
                 return {
@@ -245,11 +245,11 @@ class RoleService {
         }
     }
 
-    async removePermissions(rol_id: number, permission_ids: number[]) {
+    async removePermissions(role_id: number, permission_ids: number[]) {
 
         try {
             // 1. Encontrar el role
-            const role = await RoleeDB.findByPk(rol_id);
+            const role = await RoleeDB.findByPk(role_id);
 
             if (!role) {
                 return {

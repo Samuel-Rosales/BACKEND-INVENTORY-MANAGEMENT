@@ -47,7 +47,7 @@ class AuthService {
             // 6. ¡Éxito! Generar el JSON Web Token (JWT)
             const payload = {
                 user_ci: user.user_ci,
-                rol_id: user.role_id
+                role_id: user.role_id
             };
 
             const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '8h' });
@@ -61,7 +61,7 @@ class AuthService {
                     user: {
                         user_ci: user.user_ci,
                         name: user.name,
-                        rol_id: user.role_id
+                        role_id: user.role_id
                     }
                 }
             };

@@ -12,19 +12,19 @@ export class RoleValidator {
     validateRoleParamIdExists = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const rawId = (req.params.id ?? "").toString().trim();
-            const rol_id = Number.parseInt(rawId, 10);
+            const role_id = Number.parseInt(rawId, 10);
 
-            if (Number.isNaN(rol_id) || !Number.isInteger(rol_id) || rol_id <= 0) {
+            if (Number.isNaN(role_id) || !Number.isInteger(role_id) || role_id <= 0) {
                 return res.status(400).json({
                     message: `El ID de role "${rawId}" no es válido.`,
                 });
             }
 
-            const existingRole = await RoleeDB.findByPk(rol_id);
+            const existingRole = await RoleeDB.findByPk(role_id);
 
             if (!existingRole) {
                 return res.status(404).json({
-                    message: `Rolee con ID "${rol_id}" no encontrado.`,
+                    message: `Rolee con ID "${role_id}" no encontrado.`,
                 });
             }
 

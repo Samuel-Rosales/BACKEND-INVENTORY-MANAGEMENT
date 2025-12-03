@@ -16,9 +16,9 @@ router.get("/:user_ci",
     userController.one
 ); // http://localhost:3000/api/user/:id
 
-router.get("/role/:rol_id", 
+router.get("/role/:role_id", 
     userController.all
-); // http://localhost:3000/api/user/role/:rol_id
+); // http://localhost:3000/api/user/role/:role_id
 
 
 //METHOD POST

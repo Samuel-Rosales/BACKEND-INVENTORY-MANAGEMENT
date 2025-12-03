@@ -47,19 +47,19 @@ components:
       properties:
         ci: { type: string }
         name: { type: string }
-        rol_id: { type: integer }
+        role_id: { type: integer }
         status: { type: boolean }
     UserInput:
       type: object
       properties:
         ci: { type: string }
         name: { type: string }
-        rol_id: { type: integer }
+        role_id: { type: integer }
         status: { type: boolean }
-      required: [ci, name, rol_id]
+      required: [ci, name, role_id]
     UserUpdate:
       type: object
       properties:
         name: { type: string }
-        rol_id: { type: integer }
+        role_id: { type: integer }
         status: { type: boolean }
