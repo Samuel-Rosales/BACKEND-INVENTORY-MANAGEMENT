@@ -33,7 +33,7 @@ export class RoleController {
         });
     };
 
-    checkRoleePermission = async (req: Request, res: Response) => {
+    checkrolePermission = async (req: Request, res: Response) => {
         try {
             const { role_id, permission_code } = req.body;
 

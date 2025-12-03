@@ -14,7 +14,7 @@ import { PermissionInstance } from "./permission.model"; // <-- ¡Importante!
 
 // --- 3. DEFINE TU ROLINSTANCE ---
 // (Probablemente ya tienes esta parte)
-export interface RoleeInstance extends Model<RoleInterface>, RoleInterface {
+export interface roleInstance extends Model<RoleInterface>, RoleInterface {
     
     // --- 4. AÑADE LOS MÉTODOS "MÁGICOS" AQUÍ ---
 
@@ -43,8 +43,8 @@ export interface RoleeInstance extends Model<RoleInterface>, RoleInterface {
     // (Puedes añadir también removePermission, hasPermission, etc. si los necesitas)
 }
 
-export const RoleeFactory = (sequelize: Sequelize) => {
-    return sequelize.define<RoleeInstance>("Rolee", { // <-- Fíjate que usa <RoleeInstance>
+export const roleFactory = (sequelize: Sequelize) => {
+    return sequelize.define<roleInstance>("Role", { // <-- Fíjate que usa <roleInstance>
         role_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,

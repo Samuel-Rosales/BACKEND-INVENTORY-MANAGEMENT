@@ -1,4 +1,4 @@
-import { RoleeDB } from "src/models"; 
+import { RoleDB } from "src/models"; 
 
 export const roleSeed = async () => {
     try {
@@ -25,34 +25,34 @@ export const roleSeed = async () => {
 
         // 1. Obtener los nombres de los roles ya existentes en la DB
         // Usamos 'as { name: string }[]' para el tipado, evitando el error de TypeScript
-        const existingRolees = await RoleeDB.findAll({ 
+        const existingroles = await RoleDB.findAll({ 
             attributes: ['name'] 
         }); 
         
-        const existingNames = existingRolees.map(role => (role as any).name);
+        const existingNames = existingroles.map(role => (role as any).name);
 
         // 2. Filtrar el arreglo, manteniendo solo los roles que NO existan
-        const uniqueRoleesToCreate = rolesToCreate.filter(role => 
+        const uniquerolesToCreate = rolesToCreate.filter(role => 
             !existingNames.includes(role.name)
         );
 
         // 3. Aplicar las fechas a los roles que serán insertados
-        const finalRolees = uniqueRoleesToCreate.map(role => ({
+        const finalroles = uniquerolesToCreate.map(role => ({
             ...role,
             createdAt: new Date(),
             updatedAt: new Date(),
         }));
 
-        if (finalRolees.length > 0) {
+        if (finalroles.length > 0) {
             // 4. Insertar SOLO los nuevos roles
-            const createdRolees = await RoleeDB.bulkCreate(finalRolees);
-            console.log(`Seed de Rolees ejecutado correctamente. Insertados: ${createdRolees.length}`);
+            const createdroles = await RoleDB.bulkCreate(finalroles);
+            console.log(`Seed de roles ejecutado correctamente. Insertados: ${createdroles.length}`);
         } else {
-            console.log("Seed de Rolees ejecutado. No se insertaron nuevos roles (todos ya existían).");
+            console.log("Seed de roles ejecutado. No se insertaron nuevos roles (todos ya existían).");
         }
 
     } catch (error) {
-        console.error("Error al ejecutar seed de Rolees:", error);
+        console.error("Error al ejecutar seed de roles:", error);
         throw error;
     }
 };

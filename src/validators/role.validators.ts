@@ -1,6 +1,6 @@
 import { check } from "express-validator"; 
 import type { NextFunction, Request, Response } from "express";
-import { RoleeDB } from "../models";
+import { RoleDB } from "../models";
 
 export class RoleValidator {
 
@@ -20,11 +20,11 @@ export class RoleValidator {
                 });
             }
 
-            const existingRole = await RoleeDB.findByPk(role_id);
+            const existingRole = await RoleDB.findByPk(role_id);
 
             if (!existingRole) {
                 return res.status(404).json({
-                    message: `Rolee con ID "${role_id}" no encontrado.`,
+                    message: `Role con ID "${role_id}" no encontrado.`,
                 });
             }
 

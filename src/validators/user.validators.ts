@@ -1,6 +1,6 @@
 import { check } from "express-validator"; 
 import type { NextFunction, Request, Response } from "express";
-import { RoleeDB, UserDB } from "../models";
+import { RoleDB, UserDB } from "../models";
 
 export class UserValidators {
 
@@ -61,7 +61,7 @@ export class UserValidators {
                 });
             }
 
-            const role = await RoleeDB.findByPk(role_id);
+            const role = await RoleDB.findByPk(role_id);
             
             if (!role) {
                 return res.status(400).json({
@@ -72,7 +72,7 @@ export class UserValidators {
             next();
         } catch (error) {
             return res.status(500).json({ 
-                message: "Internal server error in validateRoleExists."
+                message: "Internal server error in validaterolexists."
             }); 
         }
     }; 

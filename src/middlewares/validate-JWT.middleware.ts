@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { UserDB, RoleeDB, PermissionDB } from '../models'; // Importa tu modelo User
+import { UserDB, RoleDB, PermissionDB } from '../models'; // Importa tu modelo User
 import { UserInstance } from '../models/user.model'; // Importa tu tipo
 
 // Augment Express Request to include `user`
@@ -52,7 +52,7 @@ export const validateJWT = async (req: Request, res: Response, next: NextFunctio
         //    (Usamos 'id' porque es más eficiente para buscar que 'ci')
         const user: UserInstance | null = await UserDB.findByPk(payload.user_ci, {
             include: [{
-                model: RoleeDB, as: 'role', include: [{
+                model: RoleDB, as: 'role', include: [{
                         model: PermissionDB, as: 'permissions'
                 }]
             }]

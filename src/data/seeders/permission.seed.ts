@@ -7,7 +7,7 @@ export const permissionSeed = async () => {
 
         const permissionsToCreate: Omit<PermissionInterface, 'permission_id'>[] = [
             // ==========================================================
-            // 1. ADMINISTRACIÓN (Usuarios y Rolees)
+            // 1. ADMINISTRACIÓN (Usuarios y roles)
             // ==========================================================
             {
                 code: "manage:users",
@@ -17,7 +17,7 @@ export const permissionSeed = async () => {
             },
             {
                 code: "manage:roles",
-                name: "Gestionar Rolees",
+                name: "Gestionar roles",
                 description: "Permite crear, editar, eliminar y asignar permisos a roles.",
                 status: true
             },

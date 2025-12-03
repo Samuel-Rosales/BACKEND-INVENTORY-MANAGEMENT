@@ -22,7 +22,7 @@ router.get("/:id/permissions",
 ); // http://localhost:3000/api/role/:id/permissions
 
 router.post('/check_permission', 
-    rolController.checkRoleePermission
+    rolController.checkrolePermission
 ); // http://localhost:3000/api/role/check_permission
 
 //METHOD POST

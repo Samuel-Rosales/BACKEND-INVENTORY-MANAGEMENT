@@ -1,7 +1,7 @@
-import { RoleeDB, PermissionDB } from "src/models"; // Ajusta la ruta a tus modelos
+import { RoleDB, PermissionDB } from "src/models"; // Ajusta la ruta a tus modelos
 import { Op, Model } from "sequelize"; 
 
-// ---- Helper para tipar el Rolee con los métodos mágicos de Sequelize ----
+// ---- Helper para tipar el Role con los métodos mágicos de Sequelize ----
 interface RoleInstance extends Model {
     setPermissions: (permissions: Model[]) => Promise<void>;
     addPermission: (permission: Model) => Promise<void>;
@@ -9,14 +9,14 @@ interface RoleInstance extends Model {
 
 export const rolePermissionSeed = async () => {
     try {
-        console.log("Iniciando seed de Relaciones Rolee-Permiso...");
+        console.log("Iniciando seed de Relaciones Role-Permiso...");
 
         // --- Función Helper para buscar permisos y asignarlos al role ---
-        const linkPermissionsToRolee = async (roleName: string, permissionCodes: string[]) => {
-            const role = await RoleeDB.findOne({ where: { name: roleName } }) as RoleInstance | null;
+        const linkPermissionsTorole = async (roleName: string, permissionCodes: string[]) => {
+            const role = await RoleDB.findOne({ where: { name: roleName } }) as RoleInstance | null;
             
             if (!role) {
-                console.warn(`Seed-Relaciones: Rolee "${roleName}" no encontrado. Saltando...`);
+                console.warn(`Seed-Relaciones: Role "${roleName}" no encontrado. Saltando...`);
                 return;
             }
 
@@ -39,13 +39,13 @@ export const rolePermissionSeed = async () => {
         // ==========================================================
         // 1. ROL: Administrador (Super Usuario)
         // ==========================================================
-        const adminRolee = await RoleeDB.findOne({ where: { name: "Administrador" } }) as RoleInstance | null;
-        if (adminRolee) {
+        const adminrole = await RoleDB.findOne({ where: { name: "Administrador" } }) as RoleInstance | null;
+        if (adminrole) {
             const allPermissions = await PermissionDB.findOne({ where: { code: "all:permissions"} });
             
             if (allPermissions) {
                 // Usamos setPermissions con un array de 1 para limpiar cualquier otro y dejar solo el 'all'
-                await adminRolee.setPermissions([allPermissions]); 
+                await adminrole.setPermissions([allPermissions]); 
                 console.log(`Administrador: Permiso "all:permissions" asignado.`);
             } else {
                 console.warn('Seed-Relaciones: Permiso "all:permissions" no encontrado. Saltando asignación.');
@@ -56,7 +56,7 @@ export const rolePermissionSeed = async () => {
         // 2. ROL: Gerente (Gestión completa del negocio)
         // ==========================================================
         const managerCodes = [
-            // Usuarios y Rolees
+            // Usuarios y roles
             "manage:users", 
             // "manage:roles", // Generalmente solo el Admin gestiona roles, pero puedes descomentarlo si el gerente también.
 
@@ -79,7 +79,7 @@ export const rolePermissionSeed = async () => {
             // Reportes
             "read:reports"
         ];
-        await linkPermissionsToRolee("Gerente", managerCodes);
+        await linkPermissionsTorole("Gerente", managerCodes);
 
 
         // ==========================================================
@@ -98,7 +98,7 @@ export const rolePermissionSeed = async () => {
             // Configuración (Necesario para organizar stock)
             "manage:categories", "manage:depots"
         ];
-        await linkPermissionsToRolee("Operador de Almacén", warehouseCodes);
+        await linkPermissionsTorole("Operador de Almacén", warehouseCodes);
 
 
         // ==========================================================
@@ -114,7 +114,7 @@ export const rolePermissionSeed = async () => {
             // Clientes (Necesita 'manage' para poder crearlos al vender)
             "manage:client" 
         ];
-        await linkPermissionsToRolee("Cajero", cashierCodes);
+        await linkPermissionsTorole("Cajero", cashierCodes);
 
 
         // ==========================================================
@@ -130,12 +130,12 @@ export const rolePermissionSeed = async () => {
             "read:purchases",
             "read:reports"
         ];
-        await linkPermissionsToRolee("Visualizador", viewerCodes);
+        await linkPermissionsTorole("Visualizador", viewerCodes);
 
-        console.log("✅ Seed de Relaciones Rolee-Permiso ejecutado correctamente.");
+        console.log("✅ Seed de Relaciones Role-Permiso ejecutado correctamente.");
 
     } catch (error) {
-        console.error("❌ Error al ejecutar seed de Relaciones Rolee-Permiso:", error);
+        console.error("❌ Error al ejecutar seed de Relaciones Role-Permiso:", error);
         throw error;
     }
 };

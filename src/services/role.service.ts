@@ -1,4 +1,4 @@
-import { RoleeDB, PermissionDB} from "../models";
+import { RoleDB, PermissionDB} from "../models";
 import { RoleInterface } from "../interfaces/role.interface";
 import { PermissionInterface } from "@/interfaces";
 import { db } from "../config/sequelize.config";
@@ -6,7 +6,7 @@ import { db } from "../config/sequelize.config";
 class RoleService {
     async getAll() {
         try {
-            const rols = await RoleeDB.findAll({
+            const rols = await RoleDB.findAll({
                 include: [{
                     model: PermissionDB,
                     as: 'permissions'
@@ -31,7 +31,7 @@ class RoleService {
 
     async getOne(role_id: number) {
         try {
-            const role = await RoleeDB.findByPk(role_id , {
+            const role = await RoleDB.findByPk(role_id , {
                 include: [{
                     model: PermissionDB,
                     as: 'permissions'
@@ -41,14 +41,14 @@ class RoleService {
             if (!role) {
                 return {
                     status: 404,
-                    message: "Rolee not found",
+                    message: "Role not found",
                     data: null,
                 };
             }
 
             return {
                 status: 200,
-                message: "Rolee obtained correctly",
+                message: "Role obtained correctly",
                 data: role,
             };
         } catch (error) {
@@ -64,7 +64,7 @@ class RoleService {
 
     async getPermissionsByRoleId(role_id: number) {
         try {
-            const role = await RoleeDB.findByPk(role_id , {
+            const role = await RoleDB.findByPk(role_id , {
                 include: [{
                     model: PermissionDB,
                     as: 'permissions'
@@ -83,7 +83,7 @@ class RoleService {
 
             return {
                 status: 200,
-                message: "Rolee obtained correctly",
+                message: "Role obtained correctly",
                 data: permissions,
             };
         } catch (error) {
@@ -99,7 +99,7 @@ class RoleService {
 
     async checkPermission(roleId: number, permissionCode: string): Promise<boolean> {
         try {
-            const role = await RoleeDB.findOne({
+            const role = await RoleDB.findOne({
                 where: { 
                     role_id: roleId 
                 },
@@ -131,7 +131,7 @@ class RoleService {
             const { createdAt, updatedAt, ...rolData } = role;
             
             // 1. Crear el role DENTRO de la transacción
-            const newRole = await RoleeDB.create(rolData as any, { 
+            const newRole = await RoleDB.create(rolData as any, { 
                 transaction: t 
             });
 
@@ -145,7 +145,7 @@ class RoleService {
 
             return {
                 status: 201,
-                message: "Rolee creado exitosamente",
+                message: "Role creado exitosamente",
                 data: newRole,
             };
 
@@ -166,13 +166,13 @@ class RoleService {
         try {
             const { createdAt, updatedAt, role_id: _,  ...rolData } = role;
 
-            await RoleeDB.update(rolData, { where: { role_id: role_id } });
+            await RoleDB.update(rolData, { where: { role_id: role_id } });
 
-            const updatedRole = await RoleeDB.findByPk(role_id);
+            const updatedRole = await RoleDB.findByPk(role_id);
             
             return {
                 status: 200,
-                message: "Rolee updated correctly",
+                message: "Role updated correctly",
                 data: updatedRole,   
             };
         } catch (error) {
@@ -188,18 +188,18 @@ class RoleService {
 
     async delete(role_id: number) {
         try {
-            const deletedCount  = await RoleeDB.destroy({ where: { role_id: role_id } });
+            const deletedCount  = await RoleDB.destroy({ where: { role_id: role_id } });
 
             if (deletedCount === 0) {
                 return {
                     status: 404,
-                    message: "Rolee not found",
+                    message: "Role not found",
                     data: null,
                 };
             }
             return {
                 status: 200,
-                message: "Rolee deleted successfully",
+                message: "Role deleted successfully",
                 data: null,
             }
         } catch (error) {
@@ -216,12 +216,12 @@ class RoleService {
     async assignPermissions(role_id: number, permission_ids: number[]) {
 
         try {
-            const role = await RoleeDB.findByPk(role_id);
+            const role = await RoleDB.findByPk(role_id);
 
             if (!role) {
                 return {
                     status: 404,
-                    message: "Rolee not found",
+                    message: "Role not found",
                     data: null,
                 };
             }
@@ -249,12 +249,12 @@ class RoleService {
 
         try {
             // 1. Encontrar el role
-            const role = await RoleeDB.findByPk(role_id);
+            const role = await RoleDB.findByPk(role_id);
 
             if (!role) {
                 return {
                     status: 404,
-                    message: "Rolee no encontrado",
+                    message: "Role no encontrado",
                     data: null,
                 };
             }

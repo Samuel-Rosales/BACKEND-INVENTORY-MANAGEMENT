@@ -1,4 +1,4 @@
-import { UserDB, RoleeDB, PermissionDB  } from "../models";
+import { UserDB, RoleDB, PermissionDB  } from "../models";
 import { UserInterface } from "../interfaces";
 
 class UserService {
@@ -7,7 +7,7 @@ class UserService {
             const users = await UserDB.findAll({
                 include: [
                     {
-                        model: RoleeDB, as: "role"
+                        model: RoleDB, as: "role"
                     }
                 ]
             });
@@ -32,7 +32,7 @@ class UserService {
             const user = await UserDB.findByPk(user_ci, {
                 include: [
                     {
-                        model: RoleeDB, as: "role", include: [
+                        model: RoleDB, as: "role", include: [
                             {
                                 model: PermissionDB, as: "permissions"
                             }
