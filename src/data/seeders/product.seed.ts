@@ -59,7 +59,7 @@ export const productSeed = async () => {
             {
                 name: "Marcos Castellanos",
                 sku: "ESP-001",
-                description: "Edición Limitada. Invaluable.",
+                description: "Un Marcos Castellanos rico, bello, exquisito, sabroso, apetitoso, guapo, hermoso y delicioso, listo para comer y saborear. Edición Limitada. Invaluable. Lo más cercano a la perfección.",
                 image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1764117893/Screenshot_2025-11-25_204434_btgwdn.png",
                 category_id: 1, base_price: 99999.99, min_stock: 1, perishable: true, status: true,
             },
