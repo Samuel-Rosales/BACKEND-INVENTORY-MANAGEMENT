@@ -703,18 +703,18 @@ class ReportService {
 
         const rawSales = await SaleDB.findAll({
             where: {
-                createdAt: {
+                sold_at: {
                     [Op.gte]: start,
                     [Op.lte]: end
                 }
             },
             // OPTIMIZACIÓN: Solo traemos la fecha, no necesitamos el dinero ni el cliente
-            attributes: ['createdAt'] 
+            attributes: ['sold_at'] 
         });
 
         // Mapeamos solo la fecha, el amount ya no es relevante para contar cantidad
         const sales: SaleRecord[] = rawSales.map(sale => ({
-            createdAt: new Date(sale.get('createdAt') as Date),
+            createdAt: new Date(sale.get('sold_at') as Date),
             amount: 0 // Lo dejamos en 0 porque no lo usaremos para este gráfico
         }));
 
