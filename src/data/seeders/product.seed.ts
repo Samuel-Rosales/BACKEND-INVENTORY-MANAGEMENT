@@ -45,21 +45,21 @@ export const productSeed = async () => {
                 name: "Azúcar Refinada Montalbán (1kg)",
                 sku: "VIV-006",
                 description: "Azúcar blanca refinada de alta pureza.",
-                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1733256000/azucar_montalban.jpg", // Placeholder URL
+                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1764812769/azucar_rjfcsk.png", // Placeholder URL
                 category_id: 1, base_price: 1.80, min_stock: 20, perishable: true, status: true,
             },
             {
                 name: "Salsa de Tomate Pampero (397g)",
                 sku: "VIV-007",
                 description: "Ketchup clásico para acompañar comidas.",
-                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1733256001/salsa_pampero.jpg", // Placeholder URL
+                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1764812768/salsa_tomate_wdprvg.jpg", // Placeholder URL
                 category_id: 1, base_price: 2.20, min_stock: 10, perishable: true, status: true,
             },
             // El Producto Especial (No se toca)
             {
                 name: "Marcos Castellanos",
                 sku: "ESP-001",
-                description: "Edición Limitada. Invaluable.",
+                description: "Un Marcos Castellanos rico, bello, exquisito, sabroso, apetitoso, guapo, hermoso y delicioso, listo para comer y saborear. Edición Limitada. Invaluable. Lo más cercano a la perfección.",
                 image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1764117893/Screenshot_2025-11-25_204434_btgwdn.png",
                 category_id: 1, base_price: 99999.99, min_stock: 1, perishable: true, status: true,
             },
@@ -122,35 +122,35 @@ export const productSeed = async () => {
                 name: "Galletas María Puig (Paquete Tubo)",
                 sku: "SNK-001",
                 description: "La galleta clásica para la merienda.",
-                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1733256002/galleta_maria.jpg",
+                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1764812768/galleta_maria_agt6kv.jpg",
                 category_id: 4, base_price: 1.20, min_stock: 25, perishable: true, status: true,
             },
             {
                 name: "Pepito Cheese (Bolsa Grande)",
                 sku: "SNK-002",
                 description: "Snack de maíz con sabor a queso.",
-                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1733256003/pepito.jpg",
+                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1764812768/pepito_h8lc5u.jpg",
                 category_id: 4, base_price: 2.50, min_stock: 15, perishable: true, status: true,
             },
             {
                 name: "Chocolate Savoy de Leche (130g)",
                 sku: "SNK-003",
                 description: "Chocolate con leche venezolano. Sabor criollo.",
-                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1733256004/savoy_leche.jpg",
+                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1764812769/savoy_chocolate_wrhbpd.png",
                 category_id: 4, base_price: 3.00, min_stock: 20, perishable: true, status: true,
             },
             {
                 name: "Chupeta Bon Bon Bum (Unidad)",
                 sku: "SNK-004",
                 description: "Chupeta rellena de chicle, sabores surtidos.",
-                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1733256005/bonbonbum.jpg",
+                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1764812769/chupetas_ebqhbz.jpg",
                 category_id: 4, base_price: 0.25, min_stock: 100, perishable: true, status: true,
             },
             {
                 name: "Galleta Susy (Paquete Individual)",
                 sku: "SNK-005",
                 description: "Galleta rellena de crema sabor a chocolate.",
-                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1733256006/susy.jpg",
+                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1764812769/susy_dxjtb2.png",
                 category_id: 4, base_price: 0.80, min_stock: 40, perishable: true, status: true,
             },
 
@@ -159,21 +159,21 @@ export const productSeed = async () => {
                 name: "Refresco Coca-Cola (1.5 Litros)",
                 sku: "BEB-001",
                 description: "Bebida gaseosa sabor original.",
-                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1733256007/cocacola_15.jpg",
+                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1764812769/cocacola_otjs8n.jpg",
                 category_id: 5, base_price: 2.00, min_stock: 24, perishable: true, status: true,
             },
             {
                 name: "Malta Polar (Botella 250ml)",
                 sku: "BEB-002",
                 description: "Bebida de malta carbonatada, nutritiva y refrescante.",
-                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1733256008/malta_polar.jpg",
+                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1764812768/malta_bebida_dltexb.jpg",
                 category_id: 5, base_price: 0.90, min_stock: 36, perishable: true, status: true,
             },
             {
                 name: "Agua Mineral Minalba (1.5 Litros)",
                 sku: "BEB-003",
                 description: "Agua pura de manantial.",
-                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1733256009/minalba_15.jpg",
+                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1764812768/agua_mineral_hnu3kv.jpg",
                 category_id: 5, base_price: 1.10, min_stock: 24, perishable: true, status: true,
             },
         ];

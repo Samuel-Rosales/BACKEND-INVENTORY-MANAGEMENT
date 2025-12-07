@@ -29,3 +29,7 @@ Thumbs.db
 # Archivos de configuración del editor de código
 .vscode/
 .idea/
+
+# Archivos específicos de la configuración del proyecto
+src/config/keys/service-account-key.keys.json
+**/service-account-key.keys.json

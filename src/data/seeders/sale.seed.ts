@@ -49,8 +49,6 @@ export const saleSeed = async () => {
                     total_usd: 0, // Se calculará en el siguiente seed
                     exchange_rate: parseFloat(exchangeRate.toFixed(2)),
                     total_ves: 0,
-                    createdAt: new Date(),
-                    updatedAt: new Date()
                 });
             }
         }

@@ -1,10 +1,8 @@
-import { SaleDB, ClientDB, TypePaymentDB, UserDB, SaleItemDB, MovementDB, ProductDB, DepotDB } from "../models";
-import { SaleInterface } from "../interfaces";
+import { SaleDB, ClientDB, TypePaymentDB, UserDB, SaleItemDB, MovementDB, ProductDB, DepotDB, StockGeneralDB, StockLotDB } from "../models";
+import { ProductInterface, SaleInterface, StockGeneralInterface, StockLotInterface } from "../interfaces";
 
-import { inventoryService } from "./inventory.service";
+import { inventoryService, NotificationServices, ExchangeRateServices } from "../services";
 import { db } from "../config/sequelize.config";
-
-import { ExchangeRateServices } from "./exchange-rate.service"; // Para obtener la TASA
 
 class SaleService {
 
@@ -107,9 +105,11 @@ class SaleService {
         }
     }
 
-    async create(sale: SaleInterface) { // Idealmente: items: SaleDetailInterface[]
+    async create(sale: SaleInterface) { 
         
-        const t = await db.transaction(); 
+        const t = await db.transaction();
+
+        const notificationsToSend: { id: string, name: string, stock: number }[] = [];
 
         try {
 
@@ -146,18 +146,49 @@ class SaleService {
                     throw new Error(`El item ${item.product_id} debe especificar un almacén de origen (depot_id).`);
                 }
 
-                const producto = await ProductDB.findByPk(item.product_id, { transaction: t });
+                const producto = await ProductDB.findByPk(item.product_id, { transaction: t, include: [
+                    { model: StockGeneralDB, as: "stock_generals" },
+                    { model: StockLotDB, as: "stock_lots" },
+                ] });
                 if (!producto) {
                     throw new Error(`Producto con id ${item.product_id} no encontrado.`);
                 }
-                const unit_cost_usd = parseFloat(producto.get('base_price') as string); // Este es el precio AUTORITATIVO
+
+                // Obtenemos el stock actual ANTES de la resta
+                const simpleProduct = producto.toJSON() as ProductInterface & { stock_generals: StockGeneralInterface[], stock_lots: StockLotInterface[] };
                 
-                // 5. Llamar al InventoryService para restar stock
-                await inventoryService.deductStock(
-                    item, // item = { product_id, amount, depot_id, ... }
-                    depot_id, 
-                    t
-                );
+                let currentStock = 0;
+    
+                if (!simpleProduct.perishable) {
+        
+                    currentStock = simpleProduct.stock_generals.reduce((accumulator, stock) =>{
+                        return accumulator + stock.amount;
+                    }, 0);
+                } else {
+    
+                    currentStock = simpleProduct.stock_lots.reduce((accumlator, stock) =>{
+                        return accumlator + stock.amount;
+                    },0);
+                }
+                const unit_cost_usd = parseFloat(producto.get('base_price') as string);
+                
+                // Llamada a InventoryService (asumimos que esto actualiza la DB)
+                await inventoryService.deductStock(item, depot_id, t);
+
+                // CALCULAR EL NUEVO STOCK EN MEMORIA
+                // Es importante calcularlo aquí porque inventoryService corre dentro de la transacción
+                const newStock = currentStock - item.amount;
+                const MIN_STOCK = parseFloat(producto.get('min_stock') as string); // O producto.get('min_stock') si lo tienes en la DB
+
+                // --- LÓGICA DE NOTIFICACIÓN (Sin enviar aún) ---
+                if (newStock <= MIN_STOCK) {
+                    console.log(`[SaleService] Producto ${producto.get('name')} (ID: ${item.product_id}) en stock crítico: ${newStock} unidades restantes.`);
+                    notificationsToSend.push({
+                        id: String(item.product_id),
+                        name: (producto.get('name') as string),
+                        stock: newStock
+                    });
+                }
 
                 totalVentaUSD += unit_cost_usd * item.amount;
 
@@ -209,6 +240,15 @@ class SaleService {
 
             // 8. Confirmar
             await t.commit();
+
+            if (notificationsToSend.length > 0) {
+                console.log(`[SaleService] Enviando ${notificationsToSend.length} alertas de stock...`);
+                
+                // Opción A: Fire and Forget (No esperamos a que termine para responder al cliente)
+                notificationsToSend.forEach(n => {
+                    NotificationServices.sendLowStockAlert(n.id, n.name, n.stock);
+                });
+            }
 
             return { status: 201, message: "Sale created successfully", data: newSale };
 
