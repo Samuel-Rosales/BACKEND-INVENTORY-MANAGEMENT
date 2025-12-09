@@ -206,9 +206,13 @@ export class ReportController {
     };
 
     getClientCorrelationFM = async (req: Request, res: Response) => {
-        // Leemos el query param ?period=year (por defecto)
+        // Leemos parámetros del query
         const period = req.query.period as string || 'year';
-        const { status, message, data } = await ReportServices.getClientCorrelationFM(period);
+        const startDate = req.query.startDate as string | undefined;
+        const endDate = req.query.endDate as string | undefined;
+
+        const { status, message, data } = await ReportServices.getClientCorrelationFM(period, startDate, endDate);
+
         return res.status(status).json({ 
             message, 
             data 

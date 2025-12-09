@@ -51,7 +51,11 @@ router.get("/employee_performance",
 
 router.get("/client_correlation_fm",
     controller.getClientCorrelationFM
-); // http://localhost:3000/api/report/client_correlation_fm?period=year
+);  // Uso estándar:
+    // http://localhost:3000/api/report/client_correlation_fm?period=year
+
+    // Uso personalizado:
+    // http://localhost:3000/api/report/client_correlation_fm?period=custom&startDate=2023-01-01&endDate=2023-12-31
 
 router.get("/cost_history/:product_id",
     controller.getProductCostHistory

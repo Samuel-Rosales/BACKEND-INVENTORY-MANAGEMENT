@@ -66,20 +66,36 @@ class ReportService {
         }
     }
 
-    async getClientCorrelationFM(period: string = 'year') {
+    async getClientCorrelationFM(period: string = 'year', customStart?: string, customEnd?: string) {
         try {
-            const endDate = new Date();
-            const startDate = new Date();
+            let endDate = new Date();
+            let startDate = new Date();
 
-            // 1. Filtro de Fechas (Reutilizamos la lógica del empleado)
-            switch (period) {
-                case 'week': startDate.setDate(endDate.getDate() - 7); break;
-                case 'month': startDate.setMonth(endDate.getMonth() - 1); break;
-                case 'year': startDate.setFullYear(endDate.getFullYear() - 1); break;
-                case 'all': default: startDate.setFullYear(2000); break; // Histórico
+            // 1. Filtro de Fechas
+            if (period === 'custom' && customStart && customEnd) {
+                startDate = new Date(customStart);
+                endDate = new Date(customEnd);
+                // Ajustamos al final del día
+                endDate.setHours(23, 59, 59, 999);
+            } else {
+                switch (period) {
+                    case 'week': 
+                        startDate.setDate(endDate.getDate() - 7); 
+                        break;
+                    case 'month': 
+                        startDate.setMonth(endDate.getMonth() - 1); 
+                        break;
+                    case 'year': 
+                        startDate.setFullYear(endDate.getFullYear() - 1); 
+                        break;
+                    case 'all': 
+                    default: 
+                        startDate.setFullYear(2000); 
+                        break; // Histórico
+                }
             }
 
-            // 2. Consulta SQL: Agrupa Frecuencia (N° Órdenes) y Valor (Monto) por Cliente
+            // 2. Consulta SQL
             const sql = `
                 SELECT
                     s.client_ci,
@@ -92,13 +108,11 @@ class ReportService {
                     COALESCE(CAST(SUM(s.total_usd) AS DECIMAL(10,2)), 0.00) as "total_spent"
                 
                 FROM sales s
-                -- Asumimos una tabla 'clients' donde el CI del cliente es la llave primaria.
-                -- Si tu tabla se llama diferente, ajusta 'clients'
                 JOIN clients c ON s.client_ci = c.client_ci 
                 
                 WHERE s.sold_at BETWEEN :startDate AND :endDate
-                  AND s.status = true
-                  
+                AND s.status = true
+                
                 GROUP BY s.client_ci, c.name
                 ORDER BY "total_spent" DESC;
             `;
@@ -113,7 +127,6 @@ class ReportService {
                 name: item.client_name,
                 ordersCount: parseInt(item.orders_count),
                 totalSpent: parseFloat(item.total_spent),
-                // No necesitamos color en el backend; la UI lo asigna por cuadrante
             }));
 
             return {
