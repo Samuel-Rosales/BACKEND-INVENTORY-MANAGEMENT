@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { UserDB } from '../models'; // Asumo que UserDB es tu modelo User
+import { RoleDB, UserDB } from '../models'; // Asumo que UserDB es tu modelo User
 import { UserInstance } from '../models/user.model'; // Tu tipo de instancia
 import { AuthInterface } from '../interfaces'; // Deberías crear esta interfaz
 
@@ -13,7 +13,10 @@ class AuthService {
 
         try {
             // 2. Buscar al usuario por su CI
-            const user: UserInstance | null = await UserDB.findOne({ where: { user_ci } });
+            const user: UserInstance | null = await UserDB.findOne({ where: { user_ci }, include: [{
+                    model: RoleDB, as: "role"
+                }] 
+            });
 
             // 3. Si no existe, error genérico
             if (!user) {
@@ -61,7 +64,8 @@ class AuthService {
                     user: {
                         user_ci: user.user_ci,
                         name: user.name,
-                        role_id: user.role_id
+                        role_id: user.role_id,
+                        role: user.role
                     }
                 }
             };
