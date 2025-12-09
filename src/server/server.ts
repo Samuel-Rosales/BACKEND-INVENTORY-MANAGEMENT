@@ -49,7 +49,7 @@ export class Server {
         // ==========================================================
         
         // Función auxiliar para agregar el cero inicial (ej: 9 -> 09)
-        const pad = (num: number) => (num < 10 ? '0' : '') + num;
+        /*const pad = (num: number) => (num < 10 ? '0' : '') + num;
 
         // Sobrescribimos la función toJSON del objeto Date.
         // Esto fuerza a que la serialización use los componentes de la HORA LOCAL
@@ -67,7 +67,7 @@ export class Server {
 
             // Construimos la cadena en el formato ISO 8601 sin zona horaria
             return `${year}-${month}-${day}T${hour}:${minute}:${second}.${ms}`;
-        };
+        };*/
         this.app = express()
         this.app.use(express.json({ limit: "50mb" })); // Middleware para parsear bodies JSON
         this.app.use(express.urlencoded({ limit: "50mb", extended: true })); // Middleware para parsear bodies URL-encoded
