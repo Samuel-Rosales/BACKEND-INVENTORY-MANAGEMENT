@@ -1,0 +1,143 @@
+components:
+  schemas:
+    SaleItem:
+      type: object
+      properties:
+        sale_item_id:
+          type: integer
+          description: ID auto-generado del item de venta
+        sale_id:
+          type: integer
+          description: ID de la venta padre
+        product_id:
+          type: integer
+          description: ID del producto
+        amount:
+          type: integer
+          description: Cantidad vendida
+        unit_cost:
+          type: number
+          description: Costo unitario registrado
+        total_cost:
+          type: number
+          description: Costo total del item
+      example:
+        sale_item_id: 50
+        sale_id: 1001
+        product_id: 101
+        amount: 2
+        unit_cost: 25.00
+        total_cost: 50.00
+
+paths:
+  /sale_item:
+    get:
+      summary: Obtener todos los items de ventas
+      tags: [SaleItem]
+      responses:
+        200:
+          description: Lista de items de venta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SaleItem'
+    post:
+      summary: Crear un nuevo item de venta (Administrativo)
+      tags: [SaleItem]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - sale_id
+                - product_id
+                - amount
+              properties:
+                sale_id:
+                  type: integer
+                product_id:
+                  type: integer
+                amount:
+                  type: integer
+      responses:
+        201:
+          description: Item de venta creado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/SaleItem'
+
+  /sale_item/{id}:
+    get:
+      summary: Obtener un item de venta por ID
+      tags: [SaleItem]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del item de venta
+      responses:
+        200:
+          description: Item de venta encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/SaleItem'
+        404:
+          description: Item de venta no encontrado
+    patch:
+      summary: Actualizar un item de venta
+      tags: [SaleItem]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del item de venta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                product_id:
+                  type: integer
+      responses:
+        200:
+          description: Item de venta actualizado
+    delete:
+      summary: Eliminar un item de venta
+      tags: [SaleItem]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del item de venta
+      responses:
+        200:
+          description: Item de venta eliminado

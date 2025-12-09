@@ -1,58 +1,217 @@
-paths:
-  /purchase:
-    get:
-      tags: [Purchase]
-      summary: Obtiene todas las compras
-      responses:
-        '200': { description: 'OK' }
-    post:
-      tags: [Purchase]
-      summary: Crea una nueva compra (cabecera)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PurchaseInput'
-      responses:
-        '201': { description: 'Created' }
-  /purchase/{id}:
-    get:
-      tags: [Purchase]
-      summary: Obtiene una compra por ID con sus detalles
-      parameters:
-        - { name: id, in: path, required: true, schema: { type: integer } }
-      responses:
-        '200': { description: 'OK' }
-        '404': { description: 'Not Found' }
-
 components:
   schemas:
     Purchase:
       type: object
       properties:
-        purchase_id: { type: integer }
-        provider_id: { type: integer }
-        user_ci: { type: string }
-        type_payment_id: { type: integer }
-        bought_at: { type: string, format: date-time }
-        status: { type: string, enum: [Pendiente, Aprobado] }
-        active: { type: boolean }
-    PurchaseInput:
+        purchase_id:
+          type: integer
+          description: ID auto-generado de la compra
+        provider_id:
+          type: integer
+          description: ID del proveedor
+        user_ci:
+          type: string
+          description: Cédula del usuario (comprador)
+        type_payment_id:
+          type: integer
+          description: ID del tipo de pago
+        total_usd:
+          type: number
+          description: Total de la compra en USD
+        exchange_rate:
+          type: number
+          description: Tasa de cambio aplicada
+        total_ves:
+          type: number
+          description: Total de la compra en Bolívares
+        bought_at:
+          type: string
+          format: date-time
+          description: Fecha y hora de la compra
+        status:
+          type: string
+          enum: [Pendiente, Aprobado]
+          description: Estado de la compra
+        active:
+          type: boolean
+          description: Indica si la compra está activa
+      example:
+        purchase_id: 501
+        provider_id: 10
+        user_ci: "12345678"
+        type_payment_id: 2
+        total_usd: 1200.00
+        exchange_rate: 36.50
+        total_ves: 43800.00
+        bought_at: "2023-11-15T09:30:00Z"
+        status: "Aprobado"
+        active: true
+    PurchaseItemInput:
       type: object
+      required:
+        - product_id
+        - depot_id
+        - amount
+        - unit_cost
       properties:
-        provider_id: { type: integer }
-        user_ci: { type: string }
-        type_payment_id: { type: integer }
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/PurchaseDetailInput'
-      required: [provider_id, user_ci, type_payment_id, details]
-    PurchaseDetailInput:
-      type: object
-      properties:
-        product_id: { type: integer }
-        unit_cost: { type: number, format: double }
-        amount: { type: integer }
-      required: [product_id, unit_cost, amount]
+        product_id:
+          type: integer
+          description: ID del producto a comprar
+        depot_id:
+          type: integer
+          description: ID del almacén de destino
+        amount:
+          type: integer
+          description: Cantidad comprada
+        unit_cost:
+          type: number
+          description: Costo unitario del producto
+        expiration_date:
+          type: string
+          format: date
+          description: Fecha de vencimiento (Requerido solo para productos perecederos)
+      example:
+        product_id: 101
+        depot_id: 1
+        amount: 50
+        unit_cost: 10.50
+        expiration_date: "2024-12-31"
+
+paths:
+  /purchase:
+    get:
+      summary: Obtener todas las compras
+      tags: [Purchase]
+      responses:
+        200:
+          description: Lista de compras
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Purchase'
+    post:
+      summary: Registrar una nueva compra
+      tags: [Purchase]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - provider_id
+                - user_ci
+                - type_payment_id
+                - purchase_items
+              properties:
+                provider_id:
+                  type: integer
+                user_ci:
+                  type: string
+                type_payment_id:
+                  type: integer
+                bought_at:
+                  type: string
+                  format: date-time
+                  description: Fecha de compra (opcional)
+                status:
+                  type: string
+                  enum: [Pendiente, Aprobado]
+                purchase_items:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PurchaseItemInput'
+      responses:
+        201:
+          description: Compra registrada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Purchase'
+
+  /purchase/{id}:
+    get:
+      summary: Obtener una compra por ID (con detalles)
+      tags: [Purchase]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID de la compra
+      responses:
+        200:
+          description: Compra encontrada con sus items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    allOf:
+                      - $ref: '#/components/schemas/Purchase'
+                      - type: object
+                        properties:
+                          purchase_general_items:
+                            type: array
+                            items:
+                              type: object
+                          purchase_lot_items:
+                            type: array
+                            items:
+                              type: object
+        404:
+          description: Compra no encontrada
+    patch:
+      summary: Actualizar una compra existente
+      tags: [Purchase]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID de la compra
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                provider_id:
+                  type: integer
+                type_payment_id:
+                  type: integer
+                status:
+                  type: string
+                  enum: [Pendiente, Aprobado]
+      responses:
+        200:
+          description: Compra actualizada
+    delete:
+      summary: Eliminar una compra
+      tags: [Purchase]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID de la compra
+      responses:
+        200:
+          description: Compra eliminada

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { validateFields } from "../middlewares";
-import { clientValidators } from "../validators"; 
+import { clientValidators } from "../validators";
 import { ClientController } from "../controllers";
 
 const router = Router();
@@ -11,7 +11,7 @@ router.get("/",
     clientController.all
 ); // http://localhost:3000/api/client
 
-router.get("/:id", 
+router.get("/:id",
     clientValidators.validateClientParamCIExists,
     clientController.one
 ); // http://localhost:3000/api/client/:id
@@ -30,12 +30,12 @@ router.patch("/:id",
     clientController.update,
 ); // http://localhost:3000/api/client/:id
 
-router.patch("/:id/deactivate", 
+router.patch("/:id/deactivate",
     clientValidators.validateClientParamCIExists,
     clientController.updateDeactivate
 ); // http://localhost:3000/api/client/:id/deactivate
 
-router.patch("/:id/activate", 
+router.patch("/:id/activate",
     clientValidators.validateClientParamCIExists,
     clientController.updateActivate
 ); // http://localhost:3000/api/client/:id/activate

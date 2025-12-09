@@ -22,5 +22,5 @@ export const swaggerOptions: Options = {
     ],
   },
   // La ruta a los archivos que contienen la documentación
-  apis: ["./src/docs/*.yml", "./src/routes/*.ts"],
+  apis: ["./src/docs/*.yml"],
 };

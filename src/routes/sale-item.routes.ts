@@ -7,9 +7,11 @@ const router = Router();
 const saleItemController = new SaleItemController();
 
 // METHOD GET
-router.get("/", 
+
+router.get("/",
     saleItemController.all
 ); // http://localhost:3000/api/sale_item
+
 
 router.get("/:id",
     saleItemValidators.validateSaleItemParamIdExists,
@@ -17,6 +19,7 @@ router.get("/:id",
 ); // http://localhost:3000/api/sale_item/:id
 
 // METHOD POST
+
 router.post("/",
     saleItemValidators.validateCreateFields,
     saleItemValidators.validateProductIdExists,
@@ -26,6 +29,7 @@ router.post("/",
 ); // http://localhost:3000/api/sale_item
 
 //METHOD PATCH
+
 router.patch("/:id",
     saleItemValidators.validateUpdateFields,
     saleItemValidators.validateProductIdExists,
@@ -35,11 +39,12 @@ router.patch("/:id",
 ); // http://localhost:3000/api/sale_item/:id
 
 //METHOD DELETE
-router.delete("/:id", 
-    saleItemValidators.validateSaleItemParamIdExists, 
+
+router.delete("/:id",
+    saleItemValidators.validateSaleItemParamIdExists,
     saleItemController.delete
 ); // http://localhost:3000/api/sale_item/:id
 
-export  const SaleItemRoute = router;
+export const SaleItemRoute = router;
 
 export default router;

@@ -1,0 +1,172 @@
+components:
+  schemas:
+    StockLot:
+      type: object
+      properties:
+        stock_lot_id:
+          type: integer
+          description: ID auto-generado del lote de stock
+        product_id:
+          type: integer
+          description: ID del producto
+        depot_id:
+          type: integer
+          description: ID del almacén
+        expiration_date:
+          type: string
+          format: date
+          description: Fecha de vencimiento del lote
+        amount:
+          type: integer
+          description: Cantidad en stock
+        cost_lot:
+          type: number
+          description: Costo del lote
+        status:
+          type: boolean
+          description: Estado del registro
+      example:
+        stock_lot_id: 801
+        product_id: 102
+        depot_id: 1
+        expiration_date: "2024-12-31"
+        amount: 50
+        cost_lot: 250.00
+        status: true
+
+paths:
+  /stock_lot:
+    get:
+      summary: Obtener todo el stock por lotes
+      tags: [StockLot]
+      responses:
+        200:
+          description: Lista de stock por lotes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StockLot'
+    post:
+      summary: Crear registro de stock por lote manual (Administrativo)
+      tags: [StockLot]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - product_id
+                - depot_id
+                - amount
+                - expiration_date
+                - cost_lot
+              properties:
+                product_id:
+                  type: integer
+                depot_id:
+                  type: integer
+                amount:
+                  type: integer
+                cost_lot:
+                  type: number
+                expiration_date:
+                  type: string
+                  format: date
+      responses:
+        201:
+          description: Lote creado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/StockLot'
+
+  /stock_lot/{id}:
+    get:
+      summary: Obtener stock por lote específico por ID
+      tags: [StockLot]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del lote
+      responses:
+        200:
+          description: Lote encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/StockLot'
+        404:
+          description: Lote no encontrado
+    patch:
+      summary: Actualizar datos de un lote
+      tags: [StockLot]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del lote
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                cost_lot:
+                  type: number
+                expiration_date:
+                  type: string
+                  format: date
+      responses:
+        200:
+          description: Lote actualizado
+    delete:
+      summary: Eliminar un lote
+      tags: [StockLot]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del lote
+      responses:
+        200:
+          description: Lote eliminado
+
+  /stock_lot/product/{product_id}:
+    get:
+      summary: Obtener lotes de un producto específico
+      tags: [StockLot]
+      parameters:
+        - in: path
+          name: product_id
+          schema:
+            type: integer
+          required: true
+          description: ID del producto
+      responses:
+        200:
+          description: Lista de lotes del producto

@@ -7,9 +7,14 @@ const router = Router();
 const purchaseGeneralItemController = new PurchaseGeneralItemController();
 
 // METHOD GET
-router.get("/", 
+// METHOD GET
+
+// METHOD GET
+
+router.get("/",
     purchaseGeneralItemController.all
 ); // http://localhost:3000/api/purchase_general_item
+
 
 router.get("/:id",
     purchaseGeneralItemValidators.validatePurchaseGeneralItemParamIdExists,
@@ -17,6 +22,7 @@ router.get("/:id",
 ); // http://localhost:3000/api/purchase_general_item/:id
 
 // METHOD POST
+
 router.post("/",
     purchaseGeneralItemValidators.validateCreateFields,
     purchaseGeneralItemValidators.validateProductIdExists,
@@ -27,6 +33,7 @@ router.post("/",
 ); // http://localhost:3000/api/purchase_general_item
 
 //METHOD PATCH
+
 router.patch("/:id",
     purchaseGeneralItemValidators.validateUpdateFields,
     purchaseGeneralItemValidators.validateProductIdExists,
@@ -37,11 +44,12 @@ router.patch("/:id",
 ); // http://localhost:3000/api/purchase_general_item/:id
 
 //METHOD DELETE
-router.delete("/:id", 
-    purchaseGeneralItemValidators.validatePurchaseGeneralItemParamIdExists, 
+
+router.delete("/:id",
+    purchaseGeneralItemValidators.validatePurchaseGeneralItemParamIdExists,
     purchaseGeneralItemController.delete
 ); // http://localhost:3000/api/purchase_general_item/:id
 
-export  const PurchaseGeneralItemRoute = router;
+export const PurchaseGeneralItemRoute = router;
 
 export default router;

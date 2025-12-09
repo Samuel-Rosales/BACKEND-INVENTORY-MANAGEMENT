@@ -1,19 +1,57 @@
-# paths:
-#   /product:
-#     ... (otras rutas)
-#   /product/{id}:
-#     ... (otras rutas)
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        product_id:
+          type: integer
+          description: ID auto-generado del producto
+        name:
+          type: string
+          description: Nombre del producto
+        sku:
+          type: string
+          description: Código SKU único
+        description:
+          type: string
+          description: Descripción del producto
+        category_id:
+          type: integer
+          description: ID de la categoría asociada
+        base_price:
+          type: number
+          description: Precio base de venta
+        image_url:
+          type: string
+          description: URL de la imagen del producto
+        min_stock:
+          type: integer
+          description: Stock mínimo para alertas
+        perishable:
+          type: boolean
+          description: Indica si el producto es perecedero
+        status:
+          type: boolean
+          description: Estado del producto
+      example:
+        product_id: 101
+        name: "Leche"
+        sku: "LCH-001"
+        description: "Leche entera de 1 litro"
+        category_id: 2
+        base_price: 1.50
+        min_stock: 20
+        perishable: true
+        status: true
 
 paths:
   /product:
     get:
-      tags:
-        - Product
-      summary: Obtiene todos los productos
-      description: Retorna un array con todos los productos registrados.
+      summary: Obtener todos los productos
+      tags: [Product]
       responses:
-        '200':
-          description: Operación exitosa. Devuelve una lista de productos.
+        200:
+          description: Lista de productos
           content:
             application/json:
               schema:
@@ -25,232 +63,166 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Product'
-        '500':
-          description: Error interno del servidor al obtener los productos.
-
     post:
-      tags:
-        - Product
-      summary: Crea un nuevo producto
-      description: Registra un nuevo producto en la base de datos.
+      summary: Crear un nuevo producto (con imagen opcional)
+      tags: [Product]
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ProductInput'
+              type: object
+              required:
+                - name
+                - sku
+                - category_id
+                - base_price
+              properties:
+                name:
+                  type: string
+                sku:
+                  type: string
+                description:
+                  type: string
+                category_id:
+                  type: integer
+                base_price:
+                  type: number
+                min_stock:
+                  type: integer
+                perishable:
+                  type: boolean
+                image:
+                  type: string
+                  format: binary
+                  description: Archivo de imagen del producto
       responses:
-        '201':
-          description: Producto creado exitosamente.
+        201:
+          description: Producto creado exitosamente
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  message:
+                  message: 
                     type: string
                   data:
                     $ref: '#/components/schemas/Product'
-        '400':
-          description: Datos de entrada inválidos o producto ya existente.
-        '500':
-          description: Error interno del servidor al crear el producto.
 
   /product/{id}:
     get:
-      tags:
-        - Product
-      summary: Obtiene un producto por su ID
-      description: Retorna los detalles de un producto específico.
+      summary: Obtener un producto por ID
+      tags: [Product]
       parameters:
-        - name: id
-          in: path
-          description: ID del producto a obtener.
-          required: true
+        - in: path
+          name: id
           schema:
             type: integer
+          required: true
+          description: ID del producto
       responses:
-        '200':
-          description: Operación exitosa. Devuelve el producto encontrado.
+        200:
+          description: Producto encontrado
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  message:
-                    type: string
                   data:
                     $ref: '#/components/schemas/Product'
-        '404':
-          description: Producto no encontrado.
-        '500':
-          description: Error interno del servidor.
-
-    put:
-      tags:
-        - Product
-      summary: Actualiza un producto existente
-      description: Modifica los datos de un producto existente según su ID.
+        404:
+          description: Producto no encontrado
+    patch:
+      summary: Actualizar un producto existente
+      tags: [Product]
       parameters:
-        - name: id
-          in: path
-          description: ID del producto a actualizar.
-          required: true
+        - in: path
+          name: id
           schema:
             type: integer
+          required: true
+          description: ID del producto
       requestBody:
-        required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ProductUpdate'
+              type: object
+              properties:
+                name:
+                  type: string
+                sku:
+                  type: string
+                description:
+                  type: string
+                category_id:
+                  type: integer
+                base_price:
+                  type: number
+                min_stock:
+                  type: integer
+                perishable:
+                  type: boolean
+                image:
+                  type: string
+                  format: binary
       responses:
-        '200':
-          description: Producto actualizado exitosamente.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  data:
-                    $ref: '#/components/schemas/Product'
-        '400':
-          description: Datos de entrada inválidos.
-        '404':
-          description: Producto no encontrado.
-        '500':
-          description: Error interno del servidor al actualizar el producto.
-
+        200:
+          description: Producto actualizado
     delete:
-      tags:
-        - Product
-      summary: Elimina un producto
-      description: Elimina un producto de la base de datos según su ID (borrado lógico).
+      summary: Eliminar permanentemente un producto
+      tags: [Product]
       parameters:
-        - name: id
-          in: path
-          description: ID del producto a eliminar.
-          required: true
+        - in: path
+          name: id
           schema:
             type: integer
+          required: true
+          description: ID del producto
       responses:
-        '200':
-          description: Producto eliminado exitosamente.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        '404':
-          description: Producto no encontrado.
-        '500':
-          description: Error interno del servidor al eliminar el producto.
+        200:
+          description: Producto eliminado
 
-# components:
-#   schemas:
-#     Product:
-#       ...
-#     ProductInput:
-#       ...
-#     ProductUpdate:
-#       ...
+  /product/category/{category_id}:
+    get:
+      summary: Obtener productos por categoría
+      tags: [Product]
+      parameters:
+        - in: path
+          name: category_id
+          schema:
+            type: integer
+          required: true
+          description: ID de la categoría
+      responses:
+        200:
+          description: Lista de productos filtrada
 
-components:
-  schemas:
-    Product:
-      type: object
-      properties:
-        product_id:
-          type: integer
-          description: ID único del producto.
-        name:
-          type: string
-          description: Nombre del producto.
-        description:
-          type: string
-          description: Descripción detallada del producto.
-        category_id:
-          type: integer
-          description: ID de la categoría a la que pertenece el producto.
-        base_price:
-          type: number
-          format: double
-          description: Precio base del producto.
-        stock:
-          type: integer
-          description: Cantidad actual en inventario.
-        min_stock:
-          type: integer
-          description: Nivel mínimo de stock antes de generar una alerta.
-        status:
-          type: boolean
-          description: Estado del producto (activo/inactivo).
-        createdAt:
-          type: string
-          format: date-time
-          description: Fecha de creación del registro.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Fecha de la última actualización del registro.
+  /product/{id}/deactivate:
+    patch:
+      summary: Desactivar un producto
+      tags: [Product]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del producto
+      responses:
+        200:
+          description: Producto desactivado
 
-    ProductInput:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Nombre del producto.
-        description:
-          type: string
-          description: Descripción detallada del producto.
-        category_id:
-          type: integer
-          description: ID de la categoría a la que pertenece el producto.
-        base_price:
-          type: number
-          format: double
-          description: Precio base del producto.
-        stock:
-          type: integer
-          description: Cantidad inicial en inventario.
-        min_stock:
-          type: integer
-          description: Nivel mínimo de stock.
-        status:
-          type: boolean
-          description: Estado inicial del producto (opcional, por defecto es true).
-      required:
-        - name
-        - description
-        - category_id
-        - base_price
-        - stock
-        - min_stock
-
-    ProductUpdate:
-      type: object
-      description: Campos opcionales para actualizar un producto.
-      properties:
-        name:
-          type: string
-          description: Nuevo nombre del producto.
-        description:
-          type: string
-          description: Nueva descripción del producto.
-        category_id:
-          type: integer
-          description: Nuevo ID de categoría.
-        base_price:
-          type: number
-          format: double
-          description: Nuevo precio base.
-        min_stock:
-          type: integer
-          description: Nuevo nivel mínimo de stock.
-        status:
-          type: boolean
-          description: Nuevo estado del producto.
+  /product/{id}/activate:
+    patch:
+      summary: Activar un producto
+      tags: [Product]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del producto
+      responses:
+        200:
+          description: Producto activado

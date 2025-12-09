@@ -7,16 +7,17 @@ const router = Router();
 const userController = new UserController();
 
 //  METHOD GET 
-router.get("/", 
+//  METHOD GET 
+router.get("/",
     userController.all
 ); // http://localhost:3000/api/user
 
-router.get("/:user_ci", 
-    userValidators.validateUserParamCIExists, 
+router.get("/:user_ci",
+    userValidators.validateUserParamCIExists,
     userController.one
 ); // http://localhost:3000/api/user/:id
 
-router.get("/role/:role_id", 
+router.get("/role/:role_id",
     userController.all
 ); // http://localhost:3000/api/user/role/:role_id
 
@@ -39,11 +40,11 @@ router.patch("/:user_ci",
 ); // http://localhost:3000/api/product/:id
 
 //METHOD DELETE
-router.delete("/:user_ci", 
-    userValidators.validateUserParamCIExists, 
+router.delete("/:user_ci",
+    userValidators.validateUserParamCIExists,
     userController.delete
 ); // http://localhost:3000/api/product/:id
 
-export  const UserRoute = router;
+export const UserRoute = router;
 
 export default router;

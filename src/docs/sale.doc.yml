@@ -1,57 +1,203 @@
-paths:
-  /sale:
-    get:
-      tags: [Sale]
-      summary: Obtiene todas las ventas
-      responses:
-        '200': { description: 'OK' }
-    post:
-      tags: [Sale]
-      summary: Crea una nueva venta (cabecera y detalles)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SaleInput'
-      responses:
-        '201': { description: 'Created' }
-  /sale/{id}:
-    get:
-      tags: [Sale]
-      summary: Obtiene una venta por ID con sus detalles
-      parameters:
-        - { name: id, in: path, required: true, schema: { type: integer } }
-      responses:
-        '200': { description: 'OK' }
-        '404': { description: 'Not Found' }
-
 components:
   schemas:
     Sale:
       type: object
       properties:
-        sale_id: { type: integer }
-        client_ci: { type: string }
-        user_ci: { type: string }
-        type_payment_id: { type: integer }
-        sold_at: { type: string, format: date-time }
-        status: { type: boolean }
-    SaleInput:
+        sale_id:
+          type: integer
+          description: ID auto-generado de la venta
+        client_ci:
+          type: string
+          description: Cédula del cliente
+        user_ci:
+          type: string
+          description: Cédula del usuario (vendedor)
+        type_payment_id:
+          type: integer
+          description: ID del tipo de pago
+        total_usd:
+          type: number
+          description: Total de la venta en USD
+        exchange_rate:
+          type: number
+          description: Tasa de cambio aplicada
+        total_ves:
+          type: number
+          description: Total de la venta en Bolívares
+        sold_at:
+          type: string
+          format: date-time
+          description: Fecha y hora de la venta
+        status:
+          type: boolean
+          description: Estado de la venta
+      example:
+        sale_id: 1001
+        client_ci: "12345678"
+        user_ci: "87654321"
+        type_payment_id: 1
+        total_usd: 50.00
+        exchange_rate: 36.50
+        total_ves: 1825.00
+        sold_at: "2023-10-27T10:00:00Z"
+        status: true
+    SaleItemInput:
       type: object
+      required:
+        - product_id
+        - depot_id
+        - amount
       properties:
-        client_ci: { type: string }
-        user_ci: { type: string }
-        type_payment_id: { type: integer }
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/SaleDetailInput'
-      required: [client_ci, user_ci, type_payment_id, details]
-    SaleDetailInput:
-      type: object
-      properties:
-        product_id: { type: integer }
-        unit_cost: { type: number, format: double }
-        amount: { type: integer }
-      required: [product_id, unit_cost, amount]
+        product_id:
+          type: integer
+          description: ID del producto a vender
+        depot_id:
+          type: integer
+          description: ID del almacén de origen
+        amount:
+          type: integer
+          description: Cantidad a vender
+      example:
+        product_id: 101
+        depot_id: 1
+        amount: 2
+
+paths:
+  /sale:
+    get:
+      summary: Obtener todas las ventas
+      tags: [Sale]
+      responses:
+        200:
+          description: Lista de ventas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Sale'
+    post:
+      summary: Registrar una nueva venta
+      tags: [Sale]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - client_ci
+                - user_ci
+                - type_payment_id
+                - sale_items
+              properties:
+                client_ci:
+                  type: string
+                user_ci:
+                  type: string
+                type_payment_id:
+                  type: integer
+                sold_at:
+                  type: string
+                  format: date-time
+                  description: Fecha personalizada (opcional, por defecto es ahora)
+                sale_items:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/SaleItemInput'
+      responses:
+        201:
+          description: Venta registrada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Sale'
+
+  /sale/{id}:
+    get:
+      summary: Obtener una venta por ID (con detalles)
+      tags: [Sale]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID de la venta
+      responses:
+        200:
+          description: Venta encontrada con sus items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    allOf:
+                      - $ref: '#/components/schemas/Sale'
+                      - type: object
+                        properties:
+                          sale_items:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                product:
+                                  type: string
+                                amount:
+                                  type: integer
+                                unit_cost:
+                                  type: number
+        404:
+          description: Venta no encontrada
+    patch:
+      summary: Actualizar una venta existente
+      tags: [Sale]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID de la venta
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_ci:
+                  type: string
+                user_ci:
+                  type: string
+                type_payment_id:
+                  type: integer
+                status:
+                  type: boolean
+      responses:
+        200:
+          description: Venta actualizada
+    delete:
+      summary: Eliminar una venta
+      tags: [Sale]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID de la venta
+      responses:
+        200:
+          description: Venta eliminada

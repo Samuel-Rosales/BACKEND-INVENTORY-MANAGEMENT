@@ -1,0 +1,265 @@
+tags:
+  - name: Reports
+    description: Endpoints para reportes y estadísticas
+
+paths:
+  /report/total_usd_sales:
+    get:
+      summary: Total de ventas en USD
+      tags: [Reports]
+      responses:
+        200:
+          description: Monto total de ventas
+  
+  /report/total_usd_purchases:
+    get:
+      summary: Total de compras en USD
+      tags: [Reports]
+      responses:
+        200:
+          description: Monto total de compras
+
+  /report/sales_dates_stats:
+    get:
+      summary: Estadísticas de ventas por fechas
+      tags: [Reports]
+      parameters:
+        - in: query
+          name: filter
+          schema:
+            type: string
+            enum: [today, week, month, year, all, custom]
+          description: Filtro de tiempo
+        - in: query
+          name: customStart
+          schema:
+            type: string
+            format: date
+          description: Fecha inicio (si filter=custom)
+        - in: query
+          name: customEnd
+          schema:
+            type: string
+            format: date
+          description: Fecha fin (si filter=custom)
+      responses:
+        200:
+          description: Datos para gráfico de ventas
+
+  /report/top_selling_products:
+    get:
+      summary: Productos más vendidos
+      tags: [Reports]
+      parameters:
+        - in: query
+          name: period
+          schema:
+            type: string
+            enum: [today, week, month, year, all, custom]
+        - in: query
+          name: customStart
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: customEnd
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Lista de productos top
+
+  /report/inventory_efficiency:
+    get:
+      summary: Eficiencia de inventario
+      tags: [Reports]
+      parameters:
+        - in: query
+          name: period
+          schema:
+            type: string
+            enum: [month, year, custom]
+        - in: query
+          name: customStart
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: customEnd
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Métricas de eficiencia
+
+  /report/low_stock_alerts:
+    get:
+      summary: Alertas de bajo stock
+      tags: [Reports]
+      responses:
+        200:
+          description: Lista de productos con stock bajo
+
+  /report/inventory_value:
+    get:
+      summary: Valor total del inventario
+      tags: [Reports]
+      responses:
+        200:
+          description: Valoración del inventario en USD y VES
+
+  /report/total_inventory_items:
+    get:
+      summary: Total de items en inventario
+      tags: [Reports]
+      responses:
+        200:
+          description: Cantidad total de items
+
+  /report/inventory_by_category:
+    get:
+      summary: Inventario por categoría
+      tags: [Reports]
+      responses:
+        200:
+          description: Distribución de inventario por categoría
+
+  /report/employee_performance:
+    get:
+      summary: Desempeño de empleados
+      tags: [Reports]
+      parameters:
+        - in: query
+          name: period
+          schema:
+            type: string
+            enum: [month, year, custom]
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Métricas de desempeño
+
+  /report/client_correlation_fm:
+    get:
+      summary: Correlación de clientes (Frecuencia/Monto)
+      tags: [Reports]
+      parameters:
+        - in: query
+          name: period
+          schema:
+            type: string
+            enum: [year, custom]
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Análisis de clientes
+
+  /report/cost_history/{product_id}:
+    get:
+      summary: Historial de costos de un producto
+      tags: [Reports]
+      parameters:
+        - in: path
+          name: product_id
+          schema:
+            type: integer
+          required: true
+        - in: query
+          name: provider_id
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Historial de precios de compra
+
+  /report/sales_report_range:
+    get:
+      summary: Reporte detallado de ventas por rango
+      tags: [Reports]
+      parameters:
+        - in: query
+          name: period
+          schema:
+            type: string
+            enum: [today, week, month, year, all, custom]
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Lista de ventas detallada
+
+  /report/purchases_report_range:
+    get:
+      summary: Reporte detallado de compras por rango
+      tags: [Reports]
+      parameters:
+        - in: query
+          name: period
+          schema:
+            type: string
+            enum: [today, week, month, year, all, custom]
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Lista de compras detallada
+
+  /report/provider_analysis:
+    get:
+      summary: Análisis de proveedores
+      tags: [Reports]
+      parameters:
+        - in: query
+          name: period
+          schema:
+            type: string
+            enum: [month, year, custom]
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Desempeño de proveedores

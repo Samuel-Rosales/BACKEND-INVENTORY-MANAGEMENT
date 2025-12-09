@@ -1,34 +1,38 @@
 components:
   schemas:
-    Depot:
+    Permission:
       type: object
       properties:
-        depot_id:
+        permission_id:
           type: integer
-          description: ID auto-generado del almacén
+          description: ID auto-generado del permiso
+        code:
+          type: string
+          description: Código único del permiso (ej. 'USER_READ')
         name:
           type: string
-          description: Nombre del almacén
-        location:
+          description: Nombre legible del permiso
+        description:
           type: string
-          description: Ubicación física del almacén
+          description: Descripción detallada
         status:
           type: boolean
-          description: Estado del almacén (true=activo, false=inactivo)
+          description: Estado del permiso (true=activo, false=inactivo)
       example:
-        depot_id: 1
-        name: "Almacén Principal"
-        location: "Zona Industrial Norte, Galpón 5"
+        permission_id: 1
+        code: "PRODUCT_CREATE"
+        name: "Crear Producto"
+        description: "Permite registrar nuevos productos en el sistema"
         status: true
 
 paths:
-  /depot:
+  /permission:
     get:
-      summary: Obtener todos los almacenes
-      tags: [Depot]
+      summary: Obtener todos los permisos
+      tags: [Permission]
       responses:
         200:
-          description: Lista de almacenes
+          description: Lista de permisos
           content:
             application/json:
               schema:
@@ -39,10 +43,10 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Depot'
+                      $ref: '#/components/schemas/Permission'
     post:
-      summary: Crear un nuevo almacén
-      tags: [Depot]
+      summary: Crear un nuevo permiso
+      tags: [Permission]
       requestBody:
         required: true
         content:
@@ -50,16 +54,18 @@ paths:
             schema:
               type: object
               required:
+                - code
                 - name
-                - location
               properties:
+                code:
+                  type: string
                 name:
                   type: string
-                location:
+                description:
                   type: string
       responses:
         201:
-          description: Almacén creado exitosamente
+          description: Permiso creado exitosamente
           content:
             application/json:
               schema:
@@ -68,41 +74,41 @@ paths:
                   message: 
                     type: string
                   data:
-                    $ref: '#/components/schemas/Depot'
+                    $ref: '#/components/schemas/Permission'
 
-  /depot/{id}:
+  /permission/{id}:
     get:
-      summary: Obtener un almacén por ID
-      tags: [Depot]
+      summary: Obtener un permiso por ID
+      tags: [Permission]
       parameters:
         - in: path
           name: id
           schema:
             type: integer
           required: true
-          description: ID del almacén
+          description: ID del permiso
       responses:
         200:
-          description: Almacén encontrado
+          description: Permiso encontrado
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Depot'
+                    $ref: '#/components/schemas/Permission'
         404:
-          description: Almacén no encontrado
+          description: Permiso no encontrado
     patch:
-      summary: Actualizar un almacén existente
-      tags: [Depot]
+      summary: Actualizar un permiso existente
+      tags: [Permission]
       parameters:
         - in: path
           name: id
           schema:
             type: integer
           required: true
-          description: ID del almacén
+          description: ID del permiso
       requestBody:
         required: true
         content:
@@ -110,13 +116,15 @@ paths:
             schema:
               type: object
               properties:
+                code:
+                  type: string
                 name:
                   type: string
-                location:
+                description:
                   type: string
       responses:
         200:
-          description: Almacén actualizado
+          description: Permiso actualizado
           content:
             application/json:
               schema:
@@ -125,47 +133,17 @@ paths:
                   message:
                     type: string
                   data:
-                    $ref: '#/components/schemas/Depot'
+                    $ref: '#/components/schemas/Permission'
     delete:
-      summary: Eliminar permanentemente un almacén
-      tags: [Depot]
+      summary: Eliminar permanentemente un permiso
+      tags: [Permission]
       parameters:
         - in: path
           name: id
           schema:
             type: integer
           required: true
-          description: ID del almacén
+          description: ID del permiso
       responses:
         200:
-          description: Almacén eliminado
-
-  /depot/{id}/deactivate:
-    patch:
-      summary: Desactivar un almacén
-      tags: [Depot]
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
-          description: ID del almacén
-      responses:
-        200:
-          description: Almacén desactivado exitosamente
-
-  /depot/{id}/activate:
-    patch:
-      summary: Activar un almacén
-      tags: [Depot]
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
-          description: ID del almacén
-      responses:
-        200:
-          description: Almacén activado exitosamente
+          description: Permiso eliminado

@@ -1,0 +1,150 @@
+components:
+  schemas:
+    StockGeneral:
+      type: object
+      properties:
+        product_id:
+          type: integer
+          description: ID del producto (Parte de la llave compuesta)
+        depot_id:
+          type: integer
+          description: ID del almacén (Parte de la llave compuesta)
+        amount:
+          type: integer
+          description: Cantidad en stock
+        status:
+          type: boolean
+          description: Estado del registro
+      example:
+        product_id: 101
+        depot_id: 1
+        amount: 150
+        status: true
+
+paths:
+  /general_stock:
+    get:
+      summary: Obtener todo el stock general
+      tags: [StockGeneral]
+      responses:
+        200:
+          description: Lista de stock general
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StockGeneral'
+    post:
+      summary: Crear registro de stock general manual (Administrativo)
+      tags: [StockGeneral]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - product_id
+                - depot_id
+                - amount
+              properties:
+                product_id:
+                  type: integer
+                depot_id:
+                  type: integer
+                amount:
+                  type: integer
+      responses:
+        201:
+          description: Stock creado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/StockGeneral'
+
+  /general_stock/{product_id}/{depot_id}:
+    get:
+      summary: Obtener stock general específico (Producto + Almacén)
+      tags: [StockGeneral]
+      parameters:
+        - in: path
+          name: product_id
+          schema:
+            type: integer
+          required: true
+          description: ID del producto
+        - in: path
+          name: depot_id
+          schema:
+            type: integer
+          required: true
+          description: ID del almacén
+      responses:
+        200:
+          description: Stock encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/StockGeneral'
+        404:
+          description: Stock no encontrado
+    patch:
+      summary: Actualizar cantidad de stock general
+      tags: [StockGeneral]
+      parameters:
+        - in: path
+          name: product_id
+          schema:
+            type: integer
+          required: true
+          description: ID del producto
+        - in: path
+          name: depot_id
+          schema:
+            type: integer
+          required: true
+          description: ID del almacén
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+      responses:
+        200:
+          description: Stock actualizado
+    delete:
+      summary: Eliminar registro de stock general
+      tags: [StockGeneral]
+      parameters:
+        - in: path
+          name: product_id
+          schema:
+            type: integer
+          required: true
+          description: ID del producto
+        - in: path
+          name: depot_id
+          schema:
+            type: integer
+          required: true
+          description: ID del almacén
+      responses:
+        200:
+          description: Stock eliminado

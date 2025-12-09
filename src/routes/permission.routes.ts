@@ -7,7 +7,7 @@ const router = Router();
 const controller = new PermissionController();
 
 //  METHOD GET
-router.get("/", 
+router.get("/",
     controller.all
 ); // http://localhost:3000/api/permission
 
@@ -32,11 +32,11 @@ router.patch("/:id",
 ); // http://localhost:3000/api/permission/:id
 
 //METHOD DELETE
-router.delete("/:id", 
-    permissionValidators.validatePermissionParamIdExists, 
+router.delete("/:id",
+    permissionValidators.validatePermissionParamIdExists,
     controller.delete
 ); // http://localhost:3000/api/permission/:id
 
-export  const PermissionRoute = router;
+export const PermissionRoute = router;
 
 export default router;

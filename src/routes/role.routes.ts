@@ -7,7 +7,8 @@ const router = Router();
 const rolController = new RoleController();
 
 //  METHOD GET
-router.get("/", 
+//  METHOD GET
+router.get("/",
     rolController.all
 ); // http://localhost:3000/api/role
 
@@ -21,7 +22,7 @@ router.get("/:id/permissions",
     rolController.getPermissionsByRoleId,
 ); // http://localhost:3000/api/role/:id/permissions
 
-router.post('/check_permission', 
+router.post('/check_permission',
     rolController.checkrolePermission
 ); // http://localhost:3000/api/role/check_permission
 
@@ -54,11 +55,11 @@ router.patch("/:id",
 ); // http://localhost:3000/api/role/:id
 
 //METHOD DELETE
-router.delete("/:id", 
-    rolValidators.validateRoleParamIdExists, 
+router.delete("/:id",
+    rolValidators.validateRoleParamIdExists,
     rolController.delete
 ); // http://localhost:3000/api/role/:id
 
-export  const RoleRoute = router;
+export const RoleRoute = router;
 
 export default router;

@@ -7,14 +7,20 @@ const router = Router();
 const stockLotController = new StockLotController();
 
 // METHOD GET
-router.get("/", 
+// GET METHOD
+
+// METHOD GET
+
+router.get("/",
     stockLotController.all
 ); // http://localhost:3000/api/stock_lot
+
 
 router.get("/:id",
     stockLotValidators.validateStockLotParamIdExists,
     stockLotController.one,
 ); // http://localhost:3000/api/stock_lot/:id
+
 
 router.get("/product/:product_id",
     stockLotValidators.validateProductParamIdExists,
@@ -22,6 +28,7 @@ router.get("/product/:product_id",
 ); // http://localhost:3000/api/stock_lot/product/:product_id
 
 // METHOD POST
+
 router.post("/",
     stockLotValidators.validateCreateFields,
     stockLotValidators.validateProductIdExists,
@@ -31,6 +38,7 @@ router.post("/",
 ); // http://localhost:3000/api/stock_lot
 
 //METHOD PATCH
+
 router.patch("/:id",
     stockLotValidators.validateUpdateFields,
     stockLotValidators.validateProductIdExists,
@@ -40,11 +48,12 @@ router.patch("/:id",
 ); // http://localhost:3000/api/stock_lot/:id
 
 //METHOD DELETE
-router.delete("/:id", 
-    stockLotValidators.validateStockLotParamIdExists, 
+
+router.delete("/:id",
+    stockLotValidators.validateStockLotParamIdExists,
     stockLotController.delete
 ); // http://localhost:3000/api/stock_lot/:id
 
-export  const StockLotRoute = router;
+export const StockLotRoute = router;
 
 export default router;

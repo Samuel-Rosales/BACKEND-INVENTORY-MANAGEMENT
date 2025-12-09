@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { validateFields } from "../middlewares";
-import { providerValidators } from "../validators"; 
+import { providerValidators } from "../validators";
 import { ProviderController } from "../controllers";
 
 const router = Router();
@@ -11,7 +11,7 @@ router.get("/",
     providercontroller.all
 ); // http://localhost:3000/api/provider
 
-router.get("/:id", 
+router.get("/:id",
     providerValidators.validateProviderParamIdExists,
     providercontroller.one
 ); // http://localhost:3000/api/provider/:id
@@ -30,12 +30,12 @@ router.patch("/:id",
     providercontroller.update,
 ); // http://localhost:3000/api/provider/:id
 
-router.patch("/:id/deactivate", 
+router.patch("/:id/deactivate",
     providerValidators.validateProviderParamIdExists,
     providercontroller.updateDeactivate
 ); // http://localhost:3000/api/provider/:id/deactivate
 
-router.patch("/:id/activate", 
+router.patch("/:id/activate",
     providerValidators.validateProviderParamIdExists,
     providercontroller.updateActivate
 ); // http://localhost:3000/api/provider/:id/activate

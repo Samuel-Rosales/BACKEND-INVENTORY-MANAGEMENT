@@ -7,9 +7,14 @@ const router = Router();
 const stockGeneralController = new StockGeneralController();
 
 // METHOD GET
-router.get("/", 
+// METHOD GET
+
+// METHOD GET
+
+router.get("/",
     stockGeneralController.all
 ); // http://localhost:3000/api/general_stock
+
 
 router.get("/:product_id/:depot_id",
     stockgeneralValidators.validateStockGeneralParamIdExists,
@@ -17,6 +22,7 @@ router.get("/:product_id/:depot_id",
 ); // http://localhost:3000/api/general_stock/:product_id/:depot_id
 
 // METHOD POST
+
 router.post("/",
     stockgeneralValidators.validateCreateFields,
     stockgeneralValidators.validateProductIdExists,
@@ -26,6 +32,7 @@ router.post("/",
 ); // http://localhost:3000/api/general_stock
 
 //METHOD PATCH
+
 router.patch("/:product_id/:depot_id",
     stockgeneralValidators.validateUpdateFields,
     stockgeneralValidators.validateProductIdExists,
@@ -35,11 +42,12 @@ router.patch("/:product_id/:depot_id",
 ); // http://localhost:3000/api/general_stock/:product_id/:depot_id
 
 //METHOD DELETE
-router.delete("/:product_id/:depot_id", 
-    stockgeneralValidators.validateStockGeneralParamIdExists, 
+
+router.delete("/:product_id/:depot_id",
+    stockgeneralValidators.validateStockGeneralParamIdExists,
     stockGeneralController.delete
 ); // http://localhost:3000/api/general_stock/:product_id/:depot_id
 
-export  const StockGeneralRoute = router;
+export const StockGeneralRoute = router;
 
 export default router;

@@ -1,104 +1,182 @@
-paths:
-  /client:
-    get:
-      tags: [Client]
-      summary: Obtiene todos los clientes
-      responses:
-        '200':
-          description: Lista de clientes.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Client'
-    post:
-      tags: [Client]
-      summary: Crea un nuevo cliente
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClientInput'
-      responses:
-        '201':
-          description: Cliente creado.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Client'
-  /client/{ci}:
-    get:
-      tags: [Client]
-      summary: Obtiene un cliente por CI
-      parameters:
-        - { name: ci, in: path, required: true, schema: { type: string } }
-      responses:
-        '200':
-          description: Cliente encontrado.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Client'
-        '404':
-          description: Cliente no encontrado.
-    put:
-      tags: [Client]
-      summary: Actualiza un cliente
-      parameters:
-        - { name: ci, in: path, required: true, schema: { type: string } }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClientUpdate'
-      responses:
-        '200':
-          description: Cliente actualizado.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Client'
-        '404':
-          description: Cliente no encontrado.
-    delete:
-      tags: [Client]
-      summary: Elimina un cliente
-      parameters:
-        - { name: ci, in: path, required: true, schema: { type: string } }
-      responses:
-        '200':
-          description: Cliente eliminado.
-        '404':
-          description: Cliente no encontrado.
-
 components:
   schemas:
     Client:
       type: object
       properties:
-        client_ci: { type: string }
-        name: { type: string }
-        phone: { type: string }
-        address: { type: string }
-        status: { type: boolean }
-        createdAt: { type: string, format: date-time }
-        updatedAt: { type: string, format: date-time }
-    ClientInput:
-      type: object
-      properties:
-        client_ci: { type: string }
-        name: { type: string }
-        phone: { type: string }
-        address: { type: string }
-        status: { type: boolean }
-      required: [client_ci, name, address]
-    ClientUpdate:
-      type: object
-      properties:
-        name: { type: string }
-        phone: { type: string }
-        address: { type: string }
-        status: { type: boolean }
+        client_ci:
+          type: string
+          description: Cédula de identidad (ID único del cliente)
+        name:
+          type: string
+          description: Nombre completo del cliente
+        phone:
+          type: string
+          description: Número de teléfono
+        address:
+          type: string
+          description: Dirección de residencia
+        status:
+          type: boolean
+          description: Estado del cliente (true=activo, false=inactivo)
+      example:
+        client_ci: "V12345678"
+        name: "Juan Pérez"
+        phone: "0414-1234567"
+        address: "Av. Principal, Edif. Central"
+        status: true
+
+paths:
+  /client:
+    get:
+      summary: Obtener todos los clientes
+      tags: [Client]
+      responses:
+        200:
+          description: Lista de clientes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Client'
+    post:
+      summary: Crear un nuevo cliente
+      tags: [Client]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - client_ci
+                - name
+                - address
+              properties:
+                client_ci:
+                  type: string
+                name:
+                  type: string
+                phone:
+                  type: string
+                address:
+                  type: string
+      responses:
+        201:
+          description: Cliente creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Client'
+
+  /client/{id}:
+    get:
+      summary: Obtener un cliente por CI
+      tags: [Client]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Cédula de identidad del cliente
+      responses:
+        200:
+          description: Cliente encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Client'
+        404:
+          description: Cliente no encontrado
+    patch:
+      summary: Actualizar datos de un cliente
+      tags: [Client]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Cédula de identidad del cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+                address:
+                  type: string
+      responses:
+        200:
+          description: Cliente actualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Client'
+    delete:
+      summary: Eliminar permanentemente un cliente
+      tags: [Client]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Cédula de identidad del cliente
+      responses:
+        200:
+          description: Cliente eliminado
+
+  /client/{id}/deactivate:
+    patch:
+      summary: Desactivar un cliente
+      tags: [Client]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Cédula de identidad del cliente
+      responses:
+        200:
+          description: Cliente desactivado exitosamente
+
+  /client/{id}/activate:
+    patch:
+      summary: Activar un cliente
+      tags: [Client]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Cédula de identidad del cliente
+      responses:
+        200:
+          description: Cliente activado exitosamente

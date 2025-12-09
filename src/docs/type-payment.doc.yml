@@ -1,15 +1,162 @@
-paths:
-  /type_payment:
-    get:
-      tags: [TypePayment]
-      summary: Obtiene todos los tipos de pago
-      responses:
-        '200': { description: 'OK' }
-
 components:
   schemas:
     TypePayment:
       type: object
       properties:
-        type_payment_id: { type: integer }
-        name: { type: string }
+        type_payment_id:
+          type: integer
+          description: ID auto-generado del tipo de pago
+        name:
+          type: string
+          description: Nombre del tipo de pago (Efectivo, Tarjeta, etc.)
+        status:
+          type: boolean
+          description: Estado del tipo de pago (true=activo, false=inactivo)
+      example:
+        type_payment_id: 1
+        name: "Tarjeta de Crédito"
+        status: true
+
+paths:
+  /type_payment:
+    get:
+      summary: Obtener todos los tipos de pago
+      tags: [TypePayment]
+      responses:
+        200:
+          description: Lista de tipos de pago
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TypePayment'
+    post:
+      summary: Crear un nuevo tipo de pago
+      tags: [TypePayment]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+      responses:
+        201:
+          description: Tipo de pago creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/TypePayment'
+
+  /type_payment/{id}:
+    get:
+      summary: Obtener un tipo de pago por ID
+      tags: [TypePayment]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del tipo de pago
+      responses:
+        200:
+          description: Tipo de pago encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/TypePayment'
+        404:
+          description: Tipo de pago no encontrado
+    patch:
+      summary: Actualizar un tipo de pago existente
+      tags: [TypePayment]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del tipo de pago
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        200:
+          description: Tipo de pago actualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/TypePayment'
+    delete:
+      summary: Eliminar permanentemente un tipo de pago
+      tags: [TypePayment]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del tipo de pago
+      responses:
+        200:
+          description: Tipo de pago eliminado
+
+  /type_payment/{id}/deactivate:
+    patch:
+      summary: Desactivar un tipo de pago
+      tags: [TypePayment]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del tipo de pago
+      responses:
+        200:
+          description: Tipo de pago desactivado exitosamente
+
+  /type_payment/{id}/activate:
+    patch:
+      summary: Activar un tipo de pago
+      tags: [TypePayment]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del tipo de pago
+      responses:
+        200:
+          description: Tipo de pago activado exitosamente

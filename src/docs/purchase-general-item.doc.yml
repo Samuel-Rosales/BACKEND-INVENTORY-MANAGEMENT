@@ -1,0 +1,152 @@
+components:
+  schemas:
+    PurchaseGeneralItem:
+      type: object
+      properties:
+        purchase_general_item_id:
+          type: integer
+          description: ID auto-generado del item de compra general
+        purchase_id:
+          type: integer
+          description: ID de la compra padre
+        product_id:
+          type: integer
+          description: ID del producto
+        depot_id:
+          type: integer
+          description: ID del almacén de destino
+        amount:
+          type: integer
+          description: Cantidad comprada
+        unit_cost:
+          type: number
+          description: Costo unitario
+        total_cost:
+          type: number
+          description: Costo total (calculado)
+      example:
+        purchase_general_item_id: 201
+        purchase_id: 501
+        product_id: 101
+        depot_id: 1
+        amount: 100
+        unit_cost: 5.00
+        total_cost: 500.00
+
+paths:
+  /purchase_general_item:
+    get:
+      summary: Obtener todos los items de compra general
+      tags: [PurchaseGeneralItem]
+      responses:
+        200:
+          description: Lista de items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PurchaseGeneralItem'
+    post:
+      summary: Crear un nuevo item de compra general (Administrativo)
+      tags: [PurchaseGeneralItem]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - purchase_id
+                - product_id
+                - depot_id
+                - amount
+                - unit_cost
+              properties:
+                purchase_id:
+                  type: integer
+                product_id:
+                  type: integer
+                depot_id:
+                  type: integer
+                amount:
+                  type: integer
+                unit_cost:
+                  type: number
+      responses:
+        201:
+          description: Item creado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/PurchaseGeneralItem'
+
+  /purchase_general_item/{id}:
+    get:
+      summary: Obtener un item de compra general por ID
+      tags: [PurchaseGeneralItem]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del item
+      responses:
+        200:
+          description: Item encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PurchaseGeneralItem'
+        404:
+          description: Item no encontrado
+    patch:
+      summary: Actualizar un item de compra general
+      tags: [PurchaseGeneralItem]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del item
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                unit_cost:
+                  type: number
+      responses:
+        200:
+          description: Item actualizado
+    delete:
+      summary: Eliminar un item de compra general
+      tags: [PurchaseGeneralItem]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del item
+      responses:
+        200:
+          description: Item eliminado

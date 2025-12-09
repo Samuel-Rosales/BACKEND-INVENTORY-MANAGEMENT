@@ -1,0 +1,221 @@
+components:
+  schemas:
+    Role:
+      type: object
+      properties:
+        role_id:
+          type: integer
+          description: ID auto-generado del rol
+        name:
+          type: string
+          description: Nombre del rol
+      example:
+        role_id: 1
+        name: "Administrador"
+
+paths:
+  /role:
+    get:
+      summary: Obtener todos los roles
+      tags: [Role]
+      responses:
+        200:
+          description: Lista de roles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Role'
+    post:
+      summary: Crear un nuevo rol
+      tags: [Role]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+      responses:
+        201:
+          description: Rol creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Role'
+
+  /role/{id}:
+    get:
+      summary: Obtener un rol por ID
+      tags: [Role]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del rol
+      responses:
+        200:
+          description: Rol encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Role'
+        404:
+          description: Rol no encontrado
+    patch:
+      summary: Actualizar propiedades de un rol
+      tags: [Role]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del rol
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        200:
+          description: Rol actualizado
+    delete:
+      summary: Eliminar permanentemente un rol
+      tags: [Role]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del rol
+      responses:
+        200:
+          description: Rol eliminado
+
+  /role/{id}/permissions:
+    get:
+      summary: Obtener permisos asignados a un rol
+      tags: [Role]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del rol
+      responses:
+        200:
+          description: Lista de permisos del rol
+
+  /role/check_permission:
+    post:
+      summary: Verificar si un rol tiene un permiso específico
+      tags: [Role]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - role_id
+                - permission_code
+              properties:
+                role_id:
+                  type: integer
+                permission_code:
+                  type: string
+      responses:
+        200:
+          description: Verificación exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hasPermission:
+                    type: boolean
+
+  /role/{id}/assign_permissions:
+    patch:
+      summary: Asignar permisos a un rol
+      tags: [Role]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del rol
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - permissions
+              properties:
+                permissions:
+                  type: array
+                  items:
+                    type: integer
+                  description: IDs de los permisos a asignar
+      responses:
+        200:
+          description: Permisos asignados exitosamente
+
+  /role/{id}/remove_permissions:
+    patch:
+      summary: Remover permisos de un rol
+      tags: [Role]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del rol
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - permissions
+              properties:
+                permissions:
+                  type: array
+                  items:
+                    type: integer
+                  description: IDs de los permisos a remover
+      responses:
+        200:
+          description: Permisos removidos exitosamente

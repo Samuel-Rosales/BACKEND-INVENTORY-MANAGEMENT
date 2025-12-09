@@ -1,69 +1,171 @@
-paths:
-  /provider:
-    get:
-      tags: [Provider]
-      summary: Obtiene todos los proveedores
-      responses:
-        '200': { description: 'OK' }
-    post:
-      tags: [Provider]
-      summary: Crea un nuevo proveedor
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ProviderInput'
-      responses:
-        '201': { description: 'Created' }
-  /provider/{id}:
-    get:
-      tags: [Provider]
-      summary: Obtiene un proveedor por ID
-      parameters:
-        - { name: id, in: path, required: true, schema: { type: integer } }
-      responses:
-        '200': { description: 'OK' }
-        '404': { description: 'Not Found' }
-    put:
-      tags: [Provider]
-      summary: Actualiza un proveedor
-      parameters:
-        - { name: id, in: path, required: true, schema: { type: integer } }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ProviderUpdate'
-      responses:
-        '200': { description: 'OK' }
-        '404': { description: 'Not Found' }
-    delete:
-      tags: [Provider]
-      summary: Elimina un proveedor
-      parameters:
-        - { name: id, in: path, required: true, schema: { type: integer } }
-      responses:
-        '200': { description: 'OK' }
-        '404': { description: 'Not Found' }
-
 components:
   schemas:
     Provider:
       type: object
       properties:
-        provider_id: { type: integer }
-        name: { type: string }
-        located: { type: string }
-    ProviderInput:
-      type: object
-      properties:
-        name: { type: string }
-        located: { type: string }
-      required: [name, located]
-    ProviderUpdate:
-      type: object
-      properties:
-        name: { type: string }
-        located: { type: string }
+        provider_id:
+          type: integer
+          description: ID auto-generado del proveedor
+        name:
+          type: string
+          description: Nombre del proveedor
+        located:
+          type: string
+          description: Ubicación o dirección del proveedor
+        status:
+          type: boolean
+          description: Estado del proveedor (true=activo, false=inactivo)
+      example:
+        provider_id: 1
+        name: "Distribuidora Los Andes"
+        located: "Zona Industrial Sur, Calle 3"
+        status: true
+
+paths:
+  /provider:
+    get:
+      summary: Obtener todos los proveedores
+      tags: [Provider]
+      responses:
+        200:
+          description: Lista de proveedores
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Provider'
+    post:
+      summary: Crear un nuevo proveedor
+      tags: [Provider]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - located
+              properties:
+                name:
+                  type: string
+                located:
+                  type: string
+      responses:
+        201:
+          description: Proveedor creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Provider'
+
+  /provider/{id}:
+    get:
+      summary: Obtener un proveedor por ID
+      tags: [Provider]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del proveedor
+      responses:
+        200:
+          description: Proveedor encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Provider'
+        404:
+          description: Proveedor no encontrado
+    patch:
+      summary: Actualizar un proveedor existente
+      tags: [Provider]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del proveedor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                located:
+                  type: string
+      responses:
+        200:
+          description: Proveedor actualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Provider'
+    delete:
+      summary: Eliminar permanentemente un proveedor
+      tags: [Provider]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del proveedor
+      responses:
+        200:
+          description: Proveedor eliminado
+
+  /provider/{id}/deactivate:
+    patch:
+      summary: Desactivar un proveedor
+      tags: [Provider]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del proveedor
+      responses:
+        200:
+          description: Proveedor desactivado exitosamente
+
+  /provider/{id}/activate:
+    patch:
+      summary: Activar un proveedor
+      tags: [Provider]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del proveedor
+      responses:
+        200:
+          description: Proveedor activado exitosamente

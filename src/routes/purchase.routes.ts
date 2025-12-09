@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { validateFields, validateJWT, checkPermission} from "../middlewares";
+import { validateFields, validateJWT, checkPermission } from "../middlewares";
 import { PurchaseController } from "../controllers";
 import { purchaseValidators } from "../validators";
 
@@ -7,9 +7,14 @@ const router = Router();
 const purchaseController = new PurchaseController();
 
 // METHOD GET
-router.get("/", 
+// METHOD GET
+
+// METHOD GET
+
+router.get("/",
     purchaseController.all
 ); // http://localhost:3000/api/purchase
+
 
 router.get("/:id",
     purchaseValidators.validatePurchaseParamIdExists,
@@ -17,6 +22,7 @@ router.get("/:id",
 ); // http://localhost:3000/api/purchase/:id
 
 // METHOD POST
+
 router.post("/",
     //validateJWT,
     //checkPermission("create:sale"),
@@ -29,6 +35,7 @@ router.post("/",
 ); // http://localhost:3000/api/purchase
 
 //METHOD PATCH
+
 router.patch("/:id",
     purchaseValidators.validateUpdateFields,
     purchaseValidators.validateProviderIdExists,
@@ -39,11 +46,12 @@ router.patch("/:id",
 ); // http://localhost:3000/api/purchase/:id
 
 //METHOD DELETE
-router.delete("/:id", 
-    purchaseValidators.validatePurchaseParamIdExists, 
+
+router.delete("/:id",
+    purchaseValidators.validatePurchaseParamIdExists,
     purchaseController.delete
 ); // http://localhost:3000/api/type_payment/:id
 
-export  const PurchaseRoute = router;
+export const PurchaseRoute = router;
 
 export default router;

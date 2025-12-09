@@ -7,7 +7,7 @@ const router = Router();
 const typePaymentController = new TypePaymentController();
 
 // METHOD GET
-router.get("/", 
+router.get("/",
     typePaymentController.all
 ); // http://localhost:3000/api/type_payment
 
@@ -31,22 +31,22 @@ router.patch("/:id",
     typePaymentController.update,
 ); // http://localhost:3000/api/type_payment/:id
 
-router.patch("/:id/deactivate", 
+router.patch("/:id/deactivate",
     typePaymentValidators.validateTypePaymentParamIdExists,
     typePaymentController.updateDeactivate
 ); // http://localhost:3000/api/type_payment/:id/deactivate
 
-router.patch("/:id/activate", 
+router.patch("/:id/activate",
     typePaymentValidators.validateTypePaymentParamIdExists,
     typePaymentController.updateActivate
 ); // http://localhost:3000/api/type_payment/:id/activate
 
 //METHOD DELETE
-router.delete("/:id", 
-    typePaymentValidators.validateTypePaymentParamIdExists, 
+router.delete("/:id",
+    typePaymentValidators.validateTypePaymentParamIdExists,
     typePaymentController.delete
 ); // http://localhost:3000/api/type_payment/:id
 
-export  const TypePaymentRoute = router;
+export const TypePaymentRoute = router;
 
 export default router;

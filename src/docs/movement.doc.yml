@@ -1,50 +1,235 @@
-paths:
-  /movement:
-    get:
-      tags: [Movement]
-      summary: Obtiene todos los movimientos
-      responses:
-        '200': { description: 'OK' }
-    post:
-      tags: [Movement]
-      summary: Crea un nuevo movimiento
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MovementInput'
-      responses:
-        '201': { description: 'Created' }
-  /movement/{id}:
-    get:
-      tags: [Movement]
-      summary: Obtiene un movimiento por ID
-      parameters:
-        - { name: id, in: path, required: true, schema: { type: integer } }
-      responses:
-        '200': { description: 'OK' }
-        '404': { description: 'Not Found' }
-
 components:
   schemas:
     Movement:
       type: object
       properties:
-        movement_id: { type: integer }
-        depot_id: { type: integer }
-        product_id: { type: integer }
-        type: { type: string, enum: [Entrada, Salida] }
-        amount: { type: integer }
-        observation: { type: string }
-        moved_at: { type: string, format: date-time }
-        status: { type: boolean }
-    MovementInput:
-      type: object
-      properties:
-        depot_id: { type: integer }
-        product_id: { type: integer }
-        type: { type: string, enum: [Entrada, Salida] }
-        amount: { type: integer }
-        observation: { type: string }
-      required: [depot_id, product_id, type, amount, observation]
+        movement_id:
+          type: integer
+          description: ID auto-generado del movimiento
+        depot_id:
+          type: integer
+          description: ID del almacén
+        product_id:
+          type: integer
+          description: ID del producto
+        user_ci:
+          type: string
+          description: Cédula del usuario responsable
+        type:
+          type: string
+          enum: [Compra, Venta, Ajuste Negativo, Ajuste Positivo]
+          description: Tipo de movimiento
+        amount:
+          type: integer
+          description: Cantidad movida
+        observation:
+          type: string
+          description: Observación o motivo
+        moved_at:
+          type: string
+          format: date-time
+          description: Fecha del movimiento
+        status:
+          type: boolean
+          description: Estado del registro
+      example:
+        movement_id: 1001
+        depot_id: 1
+        product_id: 101
+        user_ci: "12345678"
+        type: "Ajuste Positivo"
+        amount: 10
+        observation: "Corrección de inventario"
+        moved_at: "2023-10-27T10:00:00Z"
+        status: true
+
+paths:
+  /movement:
+    get:
+      summary: Obtener todos los movimientos
+      tags: [Movement]
+      responses:
+        200:
+          description: Lista de movimientos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Movement'
+    post:
+      summary: Registrar un movimiento manual (Genérico)
+      tags: [Movement]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - depot_id
+                - product_id
+                - amount
+                - type
+              properties:
+                depot_id:
+                  type: integer
+                product_id:
+                  type: integer
+                amount:
+                  type: integer
+                type:
+                  type: string
+                  enum: [Compra, Venta, Ajuste Negativo, Ajuste Positivo]
+                observation:
+                  type: string
+      responses:
+        201:
+          description: Movimiento registrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Movement'
+
+  /movement/{id}:
+    get:
+      summary: Obtener un movimiento por ID
+      tags: [Movement]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del movimiento
+      responses:
+        200:
+          description: Movimiento encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Movement'
+        404:
+          description: Movimiento no encontrado
+    patch:
+      summary: Actualizar un movimiento (Corrección)
+      tags: [Movement]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del movimiento
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                observation:
+                  type: string
+      responses:
+        200:
+          description: Movimiento actualizado
+    delete:
+      summary: Eliminar un movimiento
+      tags: [Movement]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del movimiento
+      responses:
+        200:
+          description: Movimiento eliminado
+
+  /movement/product/{product_id}:
+    get:
+      summary: Obtener movimientos de un producto específico
+      tags: [Movement]
+      parameters:
+        - in: path
+          name: product_id
+          schema:
+            type: integer
+          required: true
+          description: ID del producto
+      responses:
+        200:
+          description: Lista de movimientos filtrada
+
+  /movement/ajust_positive:
+    post:
+      summary: Registrar un ajuste positivo de inventario
+      tags: [Movement]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - depot_id
+                - product_id
+                - amount
+                - user_ci
+              properties:
+                depot_id:
+                  type: integer
+                product_id:
+                  type: integer
+                amount:
+                  type: integer
+                user_ci:
+                  type: string
+                observation:
+                  type: string
+      responses:
+        201:
+          description: Ajuste positivo registrado
+
+  /movement/ajust_negative:
+    post:
+      summary: Registrar un ajuste negativo de inventario
+      tags: [Movement]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - depot_id
+                - product_id
+                - amount
+                - user_ci
+              properties:
+                depot_id:
+                  type: integer
+                product_id:
+                  type: integer
+                amount:
+                  type: integer
+                user_ci:
+                  type: string
+                observation:
+                  type: string
+      responses:
+        201:
+          description: Ajuste negativo registrado
