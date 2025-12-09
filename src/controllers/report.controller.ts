@@ -187,7 +187,35 @@ export class ReportController {
         });
     };
 
+    getAllSalesByRange = async (req: Request, res: Response) => {
+        // Leemos los params
+        const period = req.query.period as string || 'month';
+        const startDate = req.query.startDate as string | undefined;
+        const endDate = req.query.endDate as string | undefined;
 
+        // Pasamos los 3 argumentos
+        const { status, message, data } = await ReportServices.getAllSalesByRangeData(
+            period, 
+            startDate, 
+            endDate
+        );
+
+        return res.status(status).json({ message, data });
+    };
+
+    getAllPurchasesByRange = async (req: Request, res: Response) => {
+        const period = req.query.period as string || 'month';
+        const startDate = req.query.startDate as string | undefined;
+        const endDate = req.query.endDate as string | undefined;
+
+        const { status, message, data } = await ReportServices.getAllPurchasesByRangeData(
+            period, 
+            startDate, 
+            endDate
+        );
+
+        return res.status(status).json({ message, data });
+    };
 
 
     getEmployeePerformance = async (req: Request, res: Response) => {

@@ -61,6 +61,31 @@ router.get("/cost_history/:product_id",
     controller.getProductCostHistory
 ); // http://localhost:3000/api/report/cost_history/15?provider_id=2
 
+
+router.get("/sales_report_range", 
+    controller.getAllSalesByRange
+);  /*
+ EJEMPLOS DE USO:
+
+ 1. Por periodo predefinido (today, week, month, year, all):
+    http://localhost:3000/api/report/sales_report_range?period=week
+
+ 2. Por rango personalizado (requiere period=custom):
+    http://localhost:3000/api/report/sales_report_range?period=custom&startDate=2025-12-01&endDate=2025-12-31
+*/
+
+// Ruta para reporte de Compras
+router.get("/purchases_report_range", 
+    controller.getAllPurchasesByRange
+); /*
+ EJEMPLOS DE USO:
+    1. Por periodo predefinido (today, week, month, year, all):
+        http://localhost:3000/api/report/purchases_report_range?period=month
+
+    2. Por rango personalizado (requiere period=custom):
+        http://localhost:3000/api/report/purchases_report_range?period=custom&startDate=2025-11-01&endDate=2025-11-30
+*/
+
 export const ReportRoute = router;
 
 export default router;

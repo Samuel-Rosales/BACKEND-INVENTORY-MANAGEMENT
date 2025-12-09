@@ -1,5 +1,5 @@
 import { ReportFilter, SaleRecord, SalesChartData, SpotsChartData } from "@/interfaces";
-import { ProductDB, PurchaseDB, SaleDB, SaleItemDB } from "../models";
+import { ClientDB, ProductDB, ProviderDB, PurchaseDB, SaleDB, SaleItemDB, TypePaymentDB, UserDB } from "../models";
 import { Op, QueryTypes } from "sequelize";
 import sequelize from "sequelize";
 import { db } from "../config";
@@ -141,6 +141,172 @@ class ReportService {
         }
     }
 
+    async getAllSalesByRangeData(period: string = 'month', customStart?: string, customEnd?: string) {
+        try {
+            // 1. Lógica de Fechas Unificada
+            let endDate = new Date();
+            let startDate = new Date();
+            
+            // Ajustamos endDate al final del día actual por defecto
+            endDate.setHours(23, 59, 59, 999);
+
+            if (period === 'custom' && customStart && customEnd) {
+                startDate = new Date(customStart);
+                endDate = new Date(customEnd);
+                endDate.setHours(23, 59, 59, 999); // Asegurar cobertura del último día
+            } else {
+                // Seteamos startDate según el periodo
+                switch (period) {
+                    case 'today':
+                        startDate.setHours(0, 0, 0, 0); // Inicio del día de hoy
+                        break;
+                    case 'week':
+                        startDate.setDate(endDate.getDate() - 7);
+                        break;
+                    case 'month':
+                        startDate.setMonth(endDate.getMonth() - 1);
+                        break;
+                    case 'year':
+                        startDate.setFullYear(endDate.getFullYear() - 1);
+                        break;
+                    case 'all': 
+                        startDate = new Date('2000-01-01'); // Fecha muy antigua
+                        break;
+                    default:
+                        startDate.setMonth(endDate.getMonth() - 1); // Default mes
+                        break;
+                }
+            }
+
+            // 2. Query
+            const whereClause: any = {};
+            
+            // Aplicamos filtro de fecha
+            whereClause.sold_at = {
+                [Op.between]: [startDate, endDate]
+            };
+
+            const sales = await SaleDB.findAll({
+                where: whereClause,
+                include: [
+                    { model: ClientDB, as: "client", attributes: ['name'] },
+                    { model: UserDB, as: "user", attributes: ['name'] },
+                    { model: TypePaymentDB, as: "type_payment", attributes: ['name'] },
+                ],
+                order: [['sold_at', 'DESC']]
+            });
+
+            if (sales.length === 0) {
+                return {
+                    status: 404,
+                    message: "No sales found in this range",
+                    data: []
+                };
+            }
+
+            const salesData = sales.map(sale => {
+                const saleData = sale.toJSON();
+                return {
+                    ...saleData,
+                    client: saleData.client?.name || "Cliente Genérico",
+                    user: saleData.user?.name || "Desconocido",
+                    type_payment: saleData.type_payment?.name || "No especificado",
+                };
+            });
+
+            return { 
+                status: 200,
+                message: "Sales obtained correctly", 
+                data: salesData,   
+            };
+
+        } catch (error) {
+            console.error("Error fetching sales: ", error);
+            return { status: 500, message: "Internal server error", data: null };
+        }
+    }
+
+    async getAllPurchasesByRangeData(period: string = 'month', customStart?: string, customEnd?: string) {
+        try {
+            // 1. Lógica de Fechas Unificada
+            let endDate = new Date();
+            let startDate = new Date();
+            endDate.setHours(23, 59, 59, 999);
+
+            if (period === 'custom' && customStart && customEnd) {
+                startDate = new Date(customStart);
+                endDate = new Date(customEnd);
+                endDate.setHours(23, 59, 59, 999);
+            } else {
+                switch (period) {
+                    case 'today':
+                        startDate.setHours(0, 0, 0, 0);
+                        break;
+                    case 'week':
+                        startDate.setDate(endDate.getDate() - 7);
+                        break;
+                    case 'month':
+                        startDate.setMonth(endDate.getMonth() - 1);
+                        break;
+                    case 'year':
+                        startDate.setFullYear(endDate.getFullYear() - 1);
+                        break;
+                    case 'all': 
+                        startDate = new Date('2000-01-01');
+                        break;
+                    default:
+                        startDate.setMonth(endDate.getMonth() - 1);
+                        break;
+                }
+            }
+
+            // 2. Query
+            const whereClause: any = {};
+
+            // Usamos 'bought_at' como solicitaste
+            whereClause.bought_at = {
+                [Op.between]: [startDate, endDate]
+            };
+
+            const purchases = await PurchaseDB.findAll({
+                where: whereClause,
+                include: [
+                    { model: ProviderDB, as: "provider", attributes: ['name'] },
+                    { model: UserDB, as: "user", attributes: ['name'] },
+                    { model: TypePaymentDB, as: "type_payment", attributes: ['name'] }
+                ],
+                order: [['bought_at', 'DESC']]
+            });
+    
+            if (purchases.length === 0) {
+                return {
+                    status: 404,
+                    message: "No purchases found in this range",
+                    data: []
+                };
+            }
+    
+            const purchasesData = purchases.map(purchase => {
+                const purchaseData = purchase.toJSON();
+                return {
+                    ...purchaseData,
+                    provider: purchaseData.provider?.name || "Proveedor Genérico",
+                    user: purchaseData.user?.name || "Desconocido",
+                    type_payment: purchaseData.type_payment?.name || "No especificado",
+                };
+            });
+    
+            return { 
+                status: 200,
+                message: "Purchases obtained correctly", 
+                data: purchasesData,   
+            };
+
+        } catch (error) {
+            console.error("Error fetching purchases: ", error);
+            return { status: 500, message: "Internal server error", data: null };
+        }
+    }
     // Start Employee
     async getEmployeePerformance(period: string = 'month', customStart?: string, customEnd?: string) {
         try {
