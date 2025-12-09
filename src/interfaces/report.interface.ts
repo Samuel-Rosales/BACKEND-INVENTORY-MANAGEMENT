@@ -1,5 +1,5 @@
 // 1. Para el gráfico lineal (Evolución en el tiempo)
-export type ReportFilter = 'today' | 'week' | 'month' | 'year';
+export type ReportFilter = 'today' | 'week' | 'month' | 'year' | 'custom';
 
 // Lo que sale hacia Flutter
 export interface SalesChartData {

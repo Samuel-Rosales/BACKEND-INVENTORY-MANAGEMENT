@@ -128,6 +128,7 @@ class ReportService {
         }
     }
 
+    // Start Employee
     async getEmployeePerformance(period: string = 'month') {
         try {
             const endDate = new Date();
@@ -216,13 +217,15 @@ class ReportService {
                 message: "Employee performance metrics retrieved successfully",
                 data: mappedResults
             };
-
+            
         } catch (error) {
             console.error("Error getting employee performance:", error);
             return { status: 500, message: "Internal server error", data: null };
         }
     }
+    // End Employee
 
+    //Start Inventory 
     async getInventoryByCategory() {
         try {
             // Esta consulta es un poco compleja porque une varias tablas,
@@ -354,7 +357,6 @@ class ReportService {
         }
     }
 
-    // 2. SERVICIO: Conteo Total de Items Físicos
     async getTotalInventoryItems() {
         try {
             const sql = `
@@ -452,50 +454,54 @@ class ReportService {
         }
     }
 
-    async getInventoryEfficiency(period: string = 'month') {
+    // -------------------------------------------------------------
+    // 1. EFICIENCIA DE INVENTARIO (Profitability)
+    // -------------------------------------------------------------
+    async getInventoryEfficiency(period: string = 'month', customStart?: string, customEnd?: string) {
         try {
-            const endDate = new Date();
-            const startDate = new Date();
+            let startDate = new Date();
+            let endDate = new Date();
 
-            switch (period) {
-                case 'week': startDate.setDate(endDate.getDate() - 7); break;
-                case 'month': startDate.setMonth(endDate.getMonth() - 1); break;
-                case 'year': startDate.setFullYear(endDate.getFullYear() - 1); break;
-                default: startDate.setFullYear(2000); break;
+            // A. Lógica de Fechas
+            if (period === 'custom' && customStart && customEnd) {
+                startDate = new Date(customStart);
+                endDate = new Date(customEnd);
+                // Aseguramos que cubra todo el día final
+                endDate.setHours(23, 59, 59, 999); 
+            } else {
+                // Lógica Estándar (Relativa a "Hoy")
+                switch (period) {
+                    case 'week': startDate.setDate(endDate.getDate() - 7); break;
+                    case 'month': startDate.setMonth(endDate.getMonth() - 1); break;
+                    case 'year': startDate.setFullYear(endDate.getFullYear() - 1); break;
+                    default: startDate.setFullYear(2000); break; // 'all' o default
+                }
             }
 
+            // B. Consulta SQL (Sin cambios, solo usa las fechas calculadas arriba)
             const sql = `
                 SELECT 
                     p.product_id,
                     p.name,
                     p.sku,
-                    
                     COALESCE(CAST(SUM(si.amount) AS INTEGER), 0) as "quantity_sold",
-                    
-                    -- FÓRMULA DE GANANCIA CORREGIDA:
-                    -- (Precio Venta Histórico) - (Costo Promedio de Adquisición)
                     COALESCE(CAST(
                         SUM( 
                             (
-                                si.unit_cost -  -- Este es tu PRECIO DE VENTA (10.00)
-                                
-                                -- SUB-CONSULTA: Buscamos cuánto te costó comprarlo (Promedio)
+                                si.unit_cost - 
                                 COALESCE(
-                                    (SELECT AVG(unit_cost) FROM purchase_lot_items WHERE product_id = p.product_id), -- Busca en lotes
-                                    (SELECT AVG(unit_cost) FROM purchase_general_items WHERE product_id = p.product_id), -- O busca en generales
-                                    0 -- Si nunca lo has comprado, asume costo 0
+                                    (SELECT AVG(unit_cost) FROM purchase_lot_items WHERE product_id = p.product_id),
+                                    (SELECT AVG(unit_cost) FROM purchase_general_items WHERE product_id = p.product_id),
+                                    0
                                 )
                             ) * si.amount 
                         ) 
                     AS DECIMAL(10,2)), 0.00) as "total_profit"
-
                 FROM products p
                 LEFT JOIN sales_items si ON p.product_id = si.product_id 
                     AND si."createdAt" BETWEEN :startDate AND :endDate
                     AND si.status = true 
-                
                 GROUP BY p.product_id, p.name, p.sku
-                
                 ORDER BY "total_profit" DESC, "quantity_sold" DESC;
             `;
 
@@ -524,38 +530,48 @@ class ReportService {
         }
     }
 
-    async getTopSellingProducts(period: string = 'all') {
+    // -------------------------------------------------------------
+    // 2. TOP PRODUCTOS VENDIDOS
+    // -------------------------------------------------------------
+    async getTopSellingProducts(period: string = 'all', customStart?: string, customEnd?: string) {
         try {
-            // 1. LÓGICA DE FECHAS (Filtro dinámico)
+            // 1. LÓGICA DE FECHAS
             let dateFilter = {};
             const now = new Date();
             const startDate = new Date(now);
 
-            switch (period) {
-                case 'day':
-                    startDate.setHours(0, 0, 0, 0);
-                    break;
-                case 'week':
-                    const day = startDate.getDay();
-                    const diff = startDate.getDate() - day + (day === 0 ? -6 : 1); // Ajuste al lunes
-                    startDate.setDate(diff);
-                    startDate.setHours(0, 0, 0, 0);
-                    break;
-                case 'month':
-                    startDate.setDate(1);
-                    startDate.setHours(0, 0, 0, 0);
-                    break;
-                case 'year':
-                    startDate.setMonth(0, 1);
-                    startDate.setHours(0, 0, 0, 0);
-                    break;
-                case 'all':
-                default:
-                    // 'all' no aplica filtro de fecha
-                    break;
-            }
+            if (period === 'custom' && customStart && customEnd) {
+                const cStart = new Date(customStart);
+                const cEnd = new Date(customEnd);
+                cEnd.setHours(23, 59, 59, 999);
 
-            if (period !== 'all') {
+                dateFilter = {
+                    createdAt: {
+                        [Op.between]: [cStart, cEnd]
+                    }
+                };
+            } else if (period !== 'all') {
+                // Lógica Estándar
+                switch (period) {
+                    case 'day':
+                        startDate.setHours(0, 0, 0, 0);
+                        break;
+                    case 'week':
+                        const day = startDate.getDay();
+                        const diff = startDate.getDate() - day + (day === 0 ? -6 : 1); 
+                        startDate.setDate(diff);
+                        startDate.setHours(0, 0, 0, 0);
+                        break;
+                    case 'month':
+                        startDate.setDate(1);
+                        startDate.setHours(0, 0, 0, 0);
+                        break;
+                    case 'year':
+                        startDate.setMonth(0, 1);
+                        startDate.setHours(0, 0, 0, 0);
+                        break;
+                }
+
                 dateFilter = {
                     createdAt: {
                         [Op.between]: [startDate, now]
@@ -563,21 +579,20 @@ class ReportService {
                 };
             }
 
-            // 2. CONSULTA A LA BASE DE DATOS (Top 5 más vendidos)
+            // 2. CONSULTA BD (Sequelize)
             const topProducts = await SaleItemDB.findAll({
                 where: {
                     ...dateFilter,
-                    status: true // Solo ventas activas
+                    status: true 
                 },
                 attributes: [
                     'product_id',
-                    // Sumamos la cantidad vendida
                     [sequelize.fn('SUM', sequelize.col('SaleItem.amount')), 'total_sold']
                 ],
                 include: [
                     {
                         model: ProductDB,
-                        as: 'product', // Asegúrate que tu alias en el modelo sea este
+                        as: 'product',
                         attributes: ['name', 'base_price', 'image_url', 'sku']
                     }
                 ],
@@ -595,19 +610,14 @@ class ReportService {
                 nest: true
             });
 
-            // 3. CÁLCULO DE PORCENTAJE (Lógica para la UI)
-            // Obtenemos el valor máximo (el del primer producto, ya que ordenamos DESC)
+            // 3. CÁLCULOS UI
             let maxSold = 0;
             if (topProducts.length > 0) {
                 maxSold = parseInt((topProducts[0] as any).total_sold);
             }
 
-            // 4. MAPEO DE DATOS
             const formattedData = topProducts.map((item: any) => {
                 const soldCount = parseInt(item.total_sold);
-                
-                // Calculamos porcentaje relativo al líder (0.0 a 1.0)
-                // Si el líder vendió 100 y este 50, el porcentaje es 0.5
                 let percentage = 0.0;
                 if (maxSold > 0) {
                     percentage = parseFloat((soldCount / maxSold).toFixed(2));
@@ -616,9 +626,7 @@ class ReportService {
                 return {
                     name: item.product.name, 
                     soldCount: soldCount,
-                    percentage: percentage,  // <--- Esto llena la barrita en Flutter
-                    
-                    // Datos extra útiles
+                    percentage: percentage,
                     product_id: item.product_id,
                     sku: item.product.sku,
                     imageUrl: item.product.image_url
@@ -640,7 +648,10 @@ class ReportService {
             };
         }
     }
+    //End Inventory
 
+
+    //Start resummary
     async totalUsdSales() {
         try {
             const  sales = await SaleDB.findAll();
@@ -698,8 +709,21 @@ class ReportService {
         }
     }
 
-    async getSalesByDatesStats(filter: ReportFilter): Promise<SalesChartData> {
-        const { start, end } = this.getDateRange(filter);
+    async getSalesByDatesStats(filter: string, customStart?: string, customEnd?: string): Promise<SalesChartData> {
+        let start: Date, end: Date;
+
+        // Lógica de fechas: Custom vs Estándar
+        if (filter === 'custom' && customStart && customEnd) {
+            start = new Date(customStart);
+            end = new Date(customEnd);
+            // Aseguramos que cubra hasta el final del último día
+            end.setHours(23, 59, 59, 999);
+        } else {
+            // Si no es custom, usamos tu lógica existente (casting a ReportFilter para que no llore TS)
+            const range = this.getDateRange(filter as ReportFilter);
+            start = range.start;
+            end = range.end;
+        }
 
         const rawSales = await SaleDB.findAll({
             where: {
@@ -708,77 +732,109 @@ class ReportService {
                     [Op.lte]: end
                 }
             },
-            // OPTIMIZACIÓN: Solo traemos la fecha, no necesitamos el dinero ni el cliente
-            attributes: ['sold_at'] 
+            attributes: ['sold_at']
         });
 
-        // Mapeamos solo la fecha, el amount ya no es relevante para contar cantidad
         const sales: SaleRecord[] = rawSales.map(sale => ({
             createdAt: new Date(sale.get('sold_at') as Date),
-            amount: 0 // Lo dejamos en 0 porque no lo usaremos para este gráfico
+            amount: 0
         }));
 
-        return this.processSalesIntoBuckets(sales, filter);
+        // Pasamos start y end al procesador porque 'custom' los necesita para generar los labels
+        return this.processSalesIntoBuckets(sales, filter, start, end);
     }
 
-    private processSalesIntoBuckets(sales: SaleRecord[], filter: ReportFilter) {
+    private processSalesIntoBuckets(sales: SaleRecord[], filter: string, start: Date, end: Date): SalesChartData {
         let labels: string[] = [];
         let label_shorts: string[] = [];
         let values: number[] = [];
         let index: number[] = [];
+        
+        // Variable auxiliar para 'custom'
+        let customDaysMap: Date[] = [];
 
-        // 1. Preparamos las cubetas vacías
-        switch (filter) {
-            case 'today':
-                values = new Array(24).fill(0);
-                index = Array.from({ length: 24 }, (_, i) => i);
-                labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
-                label_shorts = labels.map(label => label.split(':')[0]);
+        // ---------------------------------------------------------
+        // PASO 1: Preparar las cubetas (Labels e Índices)
+        // ---------------------------------------------------------
 
-                break;
-            case 'week':
-                values = new Array(7).fill(0);
-                index = Array.from({ length: 7 }, (_, i) => i);
-                labels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-                label_shorts = ['L', 'M', 'Mi', 'J', 'V', 'S', 'D'];
-                
-                break;
-            case 'month':
-                const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-                values = new Array(daysInMonth).fill(0);
-                index = Array.from({ length: daysInMonth }, (_, i) => i);
-                labels = Array.from({ length: daysInMonth }, (_, i) => `${i + 1}`);
-                break;
-            case 'year':
-                values = new Array(12).fill(0);
-                index = Array.from({ length: 12 }, (_, i) => i);
-                labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-                label_shorts = ['E', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
-                break;
+        if (filter === 'custom') {
+            // LÓGICA NUEVA: Generamos arrays dinámicos basados en la diferencia de días
+            customDaysMap = this.getDaysArray(start, end);
+            const daysCount = customDaysMap.length;
+
+            values = new Array(daysCount).fill(0);
+            index = Array.from({ length: daysCount }, (_, i) => i);
+            
+            // Labels: "10/12", "11/12"
+            labels = customDaysMap.map(d => `${d.getDate()}/${d.getMonth() + 1}`);
+            label_shorts = labels; // En custom usamos el mismo label corto
+
+        } else {
+            // TU LÓGICA ORIGINAL (Mantenida intacta)
+            switch (filter) {
+                case 'today':
+                    values = new Array(24).fill(0);
+                    index = Array.from({ length: 24 }, (_, i) => i);
+                    labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+                    label_shorts = labels.map(label => label.split(':')[0]);
+                    break;
+                case 'week':
+                    values = new Array(7).fill(0);
+                    index = Array.from({ length: 7 }, (_, i) => i);
+                    labels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+                    label_shorts = ['L', 'M', 'Mi', 'J', 'V', 'S', 'D'];
+                    break;
+                case 'month':
+                    // Nota: Usamos la fecha actual para calcular días del mes si es 'month' genérico
+                    const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+                    values = new Array(daysInMonth).fill(0);
+                    index = Array.from({ length: daysInMonth }, (_, i) => i);
+                    labels = Array.from({ length: daysInMonth }, (_, i) => `${i + 1}`);
+                    label_shorts = labels; 
+                    break;
+                case 'year':
+                    values = new Array(12).fill(0);
+                    index = Array.from({ length: 12 }, (_, i) => i);
+                    labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                    label_shorts = ['E', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+                    break;
+            }
         }
 
-        // 2. Llenamos las cubetas (AQUÍ ESTÁ EL CAMBIO)
+        // ---------------------------------------------------------
+        // PASO 2: Llenar las cubetas
+        // ---------------------------------------------------------
         sales.forEach(sale => {
-            let index = -1;
+            let idx = -1;
 
-            if (filter === 'today') {
-                index = sale.createdAt.getHours();
+            if (filter === 'custom') {
+                // LÓGICA NUEVA PARA CUSTOM
+                // Convertimos a string YYYY-MM-DD para comparar solo fecha (sin hora)
+                const saleDateStr = sale.createdAt.toISOString().split('T')[0];
+                
+                // Buscamos en qué posición del array de días cae esta venta
+                idx = customDaysMap.findIndex(d => d.toISOString().split('T')[0] === saleDateStr);
+
+            } else if (filter === 'today') {
+                idx = sale.createdAt.getHours();
             } else if (filter === 'week') {
-                index = sale.createdAt.getDay() - 1;
-                if (index === -1) index = 6; // Domingo
+                idx = sale.createdAt.getDay() - 1;
+                if (idx === -1) idx = 6; // Domingo
             } else if (filter === 'month') {
-                index = sale.createdAt.getDate() - 1;
+                idx = sale.createdAt.getDate() - 1;
             } else if (filter === 'year') {
-                index = sale.createdAt.getMonth();
+                idx = sale.createdAt.getMonth();
             }
 
-            // Si el índice es válido, SUMAMOS 1 (una venta más)
-            if (index >= 0 && index < values.length) {
-                values[index] += 1; // <--- CAMBIO CLAVE: Antes era += sale.amount
+            // Si encontramos el índice válido, sumamos
+            if (idx >= 0 && idx < values.length) {
+                values[idx] += 1;
             }
         });
 
-        // Total de transacciones
+        // ---------------------------------------------------------
+        // PASO 3: Retorno (Con Casting para TypeScript)
+        // ---------------------------------------------------------
         const total = values.reduce((acc, curr) => acc + curr, 0);
 
         const spots: SpotsChartData[] = index.map((idx, i) => ({
@@ -786,10 +842,23 @@ class ReportService {
             value: values[i]
         }));
 
-        return { filter, labels, label_shorts, spots, total };
+        return { 
+            filter: filter as ReportFilter, // <--- ESTO ARREGLA EL ERROR DE TIPO ROJO
+            labels, 
+            label_shorts, // <--- Mantenemos esto opcional/necesario
+            spots, 
+            total 
+        };
     }
 
-    // ... (tu método getDateRange sigue igual) ...
+    private getDaysArray(start: Date, end: Date) {
+        const arr = [];
+        for(let dt = new Date(start); dt <= end; dt.setDate(dt.getDate()+1)){
+            arr.push(new Date(dt));
+        }
+        return arr;
+    }
+
     private getDateRange(filter: ReportFilter): { start: Date, end: Date } {
          // ... (código anterior) ...
          // Solo lo copio resumido para contexto
@@ -813,6 +882,7 @@ class ReportService {
          }
          return { start, end };
     }
+    //End resummary
 }
 
 export const ReportServices = new ReportService();

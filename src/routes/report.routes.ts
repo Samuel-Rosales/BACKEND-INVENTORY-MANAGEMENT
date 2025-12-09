@@ -15,15 +15,18 @@ router.get("/total_usd_purchases",
 
 router.get("/sales_dates_stats", 
     controller.getSalesChart
-); // http://localhost:3000/api/report/sales_dates_stats?filter=week
+);  // http://localhost:3000/api/report/sales_dates_stats?filter=week
+    // http://localhost:3000/api/report/sales_dates_stats?filter=custom&customStart=2025-12-01&customEnd=2025-12-10
 
 router.get("/top_selling_products",
     controller.getTopSellingProducts
-); // http://localhost:3000/api/report/top_selling_products?period=month
+);  // http://localhost:3000/api/report/top_selling_products?period=month
+    // http://localhost:3000/api/report/top_selling_products?period=custom&customStart=2025-10-01&customEnd=2025-10-15
 
 router.get("/inventory_efficiency",
     controller.getInventoryEfficiency
-); // http://localhost:3000/api/report/inventory_efficiency
+);  // http://localhost:3000/api/report/inventory_efficiency1
+    // http://localhost:3000/api/report/inventory_efficiency?period=custom&customStart=2025-01-01&customEnd=2025-06-30
 
 router.get("/low_stock_alerts",
     controller.getLowStockAlerts

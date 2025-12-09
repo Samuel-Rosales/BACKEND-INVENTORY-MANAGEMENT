@@ -25,15 +25,22 @@ export class ReportController {
 
     getSalesChart = async (req: Request, res: Response) => {
         try {
-            // A. Extraemos el filtro del Query Param
-            const { filter } = req.query;
+            console.log("📥 QUERY RECIBIDO:", req.query); 
+            console.log("🔍 Tipos:", { 
+                filter: typeof req.query.filter, 
+                start: typeof req.query.customStart 
+            });
+            // ---------------------------------
 
-            // B. Validación: ¿El filtro es válido?
-            // Esto evita que alguien envíe ?filter=hacker o ?filter=undefined
-            const validFilters: ReportFilter[] = ['today', 'week', 'month', 'year'];
+            const { filter, customStart, customEnd } = req.query;
+
+            // B. Validación: Agregamos 'custom' a la lista permitida
+            const validFilters = ['today', 'week', 'month', 'year', 'custom'];
             
-            // TypeScript ve req.query.filter como 'string | undefined', así que lo castigamos
-            if (!filter || !validFilters.includes(filter as ReportFilter)) {
+            // TypeScript ve req.query como tipos complejos, aseguramos que sea string
+            const filterStr = filter as string;
+
+            if (!filter || !validFilters.includes(filterStr)) {
                 return res.status(400).json({
                     status: 400,
                     message: `Filtro inválido. Opciones permitidas: ${validFilters.join(', ')}`,
@@ -41,11 +48,26 @@ export class ReportController {
                 });
             }
 
-            // C. Llamamos al servicio con el filtro validado
-            // "as ReportFilter" le asegura a TS que es uno de los valores permitidos
-            const chartData = await ReportServices.getSalesByDatesStats(filter as ReportFilter);
+            // C. VALIDACIÓN EXTRA: Si es 'custom', las fechas son obligatorias
+            if (filterStr === 'custom') {
+                if (!customStart || !customEnd) {
+                    return res.status(400).json({
+                        status: 400,
+                        message: "Para el filtro personalizado, se requieren 'customStart' y 'customEnd'.",
+                        data: null
+                    });
+                }
+            }
 
-            // D. Respuesta exitosa
+            // D. Llamamos al servicio pasando los 3 parámetros
+            // El servicio ya sabe que si no es 'custom', las fechas pueden ser undefined
+            const chartData = await ReportServices.getSalesByDatesStats(
+                filterStr, 
+                customStart as string, 
+                customEnd as string
+            );
+
+            // E. Respuesta exitosa
             return res.status(200).json({
                 status: 200,
                 message: "Report generated successfully",
@@ -62,26 +84,64 @@ export class ReportController {
         }
     }
 
+    // -------------------------------------------------------------
+    // CONTROLLER: TOP SELLING
+    // -------------------------------------------------------------
     getTopSellingProducts = async (req: Request, res: Response) => {
-        // Leemos el query param ?period=month
-        const period = req.query.period as string || 'all';
-        
-        const { status, message, data } = await ReportServices.getTopSellingProducts(period);
+        try {
+            // Extraemos todo del query
+            const { period, customStart, customEnd } = req.query;
+            
+            // Valor por defecto si no viene nada
+            const periodStr = (period as string) || 'all';
 
-        return res.status(status).json({ 
-            message, 
-            data 
-        });
+            // Validación opcional para Custom
+            if (periodStr === 'custom' && (!customStart || !customEnd)) {
+                return res.status(400).json({
+                    message: "Para el periodo personalizado, se requieren 'customStart' y 'customEnd'.",
+                    data: null
+                });
+            }
+            
+            const { status, message, data } = await ReportServices.getTopSellingProducts(
+                periodStr, 
+                customStart as string, 
+                customEnd as string
+            );
+
+            return res.status(status).json({ message, data });
+        } catch (error) {
+            console.error("Error controller TopSelling:", error);
+            return res.status(500).json({ message: "Internal Error", data: null });
+        }
     };
 
+    // -------------------------------------------------------------
+    // CONTROLLER: INVENTORY EFFICIENCY
+    // -------------------------------------------------------------
     getInventoryEfficiency = async (req: Request, res: Response) => {
         try {
-            const { status, message, data } = await ReportServices.getInventoryEfficiency();
+            // Extraemos todo del query
+            const { period, customStart, customEnd } = req.query;
 
-            return res.status(status).json({
-                message,
-                data
-            });
+            // Valor por defecto 'month' (o el que prefieras)
+            const periodStr = (period as string) || 'month';
+
+            // Validación opcional para Custom
+            if (periodStr === 'custom' && (!customStart || !customEnd)) {
+                return res.status(400).json({
+                    message: "Para el periodo personalizado, se requieren 'customStart' y 'customEnd'.",
+                    data: null
+                });
+            }
+
+            const { status, message, data } = await ReportServices.getInventoryEfficiency(
+                periodStr,
+                customStart as string,
+                customEnd as string
+            );
+
+            return res.status(status).json({ message, data });
 
         } catch (error) {
             console.error("Error en ReportController.getInventoryEfficiency:", error);
@@ -126,6 +186,9 @@ export class ReportController {
             data
         });
     };
+
+
+
 
     getEmployeePerformance = async (req: Request, res: Response) => {
         const period = req.query.period as string || 'month';
