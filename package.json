@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc && copyfiles -u 1 src/**/*.json dist",
+    "build": "tsc", 
     "start": "node dist/app.js",
-    "dev": "tsc && node dist/app.js",
+    "dev": "ts-node src/app.ts",
     "reset": "ts-node -r tsconfig-paths/register src/data/reset.seed.ts",
     "seeds": "ts-node -r tsconfig-paths/register src/data/main.seed.ts",
     "seeds-reset": "ts-node -r tsconfig-paths/register -r dotenv/config src/data/main.seed.ts --reset"
