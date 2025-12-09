@@ -55,14 +55,6 @@ export const productSeed = async () => {
                 image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1764812768/salsa_tomate_wdprvg.jpg", // Placeholder URL
                 category_id: 1, base_price: 2.20, min_stock: 10, perishable: true, status: true,
             },
-            // El Producto Especial (No se toca)
-            {
-                name: "Marcos Castellanos",
-                sku: "ESP-001",
-                description: "Un Marcos Castellanos rico, bello, exquisito, sabroso, apetitoso, guapo, hermoso y delicioso, listo para comer y saborear. Edición Limitada. Invaluable. Lo más cercano a la perfección.",
-                image_url: "https://res.cloudinary.com/dbfztnfc8/image/upload/v1764117893/Screenshot_2025-11-25_204434_btgwdn.png",
-                category_id: 1, base_price: 99999.99, min_stock: 1, perishable: true, status: true,
-            },
 
             // --- Categoria 2: Higiene Personal (Esenciales) ---
             {
