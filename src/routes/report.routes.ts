@@ -46,7 +46,8 @@ router.get("/inventory_by_category",
 
 router.get("/employee_performance",
     controller.getEmployeePerformance
-); // http://localhost:3000/api/report/employee_performance?period=month
+);  // http://localhost:3000/api/report/employee_performance?period=month
+    // http://localhost:3000/api/report/employee_performance?period=custom&startDate=2025-12-01&endDate=2025-12-15
 
 router.get("/client_correlation_fm",
     controller.getClientCorrelationFM

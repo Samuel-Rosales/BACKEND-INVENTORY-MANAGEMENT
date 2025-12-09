@@ -129,35 +129,49 @@ class ReportService {
     }
 
     // Start Employee
-    async getEmployeePerformance(period: string = 'month') {
+    async getEmployeePerformance(period: string = 'month', customStart?: string, customEnd?: string) {
         try {
-            const endDate = new Date();
-            const startDate = new Date();
+            // Inicializamos fechas con el momento actual
+            let endDate = new Date();
+            let startDate = new Date();
 
-            // 1. Filtro de Fechas
-            switch (period) {
-                case 'week': startDate.setDate(endDate.getDate() - 7); break;
-                case 'month': startDate.setMonth(endDate.getMonth() - 1); break;
-                case 'year': startDate.setFullYear(endDate.getFullYear() - 1); break;
-                default: startDate.setFullYear(2000); break;
+            // 1. Lógica de Fechas
+            if (period === 'custom' && customStart && customEnd) {
+                // Si es personalizado, usamos los strings recibidos
+                startDate = new Date(customStart);
+                endDate = new Date(customEnd);
+                
+                // Aseguramos que la fecha fin cubra todo el día (hasta las 23:59:59)
+                endDate.setHours(23, 59, 59, 999);
+            } else {
+                // Lógica predeterminada (automática)
+                switch (period) {
+                    case 'week': 
+                        startDate.setDate(endDate.getDate() - 7); 
+                        break;
+                    case 'month': 
+                        startDate.setMonth(endDate.getMonth() - 1); 
+                        break;
+                    case 'year': 
+                        startDate.setFullYear(endDate.getFullYear() - 1); 
+                        break;
+                    default: 
+                        // Si no coincide o es 'all', ponemos una fecha muy antigua
+                        startDate.setFullYear(2000); 
+                        break;
+                }
             }
 
-            // 2. Consulta SQL Corregida
+            // 2. Consulta SQL (Se mantiene igual, solo usa las variables startDate/endDate ya calculadas)
             const sql = `
                 SELECT 
                     u.name as "employee_name",
                     s.user_ci,
-
-                    -- EJE X: Cantidad de Ventas Únicas
                     CAST(COUNT(DISTINCT s.sale_id) AS INTEGER) as "sales_count",
-
-                    -- EJE Y: Ganancia Total Generada
                     COALESCE(CAST(
                         SUM(
                             (
-                                si.unit_cost - -- Precio Venta (SaleItem)
-                                
-                                -- Costo Promedio de Compra
+                                si.unit_cost - 
                                 COALESCE(
                                     (SELECT AVG(unit_cost) FROM purchase_lot_items WHERE product_id = si.product_id),
                                     (SELECT AVG(unit_cost) FROM purchase_general_items WHERE product_id = si.product_id),
@@ -166,17 +180,12 @@ class ReportService {
                             ) * si.amount
                         )
                     AS DECIMAL(10,2)), 0.00) as "total_profit"
-
                 FROM sales s
                 JOIN sales_items si ON s.sale_id = si.sale_id
-                
-                -- CORRECCIÓN AQUÍ: Cambiamos u.ci por u.user_ci
                 JOIN users u ON s.user_ci = u.user_ci 
-                
                 WHERE s.sold_at BETWEEN :startDate AND :endDate
                 AND s.status = true
                 AND si.status = true
-
                 GROUP BY u.name, s.user_ci
                 ORDER BY "total_profit" DESC;
             `;
@@ -193,15 +202,14 @@ class ReportService {
                 
                 let colorHex = "#9CA3AF"; 
 
-                // Lógica de colores (Semáforo de rendimiento)
                 if (profit > 100 && sales > 5) {
-                    colorHex = "#22C55E"; // Verde (Excelente)
+                    colorHex = "#22C55E";
                 } else if (profit > 50) {
-                    colorHex = "#3B82F6"; // Azul (Bueno)
+                    colorHex = "#3B82F6";
                 } else if (sales > 10) {
-                    colorHex = "#F59E0B"; // Naranja (Mucho volumen, poco margen)
+                    colorHex = "#F59E0B";
                 } else {
-                    colorHex = "#EF4444"; // Rojo (Bajo)
+                    colorHex = "#EF4444";
                 }
 
                 return {
