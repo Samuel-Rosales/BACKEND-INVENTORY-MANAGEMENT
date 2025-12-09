@@ -155,15 +155,10 @@ export class Server {
         // Primero, espera a que la base de datos esté lista
         await this.dbConnect();
 
-        // Convertimos el puerto a número para evitar errores de tipo
-        const portNumber = Number(this.port);
-
-        // --- CORRECCIÓN AQUÍ ---
-        // Agregamos '0.0.0.0' como segundo argumento.
-        this.app.listen(portNumber, '0.0.0.0', () => {
+        // Luego, inicia el servidor
+        this.app.listen(this.port, () => {
             const URL = `${this.apiurl}/swagger/#`
             console.log(`🚀 Server running in ${URL}`)
-            console.log(`🚀 Accepting connections on port ${portNumber}`)
         })
     }
 

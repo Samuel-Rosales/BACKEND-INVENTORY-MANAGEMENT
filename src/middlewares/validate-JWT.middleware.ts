@@ -4,13 +4,13 @@ import { UserDB, RoleDB, PermissionDB } from '../models'; // Importa tu modelo U
 import { UserInstance } from '../models/user.model'; // Importa tu tipo
 
 // Augment Express Request to include `user`
-/*declare global {
+declare global {
     namespace Express {
         interface Request {
             user?: UserInstance;
         }
     }
-}*/
+}
 
 // Tu clave secreta (debe ser la MISMA que en auth.service)
 const JWT_SECRET = process.env.JWT_SECRET || 'aq1SW2de3FR4gt5HY6ju7kI8Lo9mN0bV_unA-clave-super-secreta';
