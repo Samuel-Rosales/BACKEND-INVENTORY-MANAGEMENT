@@ -264,4 +264,19 @@ export class ReportController {
             data: result.data 
         });
     };
+
+    getSupplierAnalysis = async (req: Request, res: Response) => {
+        // Leemos los parámetros igual que en los otros reportes
+        const period = req.query.period as string || 'month';
+        const startDate = req.query.startDate as string | undefined;
+        const endDate = req.query.endDate as string | undefined;
+
+        const { status, message, data } = await ReportServices.getSupplierAnalysis(
+            period, 
+            startDate, 
+            endDate
+        );
+
+        return res.status(status).json({ message, data });
+    };
 }

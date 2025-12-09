@@ -6,6 +6,161 @@ import { db } from "../config";
 
 class ReportService {
 
+    async getSupplierAnalysis(period: string = 'month', customStart?: string, customEnd?: string) {
+        try {
+            // 1. Configuración de Fechas (Reutilizando tu lógica estándar)
+            let endDate = new Date();
+            let startDate = new Date();
+            endDate.setHours(23, 59, 59, 999); // Final del día
+
+            if (period === 'custom' && customStart && customEnd) {
+                startDate = new Date(customStart);
+                endDate = new Date(customEnd);
+                endDate.setHours(23, 59, 59, 999);
+            } else {
+                // LÓGICA AUTOMÁTICA CORREGIDA
+                switch (period) {
+                    case 'today':
+                        startDate.setHours(0, 0, 0, 0); // Desde las 00:00 de hoy
+                        break;
+                    
+                    case 'week':
+                        startDate.setDate(endDate.getDate() - 7); // Últimos 7 días
+                        break;
+                    
+                    case 'month':
+                        // CORRECCIÓN: Poner el día en 1 para que sea "Desde el principio de este mes"
+                        startDate.setDate(1); 
+                        startDate.setHours(0, 0, 0, 0);
+                        break;
+                        
+                    case 'year':
+                        // CORRECCIÓN: Poner mes 0 y día 1 para "Desde principio de este año"
+                        startDate.setMonth(0); 
+                        startDate.setDate(1);
+                        startDate.setHours(0, 0, 0, 0);
+                        break;
+                        
+                    case 'all': 
+                        startDate = new Date('2000-01-01');
+                        break;
+                        
+                    default:
+                        // Default al mes actual
+                        startDate.setDate(1); 
+                        startDate.setHours(0, 0, 0, 0);
+                        break;
+                }
+            }
+
+            // 2. Consulta a Base de Datos
+            // Agrupamos por proveedor y sumamos total_usd
+            const purchases = await PurchaseDB.findAll({
+                where: {
+                    bought_at: { [Op.between]: [startDate, endDate] },
+                    active: true // Solo compras activas (no borradas lógicamente)
+                },
+                attributes: [
+                    'provider_id',
+                    [db.fn('COUNT', db.col('purchase_id')), 'purchaseCount'],
+                    [db.fn('SUM', db.col('total_usd')), 'totalSpent']
+                ],
+                include: [{
+                    model: ProviderDB,
+                    as: 'provider',
+                    attributes: ['name']
+                }],
+                group: ['Purchase.provider_id', 'provider.provider_id', 'provider.name'], 
+                order: [[db.literal('"totalSpent"'), 'DESC']] // Ordenar por quien más gasta
+            });
+
+            // 3. Manejo de caso vacío
+            if (purchases.length === 0) {
+                return {
+                    status: 200,
+                    message: "No data available for this period",
+                    data: {
+                        totalSpentGlobal: 0,
+                        totalTransactions: 0,
+                        totalSuppliers: 0,
+                        topSupplierName: "N/A",
+                        suppliersList: [],
+                        spendingDistribution: []
+                    }
+                };
+            }
+
+            // 4. Procesamiento de Datos (Cálculo de Totales y Porcentajes)
+            let globalSpent = 0;
+            let globalTransactions = 0;
+
+            // Mapeo inicial para limpiar la data de Sequelize
+            const rawList = purchases.map((p: any) => {
+                const spent = parseFloat(p.getDataValue('totalSpent'));
+                const count = parseInt(p.getDataValue('purchaseCount'));
+                const name = p.provider?.name || "Proveedor Desconocido";
+
+                globalSpent += spent;
+                globalTransactions += count;
+
+                return { name, totalSpent: spent, purchaseCount: count };
+            });
+
+            // Crear lista detallada con porcentajes
+            const suppliersList = rawList.map(item => ({
+                ...item,
+                percentage: globalSpent > 0 ? (item.totalSpent / globalSpent) * 100 : 0
+            }));
+
+            // 5. Preparar datos para el Gráfico de Pastel (Top 4 + Otros)
+            const pieChartData = [];
+            // Colores sugeridos para el frontend (puedes enviarlos o asignarlos allá)
+            const colors = ["#5C6BC0", "#AB47BC", "#FF7043", "#78909C", "#26A69A"]; 
+
+            // Tomamos los top 4
+            for (let i = 0; i < Math.min(suppliersList.length, 4); i++) {
+                pieChartData.push({
+                    name: suppliersList[i].name,
+                    value: suppliersList[i].percentage,
+                    color: colors[i] || "#9E9E9E"
+                });
+            }
+
+            // Agrupamos el resto en "Otros"
+            if (suppliersList.length > 4) {
+                let othersPercentage = 0;
+                for (let i = 4; i < suppliersList.length; i++) {
+                    othersPercentage += suppliersList[i].percentage;
+                }
+                pieChartData.push({
+                    name: "Otros",
+                    value: othersPercentage,
+                    color: "#BDBDBD" // Gris
+                });
+            }
+
+            // 6. Armar respuesta final
+            const responseData = {
+                totalSpentGlobal: globalSpent,
+                totalTransactions: globalTransactions,
+                totalSuppliers: suppliersList.length,
+                topSupplierName: suppliersList.length > 0 ? suppliersList[0].name : "N/A",
+                suppliersList: suppliersList,
+                spendingDistribution: pieChartData
+            };
+
+            return {
+                status: 200,
+                message: "Supplier analysis retrieved successfully",
+                data: responseData
+            };
+
+        } catch (error) {
+            console.error("Error getting supplier analysis: ", error);
+            return { status: 500, message: "Internal server error", data: null };
+        }
+    }
+
     async getProductCostHistory(productId: number, providerId?: number) {
         try {
             // Construimos la cláusula WHERE dinámicamente

@@ -86,6 +86,12 @@ router.get("/purchases_report_range",
         http://localhost:3000/api/report/purchases_report_range?period=custom&startDate=2025-11-01&endDate=2025-11-30
 */
 
+router.get("/provider_analysis", controller.getSupplierAnalysis);
+
+/* Ejemplo de uso:
+ GET http://localhost:3000/api/report/provider_analysis?period=year
+*/
+
 export const ReportRoute = router;
 
 export default router;
