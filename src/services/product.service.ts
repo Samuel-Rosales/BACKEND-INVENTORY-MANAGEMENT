@@ -1,6 +1,7 @@
-import { ProductDB, CategoryDB, StockGeneralDB, StockLotDB  } from "../models";
+import { ProductDB, CategoryDB, StockGeneralDB, StockLotDB, DepotDB  } from "../models";
 import { ProductInterface, StockGeneralInterface, StockLotInterface } from "../interfaces";
 import { ExchangeRateServices } from "./exchange-rate.service";
+import { Op } from "sequelize";
 
 class ProductService {
     async getAll() {
@@ -78,6 +79,66 @@ class ProductService {
             };
         }
     }
+
+    async getProductStockDetails (id_product: number) {
+    
+        try {   
+            const product = await ProductDB.findByPk(id_product);
+            if (!product) {return { status: 404, message: "Producto no encontrado", data: null }; }
+
+            const productJson = product.toJSON() as ProductInterface;
+
+            let options = [];
+
+            if (productJson.perishable) {
+                // --- Opción A: PERECEDEROS (Mostramos Lotes + Fechas) ---
+                const lotes = await StockLotDB.findAll({
+                    where: { product_id: id_product, amount: { [Op.gt]: 0 } }, // Solo con stock
+                    include: [{ model: DepotDB, as: "depot", attributes: ['name'] }],
+                    order: [['expiration_date', 'ASC']] // Vencimiento más cercano primero
+                });
+
+                const lotesJson = lotes.map(lote => lote.toJSON() as StockLotInterface & { depot: { name: string } });
+                options = lotesJson.map(lote => ({
+                    depot_id: lote.depot_id,
+                    depot_name: lote.depot.name,
+                    amount: lote.amount,
+                    expiration: lote.expiration_date,
+                    is_lot: true
+                }));
+
+            } else {
+                // --- Opción B: NO PERECEDEROS (Mostramos Depósitos) ---
+                const stocks = await StockGeneralDB.findAll({
+                    where: { product_id: id_product, amount: { [Op.gt]: 0 } },
+                    include: [{ model: DepotDB, as: "depot", attributes: ['name'] }],
+                    order: [['amount', 'DESC']]
+                });
+
+                const stocksJson = stocks.map(stock => stock.toJSON() as StockGeneralInterface & { depot: { name: string } });
+
+                options = stocksJson.map(stock => ({
+                    depot_id: stock.depot_id,
+                    depot_name: stock.depot.name,
+                    amount: stock.amount,
+                    is_lot: false
+                }));
+            }
+
+            return {
+                status: 200,
+                message: "Stock details obtained successfully",
+                data: options,
+            };
+        } catch (error) {
+            console.error("Error fetching product stock details: ", error);
+            return {
+                status: 500,
+                message: "Internal server error",
+                data: null,
+            };
+        }
+    };
 
     async getOne(product_id: number) {
         try {
@@ -164,7 +225,6 @@ class ProductService {
 
     /**
      * Crea un nuevo producto.
-     * El frontend DEBE enviar 'base_price' en USD.
      */
     async create(product: ProductInterface) {
        try {
@@ -199,7 +259,6 @@ class ProductService {
     
     /**
      * Actualiza un producto.
-     * El frontend DEBE enviar 'base_price' en USD.
      */
     async update(product_id: number, product: Partial<ProductInterface>) {
        try {

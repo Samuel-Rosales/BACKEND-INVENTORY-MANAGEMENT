@@ -14,6 +14,17 @@ export class ProductController {
         });
     };
 
+    getStockDetails = async (req: Request, res: Response) => {
+        const { id } = req.params;
+
+        const { status, message, data } = await ProductServices.getProductStockDetails(Number(id));
+        
+        return res.status(status).json({
+            message,
+            data,
+        });
+    };
+
     one = async (req: Request, res: Response) => { 
         const { id } = req.params;
         const { status, message, data } = await ProductServices.getOne(Number(id));
