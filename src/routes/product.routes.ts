@@ -5,28 +5,29 @@ import { productValidators } from "../validators";
 import { upload } from "../middlewares";
 
 const router = Router();
-const productController = new ProductController();
+const controller = new ProductController();
 
 //  METHOD GET
-//  METHOD GET
-
-//  METHOD GET
-
-router.get("/",
+router.get("/", 
     //validateJWT,
     //checkPermission("read:products"),
-    productController.all
+    controller.all
 ); // http://localhost:3000/api/product
 
+router.get("/:id/stock_availability", 
+    //validateJWT,
+    //checkPermission("read:products"),
+    controller.getStockDetails
+); // http://localhost:3000/api/product/:id/stock_availability
 
-router.get("/:id",
-    productValidators.validateProductParamIdExists,
-    productController.one
+router.get("/:id", 
+    productValidators.validateProductParamIdExists, 
+    controller.one
 ); // http://localhost:3000/api/product/:id
 
 
-router.get("/category/:category_id",
-    productController.all
+router.get("/category/:category_id", 
+    controller.all
 ); // http://localhost:3000/api/product/category/:category_id
 
 //METHOD POST
@@ -36,8 +37,9 @@ router.post("/",
     productValidators.validateCreateFields,
     productValidators.validateCatgegoryIdExists,
     validateFields,
-    productController.create
-); // http://localhost:3000/api/product
+    controller.create
+); // http://localhost:3000/api/product  // aqui se puede hacer el ajuste de metodos para validar por medio de otro validator
+
 
 //METHOD PATCH
 
@@ -46,26 +48,25 @@ router.patch("/:id",
     productValidators.validateUpdateFields,
     productValidators.validateProductParamIdExists,
     validateFields,
-    productController.update,
+    controller.update,
 ); // http://localhost:3000/api/product/:id
 
 
 router.patch("/:id/deactivate",
     productValidators.validateProductParamIdExists,
-    productController.updateDeactivate
+    controller.updateDeactivate
 ); // http://localhost:3000/api/product/:id/deactivate
 
 
 router.patch("/:id/activate",
     productValidators.validateProductParamIdExists,
-    productController.updateActivate
+    controller.updateActivate
 ); // http://localhost:3000/api/product/:id/activate
 
 //METHOD DELETE
-
-router.delete("/:id",
-    productValidators.validateProductParamIdExists,
-    productController.delete
+router.delete("/:id", 
+    productValidators.validateProductParamIdExists, 
+    controller.delete
 ); // http://localhost:3000/api/product/:id
 
 export const ProductRoute = router;
