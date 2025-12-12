@@ -229,7 +229,8 @@ class InventoryService {
     public async deductStock(
         item: SaleItemInput, 
         depot_id: number, 
-        t: Transaction
+        t: Transaction,
+        specific_stock_lot_id?: number | null // <--- NUEVO PARAMETRO OPCIONAL
     ) {
         // 1. Buscar el producto
         const product = await ProductDB.findByPk(item.product_id, { transaction: t });
@@ -241,57 +242,79 @@ class InventoryService {
 
         if ((product as any).perishable) {
             
-            // --- LÓGICA FEFO (Perecederos) ---
+            // --- CASO 1: EL USUARIO ELIGIÓ UN LOTE ESPECÍFICO ---
+            if (specific_stock_lot_id) {
+                const specificLot = await StockLotDB.findOne({
+                    where: {
+                        stock_lot_id: specific_stock_lot_id,
+                        product_id: item.product_id,
+                        depot_id: depot_id // Seguridad: asegurar que el lote pertenece a ese depósito
+                    },
+                    transaction: t,
+                    lock: t.LOCK.UPDATE
+                });
 
-            // 1. Buscar todos los lotes con stock, ordenados por fecha (FEFO)
-            const lots = await StockLotDB.findAll({
-                where: {
-                    product_id: item.product_id,
-                    depot_id: depot_id,
-                    amount: { [Op.gt]: 0 } // Solo lotes con stock
-                },
-                order: [['expiration_date', 'ASC']], // First-Expired, First-Out
-                transaction: t,
-                lock: t.LOCK.UPDATE // Bloquea las filas para evitar ventas duplicadas
-            });
+                if (!specificLot) {
+                    throw new Error(`El lote seleccionado (ID: ${specific_stock_lot_id}) no existe o no pertenece a este depósito.`);
+                }
 
-            // 2. Verificar si hay suficiente stock total
-            const totalStock = lots.reduce((sum, lot) => sum + (lot as any).amount, 0);
-            if (totalStock < amountToDeduct) {
-                throw new Error(`Stock insuficiente para ${(product as any).name}. Stock: ${totalStock}, Solicitado: ${amountToDeduct}`);
-            }
+                if ((specificLot as any).amount < amountToDeduct) {
+                    throw new Error(`Stock insuficiente en el lote seleccionado. Disp: ${(specificLot as any).amount}, Solicitado: ${amountToDeduct}`);
+                }
 
-            // 3. Descontar de los lotes, uno por uno
-            for (const lot of lots) {
-                if (amountToDeduct <= 0) break;
+                // Descuento directo y estricto del lote seleccionado
+                await specificLot.decrement('amount', { by: amountToDeduct, transaction: t });
 
-                const lotAmount = (lot as any).amount;
-                const deduct = Math.min(lotAmount, amountToDeduct);
+            } else {
+                console.log("No specific lot selected, applying FEFO logic.");
+                // --- CASO 2: NO SE ELIGIÓ LOTE -> APLICAR FEFO AUTOMÁTICO (Tu lógica original) ---
                 
-                await lot.decrement('amount', { by: deduct, transaction: t });
-                amountToDeduct -= deduct;
+                // 1. Buscar todos los lotes con stock, ordenados por fecha (FEFO)
+                const lots = await StockLotDB.findAll({
+                    where: {
+                        product_id: item.product_id,
+                        depot_id: depot_id,
+                        amount: { [Op.gt]: 0 } 
+                    },
+                    order: [['expiration_date', 'ASC']], 
+                    transaction: t,
+                    lock: t.LOCK.UPDATE 
+                });
+
+                // 2. Verificar si hay suficiente stock total
+                const totalStock = lots.reduce((sum, lot) => sum + (lot as any).amount, 0);
+                if (totalStock < amountToDeduct) {
+                    throw new Error(`Stock total insuficiente para ${(product as any).name}. Stock Global: ${totalStock}, Solicitado: ${amountToDeduct}`);
+                }
+
+                // 3. Descontar en cascada
+                for (const lot of lots) {
+                    if (amountToDeduct <= 0) break;
+
+                    const lotAmount = (lot as any).amount;
+                    const deduct = Math.min(lotAmount, amountToDeduct);
+                    
+                    await lot.decrement('amount', { by: deduct, transaction: t });
+                    amountToDeduct -= deduct;
+                }
             }
 
         } else {
+            // --- LÓGICA SIMPLE (No Perecederos - Igual que antes) ---
             
-            // --- LÓGICA SIMPLE (No Perecederos) ---
-            
-            // 1. Buscar la fila de stock
             const stock = await StockGeneralDB.findOne({
                 where: {
                     product_id: item.product_id,
                     depot_id: depot_id
                 },
                 transaction: t,
-                lock: t.LOCK.UPDATE // Bloquea la fila
+                lock: t.LOCK.UPDATE
             });
 
-            // 2. Verificar stock
             if (!stock || (stock as any).amount < amountToDeduct) {
                 throw new Error(`Stock insuficiente para ${(product as any).name}. Stock: ${(stock as any)?.amount || 0}, Solicitado: ${amountToDeduct}`);
             }
 
-            // 3. Descontar
             await stock.decrement('amount', { by: amountToDeduct, transaction: t });
         }
     }

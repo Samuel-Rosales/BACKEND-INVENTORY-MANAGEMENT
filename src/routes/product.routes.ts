@@ -14,11 +14,11 @@ router.get("/",
     controller.all
 ); // http://localhost:3000/api/product
 
-router.get("/:id/stock_details", 
+router.get("/:id/stock_availability", 
     //validateJWT,
     //checkPermission("read:products"),
     controller.getStockDetails
-); // http://localhost:3000/api/product/:id/stock_details
+); // http://localhost:3000/api/product/:id/stock_availability
 
 router.get("/:id", 
     productValidators.validateProductParamIdExists, 

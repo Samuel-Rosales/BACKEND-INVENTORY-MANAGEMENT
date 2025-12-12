@@ -100,6 +100,7 @@ class ProductService {
 
                 const lotesJson = lotes.map(lote => lote.toJSON() as StockLotInterface & { depot: { name: string } });
                 options = lotesJson.map(lote => ({
+                    lot_id: lote.stock_lot_id,
                     depot_id: lote.depot_id,
                     depot_name: lote.depot.name,
                     amount: lote.amount,

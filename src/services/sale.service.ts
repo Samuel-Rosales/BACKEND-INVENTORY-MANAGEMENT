@@ -173,7 +173,7 @@ class SaleService {
                 const unit_cost_usd = parseFloat(producto.get('base_price') as string);
                 
                 // Llamada a InventoryService (asumimos que esto actualiza la DB)
-                await inventoryService.deductStock(item, depot_id, t);
+                await inventoryService.deductStock(item, depot_id, t, item.stock_lot_id);
 
                 // CALCULAR EL NUEVO STOCK EN MEMORIA
                 // Es importante calcularlo aquí porque inventoryService corre dentro de la transacción
