@@ -170,7 +170,7 @@ class SaleService {
                         return accumlator + stock.amount;
                     },0);
                 }
-                const unit_cost_usd = parseFloat(producto.get('base_price') as string);
+                const unit_price_usd = parseFloat(producto.get('base_price') as string);
                 
                 // Llamada a InventoryService (asumimos que esto actualiza la DB)
                 await inventoryService.deductStock(item, depot_id, t, item.stock_lot_id);
@@ -190,14 +190,15 @@ class SaleService {
                     });
                 }
 
-                totalVentaUSD += unit_cost_usd * item.amount;
+                totalVentaUSD += unit_price_usd * item.amount;
 
                 // --- 2d. GUARDAR ITEM PROCESADO ---
                 itemsProcesados.push({
                     product_id: item.product_id,
                     depot_id: depot_id,
-                    amount: item.amount,
-                    unit_cost: unit_cost_usd // Usamos el precio SEGURO de la DB
+                    amount: item.amount, // Usamos el precio SEGURO de la DB
+                    unit_price_usd: parseFloat((unit_price_usd).toFixed(2)),
+                    unit_price_bs: parseFloat((unit_price_usd * exchange_rate).toFixed(2)),
                 });
             }
 
