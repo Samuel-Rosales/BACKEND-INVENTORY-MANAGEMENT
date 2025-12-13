@@ -62,7 +62,8 @@ export const saleItemSeed = async () => {
                     sale_id: saleId,
                     product_id: prod.id,
                     depot_id: defaultDepotId,
-                    unit_cost: parseFloat(prod.sellingPrice.toFixed(2)),
+                    unit_price_usd: parseFloat(prod.sellingPrice.toFixed(2)),
+                    unit_price_bs: parseFloat((prod.sellingPrice * 230).toFixed(2)), // Assuming an exchange rate of 230 for example
                     amount: qty,
                     status: true,
                     createdAt: new Date(),
@@ -88,12 +89,12 @@ export const saleItemSeed = async () => {
             UPDATE ${saleTable}
             SET 
                 total_usd = (
-                    SELECT COALESCE(SUM(amount * unit_cost), 0)
+                    SELECT COALESCE(SUM(amount * unit_price_usd), 0)
                     FROM ${saleItemTable} AS si
                     WHERE si.sale_id = ${saleTable}.sale_id
                 ),
                 total_ves = (
-                    SELECT COALESCE(SUM(amount * unit_cost), 0)
+                    SELECT COALESCE(SUM(amount * unit_price_usd), 0)
                     FROM ${saleItemTable} AS si
                     WHERE si.sale_id = ${saleTable}.sale_id
                 ) * exchange_rate

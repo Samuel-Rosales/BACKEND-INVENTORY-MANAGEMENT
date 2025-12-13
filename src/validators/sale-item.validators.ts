@@ -13,9 +13,14 @@ export class SaleItemValidators {
             .notEmpty().withMessage("El ID de la venta es obligatorio.")
             .isInt().withMessage("El ID de la venta debe ser un número entero."),
 
-        check("unit_cost")
-            .notEmpty().withMessage("El costo unitario del producto es obligatorio.")
-            .isDecimal().withMessage("El costo unitario del producto debe ser un número decimal."),
+        check("unit_price_usd")
+            .notEmpty().withMessage("El precio unitario en USD del producto es obligatorio.")
+            .isDecimal().withMessage("El precio unitario en USD del producto debe ser un número decimal."),
+
+
+        check("unit_price_bs")
+            .notEmpty().withMessage("El precio unitario en BS del producto es obligatorio.")
+            .isDecimal().withMessage("El precio unitario en BS del producto debe ser un número decimal."),
         
         check("amount")
             .notEmpty().withMessage("La cantidad del producto es obligatorio.")
@@ -33,10 +38,16 @@ export class SaleItemValidators {
             .notEmpty().withMessage("El ID de la venta es obligatorio.")
             .isInt().withMessage("El ID de la venta debe ser un número entero."),
 
-        check("unit_cost")
+        check("unit_price_usd")
             .optional()
-            .notEmpty().withMessage("El costo unitario del producto es obligatorio.")
-            .isDecimal().withMessage("El costo unitario del producto debe ser un número decimal."),
+            .notEmpty().withMessage("El precio unitario en USD del producto es obligatorio.")
+            .isDecimal().withMessage("El precio unitario en USD del producto debe ser un número decimal."),
+            
+
+        check("unit_price_bs")
+            .optional()
+            .notEmpty().withMessage("El precio unitario en BS del producto es obligatorio.")
+            .isDecimal().withMessage("El precio unitario en BS del producto debe ser un número decimal."),
         
         check("amount")
             .optional()

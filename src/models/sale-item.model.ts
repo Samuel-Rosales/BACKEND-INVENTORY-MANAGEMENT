@@ -19,8 +19,15 @@ export const SaleItemFactory = (sequelize: Sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        unit_cost: {
+        unit_price_usd: {
             type: DataTypes.DECIMAL(10, 2),
+            allowNull: false,
+            validate: {
+                min: 0.01,
+            },
+        },
+        unit_price_bs: {
+            type: DataTypes.DECIMAL(16, 2),
             allowNull: false,
             validate: {
                 min: 0.01,
